@@ -197,7 +197,20 @@ useEffect(() => {
             const [showChatModal, setShowChatModal] = useState(false);
             const [chatPartner, setChatPartner] = useState(null);
             const [chatMessage, setChatMessage] = useState('');
-            const [chatThreads, setChatThreads] = useState(() => JSON.parse(localStorage.getItem('ing_chat') || '{}'));
+          const [chatThreads, setChatThreads] = useState({});
+
+useEffect(() => {
+    const chatsRef = firebase.database().ref('chats');
+    chatsRef.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        const threads = {};
+        Object.entries(data).forEach(([key, msgsObj]) => {
+            threads[key] = Object.values(msgsObj || {}).sort((a, b) => a.at - b.at);
+        });
+        setChatThreads(threads);
+    });
+    return () => chatsRef.off();
+}, []);
             const [showProfile, setShowProfile] = useState(false);
             const [isEditing, setIsEditing] = useState(false);
             const [editForm, setEditForm] = useState({ ...user });
@@ -209,7 +222,16 @@ useEffect(() => {
             const [passwordSuccess, setPasswordSuccess] = useState('');
             const [showPassword, setShowPassword] = useState(false);
             const [showNotifications, setShowNotifications] = useState(false);
-            const [notifications, setNotifications] = useState(() => JSON.parse(localStorage.getItem('ing_notifications') || '[]'));
+            const [notifications, setNotifications] = useState([]);
+
+useEffect(() => {
+    const notifRef = firebase.database().ref('notifications');
+    notifRef.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        setNotifications(Object.values(data));
+    });
+    return () => notifRef.off();
+}, []);
             const [unreadNotifications, setUnreadNotifications] = useState(0);
             const [selectedChatId, setSelectedChatId] = useState(null);
             const [unreadDMs, setUnreadDMs] = useState(0);
@@ -218,14 +240,6 @@ useEffect(() => {
             const [forceUpdate, setForceUpdate] = useState(0);
 
             // Save activities back to localStorage
-
-            useEffect(() => {
-                localStorage.setItem('ing_chat', JSON.stringify(chatThreads));
-            }, [chatThreads]);
-
-            useEffect(() => {
-                localStorage.setItem('ing_notifications', JSON.stringify(notifications));
-            }, [notifications]);
 
             useEffect(() => {
                 const unread = notifications.filter(n => n.userId === user.id && !n.read).length;
@@ -298,22 +312,33 @@ setShowPostModal(false);
                     description: ''
                 });
                 
-                const allUsers = JSON.parse(localStorage.getItem('ing_users') || '[]');
-                allUsers.forEach(u => {
-                    if (u.id !== user.id) {
-                        const notif = {
-                            id: 'n_' + Date.now() + '_' + Math.random(),
-                            userId: u.id,
-                            postId: post.id,
-                            type: 'new_activity',
-                            message: `New Activity: "${post.title}". Tap here to view the details.`,
-                            read: false,
-                            createdAt: Date.now()
-                        };
-                        setNotifications(prev => [...prev, notif]);
-                    }
-                });
+            firebase.database().ref('users').once('value').then(snapshot => {
+    const data = snapshot.val() || {};
+    Object.entries(data).forEach(([uid, u]) => {
+        if (uid !== user.id) {
+            const notifId = 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+            const notif = {
+                id: notifId,
+                userId: uid,
+                postId: postId,
+                type: 'new_activity',
+                message: `New Activity: "${post.title}". Tap here to view the details.`,
+                read: false,
+                createdAt: Date.now()
             };
+            firebase.database().ref('notifications/' + notifId).set(notif);
+        }
+    });
+});
+            };
+            const sendMessage = (otherId, text) => {
+    if (!text || !text.trim()) return;
+    const key = [user.id, otherId].sort().join('|');
+    const newMsg = { from: user.id, text: text.trim(), at: Date.now() };
+    const msgId = 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    firebase.database().ref('chats/' + key + '/' + msgId).set(newMsg);
+    setChatMessage('');
+};
 
             // Join function - simplified and robust
            const joinPost = (postId) => {
@@ -451,13 +476,15 @@ setShowPostModal(false);
                 setEditForm({ ...editForm, profileImage: null });
             };
 
-            const markNotificationRead = (id) => {
-                setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-            };
+          const markNotificationRead = (id) => {
+    firebase.database().ref('notifications/' + id + '/read').set(true);
+};
 
-            const markAllNotificationsRead = () => {
-                setNotifications(prev => prev.map(n => n.userId === user.id ? { ...n, read: true } : n));
-            };
+const markAllNotificationsRead = () => {
+    notifications
+        .filter(n => n.userId === user.id && !n.read)
+        .forEach(n => firebase.database().ref('notifications/' + n.id + '/read').set(true));
+};
 
             const handleNotificationClick = (notification) => {
                 markNotificationRead(notification.id);
