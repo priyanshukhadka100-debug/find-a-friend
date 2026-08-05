@@ -10,6 +10,22 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCyIzNTCeID1uWfIw_17QC5ciUBqtHqNkE",
+    authDomain: "findafriend-535b3.firebaseapp.com",
+    databaseURL: "https://findafriend-535b3-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "findafriend-535b3",
+    storageBucket: "findafriend-535b3.firebasestorage.app",
+    messagingSenderId: "789997283271",
+    appId: "1:789997283271:web:5cb2c1c3c50d9f248d9be2",
+    measurementId: "G-TEGX90V5V8"
+  };
+  firebase.initializeApp(firebaseConfig);
+</script>
     <style>
         * { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         body { background: #F0F4F1; margin:0; }
@@ -61,6 +77,37 @@
     </style>
 </head>
 <body>
+    <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-auto mt-8">
+  <h2 class="text-xl font-bold mb-4">Add Student</h2>
+  
+  <form id="addStudentForm" class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Full Name</label>
+      <input type="text" id="studentName" required
+        class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Email</label>
+      <input type="email" id="studentEmail" required
+        class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Password</label>
+      <input type="text" id="studentPassword" required
+        class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl" 
+        placeholder="Min 6 characters" />
+    </div>
+
+    <button type="submit" class="w-full btn-gold px-4 py-3 rounded-xl font-semibold">
+      Add Student
+    </button>
+
+    <p id="addStudentError" class="text-red-600 text-sm hidden"></p>
+    <p id="addStudentSuccess" class="text-green-600 text-sm hidden"></p>
+  </form>
+</div>
     <div id="root"></div>
     <script type="text/babel">
         const { useState, useEffect } = React;
@@ -86,10 +133,15 @@
 
         const App = () => {
             const [currentPage, setCurrentPage] = useState('dashboard');
-            const [students, setStudents] = useState(() => {
-                const allUsers = JSON.parse(localStorage.getItem('ing_users') || '[]');
-                return allUsers.filter(u => u.type === 'student');
-            });
+            const [students, setStudents] = useState([]);
+
+useEffect(() => {
+    firebase.database().ref('users').once('value').then(snapshot => {
+        const data = snapshot.val() || {};
+        const studentList = Object.values(data).filter(u => u.role === 'student');
+        setStudents(studentList);
+    });
+}, []);
             const [admins, setAdmins] = useState(() => JSON.parse(localStorage.getItem('ing_admins') || '[]'));
             const [allActivities, setAllActivities] = useState(() => {
                 const saved = localStorage.getItem('ing_activities_posts');
@@ -127,13 +179,6 @@
             useEffect(() => {
                 localStorage.setItem('ing_activities_posts', JSON.stringify(allActivities));
             }, [allActivities]);
-
-            useEffect(() => {
-                const allUsers = JSON.parse(localStorage.getItem('ing_users') || '[]');
-                const nonStudents = allUsers.filter(u => u.type !== 'student');
-                const updatedUsers = [...nonStudents, ...students];
-                localStorage.setItem('ing_users', JSON.stringify(updatedUsers));
-            }, [students]);
 
             useEffect(() => {
                 localStorage.setItem('ing_admins', JSON.stringify(admins));
@@ -235,88 +280,56 @@
                 }
             };
 
-            const handleCreateStudent = () => {
-                setFormError('');
-                setFormSuccess('');
+            const handleCreateStudent = async () => {
+    setFormError('');
+    setFormSuccess('');
 
-                if (!newStudent.name || !newStudent.email || !newStudent.password) {
-                    setFormError('Please fill in all required fields.');
-                    return;
-                }
-                if (newStudent.password.length < 8) {
-                    setFormError('Password must be at least 8 characters long.');
-                    return;
-                }
+    if (!newStudent.name || !newStudent.email || !newStudent.password) {
+        setFormError('Please fill in all required fields.');
+        return;
+    }
+    if (newStudent.password.length < 8) {
+        setFormError('Password must be at least 8 characters long.');
+        return;
+    }
 
-                const allUsers = JSON.parse(localStorage.getItem('ing_users') || '[]');
-                if (allUsers.some(u => u.email === newStudent.email)) {
-                    setFormError('This email is already registered.');
-                    return;
-                }
+    try {
+        // Secondary app instance so creating this account doesn't log the admin out
+        const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
+        const secondaryAuth = secondaryApp.auth();
 
-                const student = {
-                    id: 's_' + Date.now(),
-                    name: newStudent.name,
-                    email: newStudent.email,
-                    password: newStudent.password,
-                    type: 'student',
-                    studentId: newStudent.studentId || 'STU' + String(Date.now()).slice(-6),
-                    phone: newStudent.phone || '',
-                    dob: newStudent.dob || '',
-                    course: newStudent.course || '',
-                    semester: newStudent.semester || '',
-                    createdAt: new Date().toISOString().split('T')[0],
-                    profileImage: null
-                };
+        const userCred = await secondaryAuth.createUserWithEmailAndPassword(newStudent.email, newStudent.password);
+        const newUid = userCred.user.uid;
 
-                setStudents([...students, student]);
-                setNewStudent({ name: '', studentId: '', email: '', phone: '', dob: '', course: '', semester: '', password: '' });
-                setFormSuccess('Student account created successfully!');
-                setTimeout(() => setFormSuccess(''), 3000);
-                setShowCreateStudent(false);
-            };
+        const student = {
+            id: newUid,
+            name: newStudent.name,
+            email: newStudent.email,
+            role: 'student',
+            studentId: newStudent.studentId || 'STU' + String(Date.now()).slice(-6),
+            phone: newStudent.phone || '',
+            dob: newStudent.dob || '',
+            course: newStudent.course || '',
+            semester: newStudent.semester || '',
+            createdAt: new Date().toISOString().split('T')[0]
+        };
 
-            const handleEditStudent = (student) => {
-                setEditingStudent({ ...student });
-                setShowEditModal(true);
-            };
+        await firebase.database().ref('users/' + newUid).set(student);
 
-            const saveEditStudent = () => {
-                if (!editingStudent.name || !editingStudent.email) {
-                    setFormError('Name and email are required.');
-                    return;
-                }
+        await secondaryAuth.signOut();
+        await secondaryApp.delete();
 
-                const updatedStudents = students.map(s => 
-                    s.id === editingStudent.id ? { ...editingStudent } : s
-                );
-                setStudents(updatedStudents);
-                setShowEditModal(false);
-                setEditingStudent(null);
-                setFormSuccess('Student updated successfully!');
-                setTimeout(() => setFormSuccess(''), 3000);
-            };
+        setStudents([...students, student]);
+        setNewStudent({ name: '', studentId: '', email: '', phone: '', dob: '', course: '', semester: '', password: '' });
+        setFormSuccess('Student account created successfully!');
+        setTimeout(() => setFormSuccess(''), 3000);
+        setShowCreateStudent(false);
 
-            const handleDeleteStudent = (studentId) => {
-                const updatedStudents = students.filter(s => s.id !== studentId);
-                setStudents(updatedStudents);
-                setShowDeleteConfirm(null);
-                setFormSuccess('Student removed successfully!');
-                setTimeout(() => setFormSuccess(''), 3000);
-            };
-
-            const resetStudentPassword = (studentId) => {
-                const newPassword = 'student1234';
-                const updatedStudents = students.map(s => {
-                    if (s.id === studentId) {
-                        return { ...s, password: newPassword };
-                    }
-                    return s;
-                });
-                setStudents(updatedStudents);
-                setFormSuccess(`Password reset to "${newPassword}" for student.`);
-                setTimeout(() => setFormSuccess(''), 3000);
-            };
+    } catch (err) {
+        console.error(err);
+        setFormError(err.message);
+    }
+};
 
             const resetAllData = () => {
                 if (confirm('⚠️ WARNING: This will delete ALL data. Are you sure?')) {
