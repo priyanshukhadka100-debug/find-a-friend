@@ -10,6 +10,22 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCyIzNTCeID1uWfIw_17QC5ciUBqtHqNkE",
+    authDomain: "findafriend-535b3.firebaseapp.com",
+    databaseURL: "https://findafriend-535b3-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "findafriend-535b3",
+    storageBucket: "findafriend-535b3.firebasestorage.app",
+    messagingSenderId: "789997283271",
+    appId: "1:789997283271:web:5cb2c1c3c50d9f248d9be2",
+    measurementId: "G-TEGX90V5V8"
+  };
+  firebase.initializeApp(firebaseConfig);
+</script>
     <style>
         * { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         body { background: #F0F4F1; margin:0; }
@@ -144,14 +160,21 @@
             const [currentPage, setCurrentPage] = useState('dashboard');
             
             // Load activities from localStorage
-            const [activities, setActivities] = useState(() => {
-                const saved = localStorage.getItem('ing_activities_posts');
-                const items = saved ? JSON.parse(saved) : [];
-                return items.map(item => ({
-                    ...item,
-                    joined: Array.isArray(item.joined) ? item.joined : []
-                })).sort((a, b) => b.createdAt - a.createdAt);
-            });
+            const [activities, setActivities] = useState([]);
+
+useEffect(() => {
+    const activitiesRef = firebase.database().ref('activities');
+    activitiesRef.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        const items = Object.values(data).map(item => ({
+            ...item,
+            joined: Array.isArray(item.joined) ? item.joined : []
+        })).sort((a, b) => b.createdAt - a.createdAt);
+        setActivities(items);
+    });
+
+    return () => activitiesRef.off();
+}, []);
             
             const [filter, setFilter] = useState('all');
             const [showPostModal, setShowPostModal] = useState(false);
@@ -195,9 +218,6 @@
             const [forceUpdate, setForceUpdate] = useState(0);
 
             // Save activities back to localStorage
-            useEffect(() => {
-                localStorage.setItem('ing_activities_posts', JSON.stringify(activities));
-            }, [activities]);
 
             useEffect(() => {
                 localStorage.setItem('ing_chat', JSON.stringify(chatThreads));
@@ -250,18 +270,19 @@
                     return;
                 }
 
-                const post = {
-                    id: 'p_' + Date.now(),
-                    ...newPost,
-                    startTime: startTime,
-                    endTime: endTime,
-                    posterId: user.id,
-                    posterName: user.name,
-                    joined: [{ id: user.id, name: user.name }],
-                    createdAt: Date.now()
-                };
-                setActivities([post, ...activities]);
-                setShowPostModal(false);
+                const postId = 'p_' + Date.now();
+const post = {
+    id: postId,
+    ...newPost,
+    startTime: startTime,
+    endTime: endTime,
+    posterId: user.id,
+    posterName: user.name,
+    joined: [{ id: user.id, name: user.name }],
+    createdAt: Date.now()
+};
+firebase.database().ref('activities/' + postId).set(post);
+setShowPostModal(false);
                 setNewPost({
                     category: 'sport',
                     title: '',
@@ -295,109 +316,65 @@
             };
 
             // Join function - simplified and robust
-            const joinPost = (postId) => {
-                const index = activities.findIndex(p => p.id === postId);
-                if (index === -1) {
-                    alert('Activity not found');
-                    return;
-                }
-                
-                const item = activities[index];
-                const joinedList = Array.isArray(item.joined) ? item.joined : [];
-                
-                // Check if already joined
-                if (joinedList.some(j => j.id === user.id)) {
-                    alert('You have already joined this activity.');
-                    return;
-                }
-                
-                // Check capacity
-                if (joinedList.length >= item.spots) {
-                    alert('This activity is full.');
-                    return;
-                }
-                
-                // Create updated activity with new joined list
-                const updatedJoined = [...joinedList, { id: user.id, name: user.name }];
-                const updatedItem = { ...item, joined: updatedJoined };
-                
-                // Update state
-                setActivities(prevActivities => {
-                    const newActivities = [...prevActivities];
-                    newActivities[index] = updatedItem;
-                    return newActivities;
-                });
-                
-                setForceUpdate(prev => prev + 1);
-                setJoinSuccess('✅ Successfully joined!');
-                setTimeout(() => setJoinSuccess(''), 3000);
-            };
+           const joinPost = (postId) => {
+    const index = activities.findIndex(p => p.id === postId);
+    if (index === -1) {
+        alert('Activity not found');
+        return;
+    }
+    
+    const item = activities[index];
+    const joinedList = Array.isArray(item.joined) ? item.joined : [];
+    
+    if (joinedList.some(j => j.id === user.id)) {
+        alert('You have already joined this activity.');
+        return;
+    }
+    
+    if (joinedList.length >= item.spots) {
+        alert('This activity is full.');
+        return;
+    }
+    
+    const updatedJoined = [...joinedList, { id: user.id, name: user.name }];
+
+    firebase.database().ref('activities/' + postId + '/joined').set(updatedJoined)
+        .then(() => {
+            setJoinSuccess('✅ Successfully joined!');
+            setTimeout(() => setJoinSuccess(''), 3000);
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Failed to join. Please try again.');
+        });
+};
 
             // Cancel join function
             const cancelJoinPost = (postId) => {
-                const index = activities.findIndex(p => p.id === postId);
-                if (index === -1) {
-                    alert('Activity not found');
-                    return;
-                }
-                
-                const item = activities[index];
-                const joinedList = Array.isArray(item.joined) ? item.joined : [];
-                
-                if (!joinedList.some(j => j.id === user.id)) {
-                    alert('You have not joined this activity.');
-                    return;
-                }
-                
-                const updatedJoined = joinedList.filter(j => j.id !== user.id);
-                const updatedItem = { ...item, joined: updatedJoined };
-                
-                setActivities(prevActivities => {
-                    const newActivities = [...prevActivities];
-                    newActivities[index] = updatedItem;
-                    return newActivities;
-                });
-                
-                setForceUpdate(prev => prev + 1);
-                alert('Successfully cancelled participation.');
-            };
+    const item = activities.find(p => p.id === postId);
+    if (!item) {
+        alert('Activity not found');
+        return;
+    }
+    
+    const joinedList = Array.isArray(item.joined) ? item.joined : [];
+    
+    if (!joinedList.some(j => j.id === user.id)) {
+        alert('You have not joined this activity.');
+        return;
+    }
+    
+    const updatedJoined = joinedList.filter(j => j.id !== user.id);
 
-            const sendMessage = (otherId, text) => {
-                const key = [user.id, otherId].sort().join('|');
-                const thread = chatThreads[key] || [];
-                const newMsg = { from: user.id, text, at: Date.now() };
-                setChatThreads({ ...chatThreads, [key]: [...thread, newMsg] });
-                setChatMessage('');
-            };
-
-            const openChat = (otherId, otherName) => {
-                setChatPartner({ id: otherId, name: otherName });
-                setSelectedChatId(otherId);
-                setShowChatModal(true);
-            };
-
-            const getUserChats = () => {
-                const chatList = [];
-                Object.keys(chatThreads).forEach(key => {
-                    if (key.includes(user.id)) {
-                        const ids = key.split('|');
-                        const otherId = ids.find(id => id !== user.id);
-                        let otherName = 'Unknown';
-                        const allUsers = JSON.parse(localStorage.getItem('ing_users') || '[]');
-                        const found = allUsers.find(u => u.id === otherId);
-                        if (found) otherName = found.name;
-                        const thread = chatThreads[key];
-                        const lastMsg = thread[thread.length - 1];
-                        const isUnread = lastMsg && lastMsg.from !== user.id;
-                        chatList.push({ key, otherId, otherName, thread, lastMsg, isUnread });
-                    }
-                });
-                return chatList.sort((a, b) => {
-                    const aTime = a.lastMsg ? a.lastMsg.at : 0;
-                    const bTime = b.lastMsg ? b.lastMsg.at : 0;
-                    return bTime - aTime;
-                });
-            };
+    firebase.database().ref('activities/' + postId + '/joined').set(updatedJoined)
+        .then(() => {
+            alert('Successfully cancelled participation.');
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Failed to cancel. Please try again.');
+        });
+};
 
             const handleChangePassword = () => {
                 if (passwordData.new.length < 8) {

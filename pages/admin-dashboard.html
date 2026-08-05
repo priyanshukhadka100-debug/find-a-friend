@@ -143,14 +143,22 @@ useEffect(() => {
     });
 }, []);
             const [admins, setAdmins] = useState(() => JSON.parse(localStorage.getItem('ing_admins') || '[]'));
-            const [allActivities, setAllActivities] = useState(() => {
-                const saved = localStorage.getItem('ing_activities_posts');
-                const items = saved ? JSON.parse(saved) : [];
-                return items.map(item => ({
-                    ...item,
-                    joined: Array.isArray(item.joined) ? item.joined : []
-                }));
-            });
+         const [allActivities, setAllActivities] = useState([]);
+
+useEffect(() => {
+    const activitiesRef = firebase.database().ref('activities');
+    activitiesRef.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        const items = Object.values(data).map(item => ({
+            ...item,
+            joined: Array.isArray(item.joined) ? item.joined : []
+        }));
+        items.sort((a, b) => b.createdAt - a.createdAt);
+        setAllActivities(items);
+    });
+
+    return () => activitiesRef.off();
+}, []);
             const [showCreateModal, setShowCreateModal] = useState(false);
             const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
             const [newActivity, setNewActivity] = useState({
@@ -176,9 +184,7 @@ useEffect(() => {
             const [selectedActivity, setSelectedActivity] = useState(null);
             const [showActivityDetail, setShowActivityDetail] = useState(false);
 
-            useEffect(() => {
-                localStorage.setItem('ing_activities_posts', JSON.stringify(allActivities));
-            }, [allActivities]);
+           
 
             useEffect(() => {
                 localStorage.setItem('ing_admins', JSON.stringify(admins));
@@ -223,18 +229,19 @@ useEffect(() => {
                     return;
                 }
 
-                const activity = {
-                    id: 'p_' + Date.now(),
-                    ...newActivity,
-                    startTime: startTime,
-                    endTime: endTime,
-                    posterId: user.id,
-                    posterName: user.name,
-                    joined: [{ id: user.id, name: user.name }],
-                    createdAt: Date.now()
-                };
+                const activityId = 'p_' + Date.now();
+const activity = {
+    id: activityId,
+    ...newActivity,
+    startTime: startTime,
+    endTime: endTime,
+    posterId: user.id,
+    posterName: user.name,
+    joined: [{ id: user.id, name: user.name }],
+    createdAt: Date.now()
+};
 
-                setAllActivities([activity, ...allActivities]);
+firebase.database().ref('activities/' + activityId).set(activity);
                 setNewActivity({
                     category: 'sport',
                     title: '',
@@ -274,12 +281,10 @@ useEffect(() => {
             };
 
             const deleteActivity = (activityId) => {
-                if (confirm('Are you sure you want to delete this activity?')) {
-                    const updated = allActivities.filter(a => a.id !== activityId);
-                    setAllActivities(updated);
-                }
-            };
-
+    if (confirm('Are you sure you want to delete this activity?')) {
+        firebase.database().ref('activities/' + activityId).remove();
+    }
+};
             const handleCreateStudent = async () => {
     setFormError('');
     setFormSuccess('');
