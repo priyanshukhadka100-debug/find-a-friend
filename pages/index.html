@@ -203,7 +203,7 @@
                     '6th': '6th', '7th': '7th', '8th': '8th', '9th': '9th', '10th': '10th'
                 };
                 const floor = floorMap[result.floor] || 'Ground';
-                window.location.href = `pages/floornavigation.html#${floor}`;
+                window.location.href = `floornavigation.html#${floor}`;
             };
 
             const clearRecentSearches = () => {
@@ -246,17 +246,17 @@
                                 <div className="flex flex-wrap gap-3">
                                     {!isLoggedIn ? (
                                         <>
-                                            <a href="pages/student-login.html" className="btn-gold px-6 py-2.5 rounded-full font-bold shadow-lg transition-all duration-300 flex items-center gap-2 text-forest-teal">
+                                            <a href="student-login.html" className="btn-gold px-6 py-2.5 rounded-full font-bold shadow-lg transition-all duration-300 flex items-center gap-2 text-forest-teal">
                                                 <i className="fas fa-user-graduate"></i> Student Login
                                             </a>
-                                            <a href="pages/admin-login.html" className="bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2.5 rounded-full font-semibold hover:bg-white/30 transition flex items-center gap-2 text-white">
+                                            <a href="admin-login.html" className="bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2.5 rounded-full font-semibold hover:bg-white/30 transition flex items-center gap-2 text-white">
                                                 <i className="fas fa-user-shield"></i> Admin Login
                                             </a>
                                         </>
                                     ) : (
                                         <div className="glass-effect px-5 py-2.5 rounded-full flex items-center gap-4">
                                             <span className="text-white font-medium">👋 {user?.name}</span>
-                                            <a href="pages/student-dashboard.html" className="text-white border border-white/40 px-4 py-1 rounded-full text-sm hover:bg-white/10 transition">Dashboard</a>
+                                            <a href="student-dashboard.html" className="text-white border border-white/40 px-4 py-1 rounded-full text-sm hover:bg-white/10 transition">Dashboard</a>
                                             <button onClick={handleLogout} className="text-white/60 text-sm hover:text-white transition">Logout</button>
                                         </div>
                                     )}
@@ -368,7 +368,7 @@
                                     <i className="fas fa-calendar-check text-electric-gold mr-2"></i>
                                     Happening on Campus Right Now
                                 </h2>
-                                <a href="pages/student-dashboard.html" className="text-forest-teal font-medium hover:underline text-sm">
+                                <a href="student-dashboard.html" className="text-forest-teal font-medium hover:underline text-sm">
                                     View All Activities →
                                 </a>
                             </div>
@@ -408,19 +408,19 @@
                         </div>
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <a href="pages/floornavigation.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
+                            <a href="floornavigation.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
                                 <div className="text-2xl mb-1">🏛️</div>
                                 <span className="text-sm font-medium text-gray-700">Floor Navigation</span>
                             </a>
-                            <a href="pages/student-login.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
+                            <a href="student-login.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
                                 <div className="text-2xl mb-1">🎓</div>
                                 <span className="text-sm font-medium text-gray-700">Student Login</span>
                             </a>
-                            <a href="pages/admin-login.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
+                            <a href="admin-login.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
                                 <div className="text-2xl mb-1">👔</div>
                                 <span className="text-sm font-medium text-gray-700">Admin Login</span>
                             </a>
-                            <a href="pages/student-dashboard.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
+                            <a href="student-dashboard.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
                                 <div className="text-2xl mb-1">📊</div>
                                 <span className="text-sm font-medium text-gray-700">Dashboard</span>
                             </a>
@@ -429,7 +429,7 @@
 
                     <button 
                         className="floating-btn"
-                        onClick={() => window.location.href = 'pages/student-dashboard.html'}
+                        onClick={() => window.location.href = 'student-dashboard.html'}
                         title="Find a Friend"
                     >
                         <span className="flex items-center gap-1 text-2xl">👥</span>
@@ -443,8 +443,8 @@
                             <h2 className="text-3xl font-bold text-white mb-4">ING College of Innovation & Leadership</h2>
                             <p className="text-blue-200 mb-6">New Baneshwor, Kathmandu | +977 9715000120 | info@ing.edu.np</p>
                             <div className="flex flex-wrap justify-center gap-4">
-                                <a href="pages/student-login.html" className="btn-gold px-6 py-2 rounded-full font-bold transition-all duration-300 text-forest-teal">Student Login</a>
-                                <a href="pages/admin-login.html" className="bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2 rounded-full font-semibold hover:bg-white/30 transition text-white">Admin Login</a>
+                                <a href="student-login.html" className="btn-gold px-6 py-2 rounded-full font-bold transition-all duration-300 text-forest-teal">Student Login</a>
+                                <a href="admin-login.html" className="bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2 rounded-full font-semibold hover:bg-white/30 transition text-white">Admin Login</a>
                             </div>
                             <div className="mt-6 text-sm text-blue-300">
                                 © 2026 ING College of Innovation and Leadership. All Rights Reserved.
