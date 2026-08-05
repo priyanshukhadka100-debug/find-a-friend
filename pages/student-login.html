@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login · ING College</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #F0F4F1; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin:0; }
+        .bg-forest-teal { background: #0D5C53; }
+        .text-forest-teal { color: #0D5C53; }
+        .btn-gold { background: #FFC700; color: #0D5C53; }
+        .btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 25px -8px rgba(255, 199, 0, 0.4); }
+        .error-text { color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem; }
+        .fade-in { animation: fadeUp 0.5s ease forwards; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .live-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity:0.6; } 50% { opacity:1; } }
+    </style>
+</head>
+<body>
+    <div class="max-w-md w-full mx-4 fade-in">
+        <div class="bg-white rounded-3xl shadow-2xl p-8">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto shadow-lg" style="background: #FFC700 !important;">
+                    <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING" class="h-12 w-auto" />
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mt-4">Student Login</h2>
+                <p class="text-gray-500 text-sm">Login with your ING College account</p>
+                <div class="flex items-center justify-center gap-2 mt-2">
+                    <span class="live-pulse inline-block w-2 h-2 bg-green-400 rounded-full"></span>
+                    <span class="text-xs text-gray-400">Secure student access</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Accounts are created by administration only</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email Address</label>
+                    <input type="email" id="email" required
+                        class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition"
+                        placeholder="student@ing.edu.np" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" required
+                            class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition pr-12"
+                            placeholder="Enter your password" />
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="loginError" class="error-text hidden"></div>
+                <button type="submit" class="btn-gold w-full py-3.5 rounded-xl font-bold transition-all duration-300 text-lg">
+                    Login →
+                </button>
+                <div class="text-center text-sm">
+                    <a href="admin-login.html" class="text-gray-400 hover:text-gray-600 transition">Admin Login</a>
+                    <span class="text-gray-300 mx-2">·</span>
+                    <a href="../index.html" class="text-gray-400 hover:text-gray-600 transition">Home</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const pwd = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                pwd.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('loginError');
+
+            const users = JSON.parse(localStorage.getItem('ing_users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password && u.type === 'student');
+
+            if (!user) {
+                errorEl.textContent = 'Invalid email or password. Please try again.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            localStorage.setItem('ing_user', JSON.stringify(user));
+            localStorage.setItem('ing_user_type', 'student');
+            window.location.href = 'student-dashboard.html';
+        });
+    </script>
+</body>
+</html>

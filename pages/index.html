@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>Find a Friend · ING College</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs first -->
+<script src="https://www.gstatic.com/firebasejs/10.x.x/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.x.x/firebase-auth-compat.js"></script>
+
+<!-- YOUR script that uses firebase, loaded AFTER -->
+<script src="app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        body { background: #F0F4F1; margin:0; }
+        .bg-forest-teal { background: #0D5C53; }
+        .text-forest-teal { color: #0D5C53; }
+        .bg-electric-gold { background: #FFC700; }
+        .text-electric-gold { color: #FFC700; }
+        .bg-light-mint { background: #F0F4F1; }
+        .btn-gold { background: #FFC700; color: #0D5C53; }
+        .btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 25px -8px rgba(255, 199, 0, 0.4); }
+        .glass-effect { background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); }
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15); }
+        .fade-in { animation: fadeUp 0.5s ease forwards; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .slide-in { animation: slideIn 0.4s ease forwards; }
+        @keyframes slideIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+        .live-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity:0.6; } 50% { opacity:1; } }
+        .hero-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        .room-card { border-left: 4px solid #FFC700; }
+        .content-wrapper { position: relative; z-index: 1; }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #FFC700; transition: width 0.3s; }
+        .nav-link:hover::after { width: 100%; }
+        .search-input:focus { outline: none; border-color: #0D5C53; box-shadow: 0 0 0 3px rgba(13, 92, 83, 0.1); }
+        .search-result-card { transition: all 0.2s; cursor: pointer; }
+        .search-result-card:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #FFC700;
+            color: #0D5C53;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 8px 25px rgba(255, 199, 0, 0.4);
+            z-index: 100;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            animation: floatPulse 2s infinite;
+        }
+        .floating-btn:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(255, 199, 0, 0.5); }
+        @keyframes floatPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .carousel-container { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        .carousel-item { scroll-snap-align: start; flex-shrink: 0; width: 280px; }
+        .footer__cta { background: linear-gradient(135deg, #0D5C53 0%, #1a7a6e 50%, #2a9a8a 100%); padding: 40px 0; position: relative; overflow: hidden; }
+        .art__animation { position: absolute; right: 0; bottom: 0; opacity: 0.1; }
+        .status-live { background: #10b981; color: white; }
+        .status-today { background: #FFC700; color: #0D5C53; }
+        .status-upcoming { background: #3b82f6; color: white; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const FLOOR_SEARCH_DATA = [
+            { name: 'Parking Area', floor: 'B2', type: 'Parking', icon: 'fa-car' },
+            { name: 'Basketball Court', floor: 'B2', type: 'Sports', icon: 'fa-basketball' },
+            { name: 'Badminton Court', floor: 'B2', type: 'Sports', icon: 'fa-shuttlecock' },
+            { name: 'Table Tennis (TT) Table', floor: 'B2', type: 'Sports', icon: 'fa-table-tennis' },
+            { name: 'Indoor Cricket Area', floor: 'B2', type: 'Sports', icon: 'fa-baseball-ball' },
+            { name: 'Entrepreneurs Point', floor: 'B2', type: 'Office', icon: 'fa-lightbulb' },
+            { name: 'Parking Area', floor: 'B1', type: 'Parking', icon: 'fa-car' },
+            { name: 'Lunch Cafeteria', floor: 'B1', type: 'Food', icon: 'fa-utensils' },
+            { name: 'Main Cafeteria', floor: 'Ground', type: 'Food', icon: 'fa-utensils' },
+            { name: 'Administration Office', floor: 'Ground', type: 'Office', icon: 'fa-building' },
+            { name: 'ING Skill Academy', floor: 'Ground', type: 'Office', icon: 'fa-graduation-cap' },
+            { name: 'My Second Teacher', floor: '1st', type: 'Office', icon: 'fa-code' },
+            { name: 'IMPACT Lab', floor: '1st', type: 'Office', icon: 'fa-rocket' },
+            { name: 'TR 01 · Byas', floor: '2nd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 02 · Dashrathchand', floor: '2nd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 03 · Khaptad', floor: '2nd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 04 · Surma Sarovar', floor: '2nd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 05 · Aalital', floor: '2nd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 06 · Shuklaphanta', floor: '2nd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 07 · Ramaroshan', floor: '2nd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 08 · Api Nampa', floor: '2nd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 09 · Badimalika', floor: '2nd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'Godawari (Library)', floor: '3rd', type: 'Library', icon: 'fa-book' },
+            { name: 'Varanasi', floor: '3rd', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'One More Bite', floor: '3rd', type: 'Food', icon: 'fa-utensils' },
+            { name: 'TR 10 · Dolpo', floor: '4th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 11 · Sinja Valley', floor: '4th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 12 · Kupinde Daha', floor: '4th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 13 · Panchakoshi', floor: '4th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 14 · Pachal', floor: '4th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'Computer Lab', floor: '4th', type: 'Lab', icon: 'fa-laptop' },
+            { name: 'Chemistry Lab', floor: '4th', type: 'Lab', icon: 'fa-flask' },
+            { name: 'TR 15 · Sandhikharka', floor: '5th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 16 · Kothiyaghat', floor: '5th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 17 · Ranimahal', floor: '5th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 18 · Swargadwari', floor: '5th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 19 · Chisapani', floor: '5th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'LT01 (Lecture Hall)', floor: '5th', type: 'Lecture', icon: 'fa-chalkboard' },
+            { name: 'TR 21 · Ligligkot', floor: '6th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 22 · Rainaskot', floor: '6th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 23 · Lho', floor: '6th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 24 · Lo Manthang', floor: '6th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 25 · Kapuche Lake', floor: '6th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'Physics Lab', floor: '6th', type: 'Lab', icon: 'fa-flask' },
+            { name: 'Biology Lab', floor: '6th', type: 'Lab', icon: 'fa-dna' },
+            { name: 'Finance Department', floor: '7th', type: 'Office', icon: 'fa-money-bill' },
+            { name: "CEO's Office", floor: '7th', type: 'Office', icon: 'fa-user-tie' },
+            { name: 'TR 26 · Salahesh Fulbari', floor: '8th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 27 · Nadhiman Taal', floor: '8th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 28 · Simraungadh', floor: '8th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 29 · Ghadiarwa', floor: '8th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 30 · Sakhada', floor: '8th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 31 · Mithila', floor: '8th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 32 · Sandakpur', floor: '9th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 33 · Mukkumlung', floor: '9th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 34 · Sagarmatha', floor: '9th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 35 · Namche', floor: '9th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 36 · Tinjure', floor: '9th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'TR 37 · Okhaldhunga', floor: '9th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
+            { name: 'Rooftop Futsal Court', floor: '10th', type: 'Sports', icon: 'fa-futbol' },
+            { name: 'Rooftop Cafeteria', floor: '10th', type: 'Food', icon: 'fa-utensils' },
+        ];
+
+        const App = () => {
+            const [user, setUser] = useState(null);
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [searchResults, setSearchResults] = useState([]);
+            const [showResults, setShowResults] = useState(false);
+            const [recentSearches, setRecentSearches] = useState(() => {
+                const saved = localStorage.getItem('recent_searches');
+                return saved ? JSON.parse(saved) : [];
+            });
+            const [activities, setActivities] = useState(() => {
+                const saved = localStorage.getItem('ing_activities_posts');
+                return saved ? JSON.parse(saved) : [];
+            });
+            const searchRef = useRef(null);
+
+            useEffect(() => {
+                const savedUser = localStorage.getItem('ing_user');
+                if (savedUser) {
+                    setUser(JSON.parse(savedUser));
+                    setIsLoggedIn(true);
+                }
+            }, []);
+
+            useEffect(() => {
+                localStorage.setItem('recent_searches', JSON.stringify(recentSearches));
+            }, [recentSearches]);
+
+            const handleSearch = (query) => {
+                if (!query.trim()) {
+                    setSearchResults([]);
+                    setShowResults(false);
+                    return;
+                }
+
+                const q = query.toLowerCase();
+                const results = FLOOR_SEARCH_DATA.filter(item =>
+                    item.name.toLowerCase().includes(q) ||
+                    item.floor.toLowerCase().includes(q) ||
+                    item.type.toLowerCase().includes(q)
+                );
+
+                setSearchResults(results);
+                setShowResults(true);
+
+                if (results.length > 0) {
+                    const newRecent = [query, ...recentSearches.filter(s => s !== query)].slice(0, 5);
+                    setRecentSearches(newRecent);
+                }
+            };
+
+            const handleResultClick = (result) => {
+                const floorMap = {
+                    'B2': 'B2', 'B1': 'B1', 'Ground': 'Ground', '1st': '1st',
+                    '2nd': '2nd', '3rd': '3rd', '4th': '4th', '5th': '5th',
+                    '6th': '6th', '7th': '7th', '8th': '8th', '9th': '9th', '10th': '10th'
+                };
+                const floor = floorMap[result.floor] || 'Ground';
+                window.location.href = `pages/floornavigation.html#${floor}`;
+            };
+
+            const clearRecentSearches = () => {
+                setRecentSearches([]);
+            };
+
+            const getStatusBadge = (status) => {
+                const classes = {
+                    'Live': 'status-live',
+                    'Today': 'status-today',
+                    'Upcoming': 'status-upcoming'
+                };
+                return classes[status] || 'status-upcoming';
+            };
+
+            const handleLogout = () => {
+                if (confirm('Are you sure you want to log out?')) {
+                    localStorage.removeItem('ing_user');
+                    localStorage.removeItem('ing_user_type');
+                    setUser(null);
+                    setIsLoggedIn(false);
+                }
+            };
+
+            return (
+                <div className="content-wrapper min-h-screen bg-light-mint">
+                    <header className="bg-forest-teal text-white px-6 py-4 shadow-xl relative overflow-hidden">
+                        <div className="absolute inset-0 bg-linear-to-b from-transparent to-[#0D5C53]/30"></div>
+                        <div className="max-w-6xl mx-auto relative z-10">
+                            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                                <div className="slide-in flex items-center gap-3">
+                                    <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'transparent' }}>
+                                        <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING College" className="h-15 w-auto" />
+                                    </div>
+                                    <div>
+                                        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Find a Friend</h1>
+                                        <p className="text-blue-200 text-lg font-light">ING College · Connect & Collaborate</p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-3">
+                                    {!isLoggedIn ? (
+                                        <>
+                                            <a href="pages/student-login.html" className="btn-gold px-6 py-2.5 rounded-full font-bold shadow-lg transition-all duration-300 flex items-center gap-2 text-forest-teal">
+                                                <i className="fas fa-user-graduate"></i> Student Login
+                                            </a>
+                                            <a href="pages/admin-login.html" className="bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2.5 rounded-full font-semibold hover:bg-white/30 transition flex items-center gap-2 text-white">
+                                                <i className="fas fa-user-shield"></i> Admin Login
+                                            </a>
+                                        </>
+                                    ) : (
+                                        <div className="glass-effect px-5 py-2.5 rounded-full flex items-center gap-4">
+                                            <span className="text-white font-medium">👋 {user?.name}</span>
+                                            <a href="pages/student-dashboard.html" className="text-white border border-white/40 px-4 py-1 rounded-full text-sm hover:bg-white/10 transition">Dashboard</a>
+                                            <button onClick={handleLogout} className="text-white/60 text-sm hover:text-white transition">Logout</button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="max-w-6xl mx-auto px-4 py-8">
+                        <div className="bg-light-mint rounded-2xl p-8 mb-8">
+                            <div className="max-w-3xl mx-auto text-center">
+                                <h2 className="text-3xl md:text-4xl font-bold text-forest-teal mb-2">Find Your Classroom</h2>
+                                <p className="text-gray-600 mb-6">Search for any classroom, lab, office, or facility on campus</p>
+                                
+                                <div className="relative">
+                                    <div className="relative">
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                            <i className="fas fa-search text-xl"></i>
+                                        </span>
+                                        <input
+                                            ref={searchRef}
+                                            type="text"
+                                            placeholder="Search for a classroom, room, floor, or campus facility…"
+                                            value={searchQuery}
+                                            onChange={(e) => {
+                                                setSearchQuery(e.target.value);
+                                                handleSearch(e.target.value);
+                                            }}
+                                            onFocus={() => setShowResults(true)}
+                                            className="search-input w-full pl-14 pr-4 py-4 rounded-2xl bg-white border-2 border-gray-200 focus:border-forest-teal text-lg transition-all"
+                                        />
+                                        {searchQuery && (
+                                            <button 
+                                                onClick={() => {
+                                                    setSearchQuery('');
+                                                    setSearchResults([]);
+                                                    setShowResults(false);
+                                                }}
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                            >
+                                                <i className="fas fa-times"></i>
+                                            </button>
+                                        )}
+                                    </div>
+                                    
+                                    {showResults && searchQuery && (
+                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 max-h-96 overflow-y-auto z-50">
+                                            {searchResults.length === 0 ? (
+                                                <div className="p-6 text-center text-gray-500">
+                                                    <i className="fas fa-search text-2xl block mb-2"></i>
+                                                    <p>No results found for "{searchQuery}"</p>
+                                                </div>
+                                            ) : (
+                                                <div className="p-2">
+                                                    {searchResults.map((result, index) => (
+                                                        <div
+                                                            key={index}
+                                                            className="search-result-card p-3 rounded-xl hover:bg-gray-50 border-b border-gray-100 last:border-0 flex items-center gap-3"
+                                                            onClick={() => handleResultClick(result)}
+                                                        >
+                                                            <div className="w-10 h-10 rounded-lg bg-forest-teal/10 flex items-center justify-center text-forest-teal">
+                                                                <i className={`fas ${result.icon || 'fa-building'}`}></i>
+                                                            </div>
+                                                            <div className="flex-1 text-left">
+                                                                <div className="font-semibold text-forest-teal">{result.name}</div>
+                                                                <div className="text-sm text-gray-500">
+                                                                    <span className="font-medium">{result.floor}</span> · {result.type}
+                                                                </div>
+                                                            </div>
+                                                            <i className="fas fa-chevron-right text-gray-400"></i>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {recentSearches.length > 0 && !searchQuery && (
+                                    <div className="mt-4 text-left">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-sm font-medium text-gray-600">Recent Searches</span>
+                                            <button onClick={clearRecentSearches} className="text-xs text-gray-400 hover:text-gray-600 transition">
+                                                Clear All
+                                            </button>
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {recentSearches.map((search, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => {
+                                                        setSearchQuery(search);
+                                                        handleSearch(search);
+                                                    }}
+                                                    className="px-3 py-1.5 bg-white rounded-full text-sm text-gray-600 border border-gray-200 hover:border-forest-teal hover:text-forest-teal transition"
+                                                >
+                                                    {search}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="mb-8">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-2xl font-bold text-forest-teal">
+                                    <i className="fas fa-calendar-check text-electric-gold mr-2"></i>
+                                    Happening on Campus Right Now
+                                </h2>
+                                <a href="pages/student-dashboard.html" className="text-forest-teal font-medium hover:underline text-sm">
+                                    View All Activities →
+                                </a>
+                            </div>
+                            
+                            {activities.length === 0 ? (
+                                <div className="bg-white rounded-2xl p-8 text-center border border-gray-100">
+                                    <p className="text-gray-500">No activities happening right now. Check back soon!</p>
+                                </div>
+                            ) : (
+                                <div className="carousel-container flex gap-4 pb-4 overflow-x-auto">
+                                    {activities.slice(0, 10).map((item) => {
+                                        const status = new Date(item.date + 'T' + (item.startTime || '00:00')) < new Date() ? 'Past' : 
+                                                      new Date(item.date).getDate() === new Date().getDate() ? 'Today' : 'Upcoming';
+                                        return (
+                                            <div key={item.id} className="carousel-item bg-white rounded-2xl p-5 shadow-sm border border-gray-100 card-hover w-72">
+                                                <div className="flex items-start justify-between mb-2">
+                                                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${status === 'Past' ? 'bg-gray-300 text-gray-600' : status === 'Today' ? 'status-today' : 'status-upcoming'}`}>
+                                                        {status}
+                                                    </span>
+                                                    <span className="text-xs text-gray-400">{item.date}</span>
+                                                </div>
+                                                <h3 className="font-bold text-gray-800 text-lg">{item.title}</h3>
+                                                <p className="text-sm text-gray-500 mt-1 line-clamp-2">{item.description || 'No description'}</p>
+                                                <div className="mt-3 space-y-1 text-sm text-gray-600">
+                                                    <div><i className="fas fa-clock mr-2 text-electric-gold"></i>{item.startTime} - {item.endTime}</div>
+                                                    <div><i className="fas fa-location-dot mr-2 text-electric-gold"></i>{item.location}</div>
+                                                    <div><i className="fas fa-user mr-2 text-electric-gold"></i>{item.posterName || 'Student'}</div>
+                                                </div>
+                                                <button className="mt-3 w-full bg-forest-teal text-white py-2 rounded-full font-semibold transition-all duration-300 text-sm hover:bg-[#0a4a42]">
+                                                    View Activity
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <a href="pages/floornavigation.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
+                                <div className="text-2xl mb-1">🏛️</div>
+                                <span className="text-sm font-medium text-gray-700">Floor Navigation</span>
+                            </a>
+                            <a href="pages/student-login.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
+                                <div className="text-2xl mb-1">🎓</div>
+                                <span className="text-sm font-medium text-gray-700">Student Login</span>
+                            </a>
+                            <a href="pages/admin-login.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
+                                <div className="text-2xl mb-1">👔</div>
+                                <span className="text-sm font-medium text-gray-700">Admin Login</span>
+                            </a>
+                            <a href="pages/student-dashboard.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
+                                <div className="text-2xl mb-1">📊</div>
+                                <span className="text-sm font-medium text-gray-700">Dashboard</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <button 
+                        className="floating-btn"
+                        onClick={() => window.location.href = 'pages/student-dashboard.html'}
+                        title="Find a Friend"
+                    >
+                        <span className="flex items-center gap-1 text-2xl">👥</span>
+                    </button>
+
+                    <div className="footer__cta mt-8">
+                        <div className="art__animation">
+                            <img src="https://ing.edu.np/images/art-animation.png" alt="" className="art__animation-img" />
+                        </div>
+                        <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
+                            <h2 className="text-3xl font-bold text-white mb-4">ING College of Innovation & Leadership</h2>
+                            <p className="text-blue-200 mb-6">New Baneshwor, Kathmandu | +977 9715000120 | info@ing.edu.np</p>
+                            <div className="flex flex-wrap justify-center gap-4">
+                                <a href="pages/student-login.html" className="btn-gold px-6 py-2 rounded-full font-bold transition-all duration-300 text-forest-teal">Student Login</a>
+                                <a href="pages/admin-login.html" className="bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2 rounded-full font-semibold hover:bg-white/30 transition text-white">Admin Login</a>
+                            </div>
+                            <div className="mt-6 text-sm text-blue-300">
+                                © 2026 ING College of Innovation and Leadership. All Rights Reserved.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
