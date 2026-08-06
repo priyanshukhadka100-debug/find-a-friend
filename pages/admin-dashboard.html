@@ -231,6 +231,11 @@ useEffect(() => {
                     return;
                 }
 
+                if (!firebase.auth().currentUser) {
+                    setFormError('You are not signed in to Firebase Auth. Please log out and log back in, then try again.');
+                    return;
+                }
+
                 const activityId = 'p_' + Date.now();
 const activity = {
     id: activityId,
@@ -243,43 +248,48 @@ const activity = {
     createdAt: Date.now()
 };
 
-firebase.database().ref('activities/' + activityId).set(activity);
-                setNewActivity({
-                    category: 'sport',
-                    title: '',
-                    location: '',
-                    date: '',
-                    startHour: '07',
-                    startMinute: '00',
-                    startAmPm: 'AM',
-                    endHour: '08',
-                    endMinute: '00',
-                    endAmPm: 'AM',
-                    spots: 4,
-                    description: ''
-                });
-                setFormSuccess('Activity created successfully!');
-                setTimeout(() => setFormSuccess(''), 3000);
-                setShowCreateModal(false);
+firebase.database().ref('activities/' + activityId).set(activity).then(() => {
+    setNewActivity({
+        category: 'sport',
+        title: '',
+        location: '',
+        date: '',
+        startHour: '07',
+        startMinute: '00',
+        startAmPm: 'AM',
+        endHour: '08',
+        endMinute: '00',
+        endAmPm: 'AM',
+        spots: 4,
+        description: ''
+    });
+    setFormSuccess('Activity created successfully!');
+    setTimeout(() => setFormSuccess(''), 3000);
+    setShowCreateModal(false);
 
-                firebase.database().ref('users').once('value').then(snapshot => {
-                    const data = snapshot.val() || {};
-                    Object.entries(data).forEach(([uid, u]) => {
-                        if (u.role === 'student') {
-                            const notifId = 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-                            const notif = {
-                                id: notifId,
-                                userId: uid,
-                                postId: activity.id,
-                                type: 'new_activity',
-                                message: `📢 New Activity: "${activity.title}". Tap here to view the details.`,
-                                read: false,
-                                createdAt: Date.now()
-                            };
-                            firebase.database().ref('notifications/' + notifId).set(notif);
-                        }
-                    });
-                });
+    firebase.database().ref('users').once('value').then(snapshot => {
+        const data = snapshot.val() || {};
+        Object.entries(data).forEach(([uid, u]) => {
+            if (u.role === 'student') {
+                const notifId = 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+                const notif = {
+                    id: notifId,
+                    userId: uid,
+                    postId: activity.id,
+                    type: 'new_activity',
+                    message: `📢 New Activity: "${activity.title}". Tap here to view the details.`,
+                    read: false,
+                    createdAt: Date.now()
+                };
+                firebase.database().ref('notifications/' + notifId).set(notif);
+            }
+        });
+    });
+}).catch(err => {
+    console.error('Failed to create activity:', err);
+    setFormError('Failed to create activity: ' + err.message + ' (code: ' + (err.code || 'unknown') + ')');
+    // modal stays open, form is not reset, so you can see the error and retry
+});
             };
 
             const deleteActivity = (activityId) => {

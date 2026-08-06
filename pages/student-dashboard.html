@@ -237,6 +237,7 @@ useEffect(() => {
             const [unreadDMs, setUnreadDMs] = useState(0);
             const [showSuccessToast, setShowSuccessToast] = useState(false);
             const [joinSuccess, setJoinSuccess] = useState('');
+            const [postError, setPostError] = useState('');
             const [forceUpdate, setForceUpdate] = useState(0);
 
             // Save activities back to localStorage
@@ -276,11 +277,17 @@ useEffect(() => {
             };
 
             const addPost = () => {
+                setPostError('');
                 const startTime = `${newPost.startHour}:${newPost.startMinute} ${newPost.startAmPm}`;
                 const endTime = `${newPost.endHour}:${newPost.endMinute} ${newPost.endAmPm}`;
                 
                 if (!newPost.title || !newPost.location || !newPost.date) {
                     alert('Please fill all required fields');
+                    return;
+                }
+
+                if (!firebase.auth().currentUser) {
+                    setPostError('You are not signed in to Firebase Auth. Please log out and log back in, then try again.');
                     return;
                 }
 
@@ -304,40 +311,45 @@ const writeActivity = (attempt) => {
         throw err;
     });
 };
-writeActivity(1);
-setShowPostModal(false);
-                setNewPost({
-                    category: 'sport',
-                    title: '',
-                    location: '',
-                    date: '',
-                    startHour: '07',
-                    startMinute: '00',
-                    startAmPm: 'AM',
-                    endHour: '08',
-                    endMinute: '00',
-                    endAmPm: 'AM',
-                    spots: 4,
-                    description: ''
-                });
-                
-            firebase.database().ref('users').once('value').then(snapshot => {
-    const data = snapshot.val() || {};
-    Object.entries(data).forEach(([uid, u]) => {
-        if (uid !== user.id) {
-            const notifId = 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-            const notif = {
-                id: notifId,
-                userId: uid,
-                postId: postId,
-                type: 'new_activity',
-                message: `New Activity: "${post.title}". Tap here to view the details.`,
-                read: false,
-                createdAt: Date.now()
-            };
-            firebase.database().ref('notifications/' + notifId).set(notif);
-        }
+writeActivity(1).then(() => {
+    setShowPostModal(false);
+    setNewPost({
+        category: 'sport',
+        title: '',
+        location: '',
+        date: '',
+        startHour: '07',
+        startMinute: '00',
+        startAmPm: 'AM',
+        endHour: '08',
+        endMinute: '00',
+        endAmPm: 'AM',
+        spots: 4,
+        description: ''
     });
+
+    firebase.database().ref('users').once('value').then(snapshot => {
+        const data = snapshot.val() || {};
+        Object.entries(data).forEach(([uid, u]) => {
+            if (uid !== user.id) {
+                const notifId = 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+                const notif = {
+                    id: notifId,
+                    userId: uid,
+                    postId: postId,
+                    type: 'new_activity',
+                    message: `New Activity: "${post.title}". Tap here to view the details.`,
+                    read: false,
+                    createdAt: Date.now()
+                };
+                firebase.database().ref('notifications/' + notifId).set(notif);
+            }
+        });
+    });
+}).catch(err => {
+    console.error('Failed to post activity:', err);
+    setPostError('Failed to post activity: ' + err.message + ' (code: ' + (err.code || 'unknown') + ')');
+    // modal stays open, form is not reset, so the user can see the error and retry
 });
             };
             const sendMessage = (otherId, text) => {
@@ -974,6 +986,9 @@ const markAllNotificationsRead = () => {
                                         <input type="number" min="2" max="20" value={newPost.spots} onChange={e => setNewPost({...newPost, spots: parseInt(e.target.value) || 4})}
                                             className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition" />
                                     </div>
+                                    {postError && (
+                                        <div className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-2">{postError}</div>
+                                    )}
                                     <button onClick={addPost} className="btn-forest w-full py-2.5 rounded-xl font-bold transition-all duration-300">
                                         Create Activity
                                     </button>
