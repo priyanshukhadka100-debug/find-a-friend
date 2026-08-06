@@ -305,6 +305,58 @@ firebase.database().ref('activities/' + activityId).set(activity);
     }
 };
 
+            const handleEditStudent = (student) => {
+                setEditingStudent({ ...student });
+                setShowEditModal(true);
+            };
+
+            const saveEditStudent = () => {
+                if (!editingStudent.name || !editingStudent.email) {
+                    setFormError('Name and email are required.');
+                    return;
+                }
+                firebase.database().ref('users/' + editingStudent.id).update({
+                    name: editingStudent.name,
+                    email: editingStudent.email,
+                    phone: editingStudent.phone || '',
+                    course: editingStudent.course || '',
+                    semester: editingStudent.semester || ''
+                }).then(() => {
+                    setStudents(students.map(s => s.id === editingStudent.id ? { ...editingStudent } : s));
+                    setShowEditModal(false);
+                    setEditingStudent(null);
+                    setFormSuccess('Student updated successfully!');
+                    setTimeout(() => setFormSuccess(''), 3000);
+                }).catch(err => {
+                    console.error(err);
+                    setFormError(err.message);
+                });
+            };
+
+            const handleDeleteStudent = (studentId) => {
+                firebase.database().ref('users/' + studentId).remove().then(() => {
+                    setStudents(students.filter(s => s.id !== studentId));
+                    setShowDeleteConfirm(null);
+                    setFormSuccess('Student profile removed. Note: their login account still exists in Firebase Authentication and must be deleted separately from Firebase Console if needed.');
+                    setTimeout(() => setFormSuccess(''), 5000);
+                }).catch(err => {
+                    console.error(err);
+                    alert('Failed to delete: ' + err.message);
+                });
+            };
+
+            const resetStudentPassword = (studentId) => {
+                const student = students.find(s => s.id === studentId);
+                if (!student) return;
+                firebase.auth().sendPasswordResetEmail(student.email).then(() => {
+                    setFormSuccess(`Password reset email sent to ${student.email}.`);
+                    setTimeout(() => setFormSuccess(''), 4000);
+                }).catch(err => {
+                    console.error(err);
+                    alert('Failed to send reset email: ' + err.message);
+                });
+            };
+
             const resetAllData = () => {
                 if (confirm('⚠️ WARNING: This will delete ALL data. Are you sure?')) {
                     if (confirm('This action CANNOT be undone. Delete everything?')) {
