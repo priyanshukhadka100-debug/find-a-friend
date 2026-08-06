@@ -295,7 +295,16 @@ const post = {
     joined: [{ id: user.id, name: user.name }],
     createdAt: Date.now()
 };
-firebase.database().ref('activities/' + postId).set(post);
+const writeActivity = (attempt) => {
+    return firebase.database().ref('activities/' + postId).set(post).catch(err => {
+        if (attempt < 3) {
+            return new Promise(resolve => setTimeout(resolve, 800))
+                .then(() => writeActivity(attempt + 1));
+        }
+        throw err;
+    });
+};
+writeActivity(1);
 setShowPostModal(false);
                 setNewPost({
                     category: 'sport',
