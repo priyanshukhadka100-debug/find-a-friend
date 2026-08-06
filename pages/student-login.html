@@ -114,7 +114,7 @@
         const userData = snapshot.val();
 
         if (userData && userData.role === 'student') {
-          localStorage.setItem('ing_user', JSON.stringify(userData));
+          localStorage.setItem('ing_user', JSON.stringify({ ...userData, id: cred.user.uid }));
           localStorage.setItem('ing_user_type', 'student');
           window.location.href = 'student-dashboard.html';
         } else {

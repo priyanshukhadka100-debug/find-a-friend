@@ -248,7 +248,13 @@ const activity = {
     createdAt: Date.now()
 };
 
-firebase.database().ref('activities/' + activityId).set(activity).then(() => {
+let writePromise;
+try {
+    writePromise = firebase.database().ref('activities/' + activityId).set(activity);
+} catch (syncErr) {
+    writePromise = Promise.reject(syncErr);
+}
+writePromise.then(() => {
     setNewActivity({
         category: 'sport',
         title: '',

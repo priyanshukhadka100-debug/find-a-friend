@@ -67,67 +67,45 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCyIzNTCeID1uWfIw_17QC5ciUBqtHqNkE",
-    authDomain: "findafriend-535b3.firebaseapp.com",
-    databaseURL: "https://findafriend-535b3-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "findafriend-535b3",
-    storageBucket: "findafriend-535b3.firebasestorage.app",
-    messagingSenderId: "789997283271",
-    appId: "1:789997283271:web:5cb2c1c3c50d9f248d9be2",
-    measurementId: "G-TEGX90V5V8"
-  };
-  firebase.initializeApp(firebaseConfig);
-
-  function togglePassword() {
-    const pwd = document.getElementById('password');
-    const icon = document.getElementById('eyeIcon');
-    if (pwd.type === 'password') {
-      pwd.type = 'text';
-      icon.className = 'fas fa-eye-slash';
-    } else {
-      pwd.type = 'password';
-      icon.className = 'fas fa-eye';
-    }
-  }
-
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const errorEl = document.getElementById('loginError');
-
-    errorEl.classList.add('hidden'); // hide old error while we try
-
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((cred) => {
-        return firebase.database().ref('users/' + cred.user.uid).once('value');
-      })
-      .then((snapshot) => {
-        const userData = snapshot.val();
-
-        if (userData && userData.role === 'admin') {
-          localStorage.setItem('ing_user', JSON.stringify(userData));
-          localStorage.setItem('ing_user_type', 'admin');
-          window.location.href = 'admin-dashboard.html';
-        } else {
-          errorEl.textContent = 'Access denied: this account is not an admin.';
-          errorEl.classList.remove('hidden');
-          firebase.auth().signOut(); // don't leave them signed in if not admin
+    <script>
+        if (!localStorage.getItem('ing_admins')) {
+            const defaultAdmins = [
+                { id: 'admin_1', name: 'Super Admin', email: 'admin@ing.edu.np', password: 'admin1234', type: 'admin', role: 'Super Admin' }
+            ];
+            localStorage.setItem('ing_admins', JSON.stringify(defaultAdmins));
         }
-      })
-      .catch((err) => {
-        console.error(err);
-        errorEl.textContent = 'Invalid email or password. Please try again.';
-        errorEl.classList.remove('hidden');
-      });
-  });
-</script>
+
+        function togglePassword() {
+            const pwd = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                pwd.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('loginError');
+
+            const admins = JSON.parse(localStorage.getItem('ing_admins') || '[]');
+            const admin = admins.find(u => u.email === email && u.password === password && u.type === 'admin');
+
+            if (!admin) {
+                errorEl.textContent = 'Invalid email or password. Please try again.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            localStorage.setItem('ing_user', JSON.stringify(admin));
+            localStorage.setItem('ing_user_type', 'admin');
+            window.location.href = 'admin-dashboard.html';
+        });
+    </script>
 </body>
 </html>
