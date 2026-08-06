@@ -5,14 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
     <title>Find a Friend · ING College</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDKs first -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
-<!-- YOUR script that uses firebase, loaded AFTER -->
-<script src="app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyIzNTCeID1uWfIw_17QC5ciUBqtHqNkE",
+            authDomain: "findafriend-535b3.firebaseapp.com",
+            databaseURL: "https://findafriend-535b3-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "findafriend-535b3",
+            storageBucket: "findafriend-535b3.firebasestorage.app",
+            messagingSenderId: "789997283271",
+            appId: "1:789997283271:web:5cb2c1c3c50d9f248d9be2",
+            measurementId: "G-TEGX90V5V8"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -145,6 +155,24 @@
             { name: 'Rooftop Cafeteria', floor: '10th', type: 'Food', icon: 'fa-utensils' },
         ];
 
+        // Helper for date parsing
+        const parseEventDateTime = (dateStr, timeStr) => {
+            if (!dateStr) return new Date(0);
+            if (!timeStr) return new Date(dateStr + 'T00:00:00');
+            const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/);
+            if (match) {
+                let hour = parseInt(match[1]);
+                const minute = match[2];
+                const ampm = match[3];
+                if (ampm === 'PM' && hour !== 12) hour += 12;
+                if (ampm === 'AM' && hour === 12) hour = 0;
+                const date = new Date(dateStr);
+                date.setHours(hour, parseInt(minute), 0, 0);
+                return date;
+            }
+            return new Date(dateStr + 'T' + timeStr);
+        };
+
         const App = () => {
             const [user, setUser] = useState(null);
             const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -155,10 +183,7 @@
                 const saved = localStorage.getItem('recent_searches');
                 return saved ? JSON.parse(saved) : [];
             });
-            const [activities, setActivities] = useState(() => {
-                const saved = localStorage.getItem('ing_activities_posts');
-                return saved ? JSON.parse(saved) : [];
-            });
+            const [activities, setActivities] = useState([]);
             const searchRef = useRef(null);
 
             useEffect(() => {
@@ -172,6 +197,20 @@
             useEffect(() => {
                 localStorage.setItem('recent_searches', JSON.stringify(recentSearches));
             }, [recentSearches]);
+
+            // Firebase listener for activities
+            useEffect(() => {
+                const activitiesRef = firebase.database().ref('activities');
+                activitiesRef.on('value', (snapshot) => {
+                    const data = snapshot.val() || {};
+                    const items = Object.values(data).map(item => ({
+                        ...item,
+                        joined: Array.isArray(item.joined) ? item.joined : []
+                    })).sort((a, b) => b.createdAt - a.createdAt);
+                    setActivities(items);
+                });
+                return () => activitiesRef.off();
+            }, []);
 
             const handleSearch = (query) => {
                 if (!query.trim()) {
@@ -380,7 +419,9 @@
                             ) : (
                                 <div className="carousel-container flex gap-4 pb-4 overflow-x-auto">
                                     {activities.slice(0, 10).map((item) => {
-                                        const status = new Date(item.date + 'T' + (item.startTime || '00:00')) < new Date() ? 'Past' : 
+                                        const eventDate = parseEventDateTime(item.date, item.startTime);
+                                        const now = new Date();
+                                        const status = eventDate < now ? 'Past' :
                                                       new Date(item.date).getDate() === new Date().getDate() ? 'Today' : 'Upcoming';
                                         return (
                                             <div key={item.id} className="carousel-item bg-white rounded-2xl p-5 shadow-sm border border-gray-100 card-hover w-72">
@@ -397,9 +438,9 @@
                                                     <div><i className="fas fa-location-dot mr-2 text-electric-gold"></i>{item.location}</div>
                                                     <div><i className="fas fa-user mr-2 text-electric-gold"></i>{item.posterName || 'Student'}</div>
                                                 </div>
-                                                <button className="mt-3 w-full bg-forest-teal text-white py-2 rounded-full font-semibold transition-all duration-300 text-sm hover:bg-[#0a4a42]">
+                                                <a href="student-dashboard.html" className="mt-3 block w-full bg-forest-teal text-white py-2 rounded-full font-semibold transition-all duration-300 text-sm text-center hover:bg-[#0a4a42]">
                                                     View Activity
-                                                </button>
+                                                </a>
                                             </div>
                                         );
                                     })}
