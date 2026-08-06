@@ -303,19 +303,13 @@ const post = {
     createdAt: Date.now()
 };
 const writeActivity = (attempt) => {
-    try {
-        return firebase.database().ref('activities/' + postId).set(post).catch(err => {
-            if (attempt < 3) {
-                return new Promise(resolve => setTimeout(resolve, 800))
-                    .then(() => writeActivity(attempt + 1));
-            }
-            throw err;
-        });
-    } catch (syncErr) {
-        // Firebase throws synchronously (not a rejected promise) for things
-        // like undefined values in the payload, so this must be caught here too.
-        return Promise.reject(syncErr);
-    }
+    return firebase.database().ref('activities/' + postId).set(post).catch(err => {
+        if (attempt < 3) {
+            return new Promise(resolve => setTimeout(resolve, 800))
+                .then(() => writeActivity(attempt + 1));
+        }
+        throw err;
+    });
 };
 writeActivity(1).then(() => {
     setShowPostModal(false);
