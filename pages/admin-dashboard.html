@@ -254,39 +254,41 @@ firebase.database().ref('activities/' + activityId).set(activity);
         firebase.database().ref('activities/' + activityId).remove();
     }
 };
-            const handleCreateStudent = async () => {
+const handleCreateStudent = async () => {
     setFormError('');
     setFormSuccess('');
+
+    if (!firebase.auth().currentUser) {
+        setFormError('Still finishing login — please wait a moment and try again.');
+        return;
+    }
 
     if (!newStudent.name || !newStudent.email || !newStudent.password) {
         setFormError('Please fill in all required fields.');
         return;
     }
-    if (newStudent.password.length < 8) {
-        setFormError('Password must be at least 8 characters long.');
-        return;
-    }
+    
 
-    try {
-        // Secondary app instance so creating this account doesn't log the admin out
-        const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
-        const secondaryAuth = secondaryApp.auth();
+            try {
+                // Secondary app instance so creating this account doesn't log the admin out
+                const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary_" + Date.now());
+                const secondaryAuth = secondaryApp.auth();
 
-        const userCred = await secondaryAuth.createUserWithEmailAndPassword(newStudent.email, newStudent.password);
-        const newUid = userCred.user.uid;
+                const userCred = await secondaryAuth.createUserWithEmailAndPassword(newStudent.email, newStudent.password);
+                const newUid = userCred.user.uid;
 
-        const student = {
-            id: newUid,
-            name: newStudent.name,
-            email: newStudent.email,
-            role: 'student',
-            studentId: newStudent.studentId || 'STU' + String(Date.now()).slice(-6),
-            phone: newStudent.phone || '',
-            dob: newStudent.dob || '',
-            course: newStudent.course || '',
-            semester: newStudent.semester || '',
-            createdAt: new Date().toISOString().split('T')[0]
-        };
+                const student = {
+                    id: newUid,
+                    name: newStudent.name,
+                    email: newStudent.email,
+                    role: 'student',
+                    studentId: newStudent.studentId || 'STU' + String(Date.now()).slice(-6),
+                    phone: newStudent.phone || '',
+                    dob: newStudent.dob || '',
+                    course: newStudent.course || '',
+                    semester: newStudent.semester || '',
+                    createdAt: new Date().toISOString().split('T')[0]
+                };
 
         await firebase.database().ref('users/' + newUid).set(student);
 
