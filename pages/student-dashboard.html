@@ -143,9 +143,29 @@
             return new Date(`${dateStr}T${time24}`);
         };
 
+        // old code
+        // // Check authentication
+        // const user = JSON.parse(localStorage.getItem('ing_user') || 'null');
+        // const userType = localStorage.getItem('ing_user_type');
+
+        // new code
         // Check authentication
         const user = JSON.parse(localStorage.getItem('ing_user') || 'null');
         const userType = localStorage.getItem('ing_user_type');
+
+        if (!user || userType !== 'student') {
+            window.location.href = 'student-login.html';
+        } else {
+            // Keep localStorage in sync with Firebase Auth
+            firebase.auth().onAuthStateChanged((authUser) => {
+                if (!authUser) {
+                    // Firebase lost the session (expired or logged out elsewhere)
+                    localStorage.removeItem('ing_user');
+                    localStorage.removeItem('ing_user_type');
+                    window.location.href = 'student-login.html';
+                }
+            });
+        }
 
         if (!user || userType !== 'student') {
             window.location.href = 'student-login.html';

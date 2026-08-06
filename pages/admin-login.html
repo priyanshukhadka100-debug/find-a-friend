@@ -103,6 +103,56 @@
             }
         }
 
+        // OLD Code
+
+        // document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+        //     const email = document.getElementById('email').value;
+        //     const password = document.getElementById('password').value;
+        //     const errorEl = document.getElementById('loginError');
+
+        //     errorEl.classList.add('hidden');
+
+        //     // 1. Check admin in localStorage
+        //     const admins = JSON.parse(localStorage.getItem('ing_admins') || '[]');
+        //     const admin = admins.find(u => u.email === email && u.password === password && u.type === 'admin');
+
+        //     if (!admin) {
+        //         errorEl.textContent = 'Invalid admin credentials. Please try again.';
+        //         errorEl.classList.remove('hidden');
+        //         return;
+        //     }
+
+        //     // 2. Sign in with Firebase Auth (so firebase.auth().currentUser works in dashboard)
+        //     firebase.auth().signInWithEmailAndPassword(email, password)
+        //         .then(() => {
+        //             localStorage.setItem('ing_user', JSON.stringify(admin));
+        //             localStorage.setItem('ing_user_type', 'admin');
+        //             window.location.href = 'admin-dashboard.html';
+        //         })
+        //         .catch((err) => {
+        //             console.error('Firebase Auth error:', err);
+        //             // If user doesn't exist, create them
+        //             if (err.code === 'auth/user-not-found') {
+        //                 firebase.auth().createUserWithEmailAndPassword(email, password)
+        //                     .then(() => {
+        //                         localStorage.setItem('ing_user', JSON.stringify(admin));
+        //                         localStorage.setItem('ing_user_type', 'admin');
+        //                         window.location.href = 'admin-dashboard.html';
+        //                     })
+        //                     .catch((createErr) => {
+        //                         errorEl.textContent = 'Failed to create admin auth account: ' + createErr.message;
+        //                         errorEl.classList.remove('hidden');
+        //                     });
+        //             } else {
+        //                 errorEl.textContent = 'Auth error: ' + err.message;
+        //                 errorEl.classList.remove('hidden');
+        //             }
+        //         });
+        // });
+
+
+        // New Code
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const email = document.getElementById('email').value;
@@ -111,41 +161,30 @@
 
             errorEl.classList.add('hidden');
 
-            // 1. Check admin in localStorage
-            const admins = JSON.parse(localStorage.getItem('ing_admins') || '[]');
-            const admin = admins.find(u => u.email === email && u.password === password && u.type === 'admin');
-
-            if (!admin) {
-                errorEl.textContent = 'Invalid admin credentials. Please try again.';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            // 2. Sign in with Firebase Auth (so firebase.auth().currentUser works in dashboard)
+            // Sign in with Firebase Auth directly
             firebase.auth().signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    localStorage.setItem('ing_user', JSON.stringify(admin));
-                    localStorage.setItem('ing_user_type', 'admin');
-                    window.location.href = 'admin-dashboard.html';
+                .then((cred) => {
+                    // Fetch user details from database to verify role
+                    return firebase.database().ref('users/' + cred.user.uid).once('value');
+                })
+                .then((snapshot) => {
+                    const userData = snapshot.val();
+
+                    // Check if user exists and is actually an admin
+                    if (userData && userData.role === 'admin') {
+                        localStorage.setItem('ing_user', JSON.stringify(userData));
+                        localStorage.setItem('ing_user_type', 'admin');
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        errorEl.textContent = 'Access denied: this account is not an admin account.';
+                        errorEl.classList.remove('hidden');
+                        firebase.auth().signOut();
+                    }
                 })
                 .catch((err) => {
                     console.error('Firebase Auth error:', err);
-                    // If user doesn't exist, create them
-                    if (err.code === 'auth/user-not-found') {
-                        firebase.auth().createUserWithEmailAndPassword(email, password)
-                            .then(() => {
-                                localStorage.setItem('ing_user', JSON.stringify(admin));
-                                localStorage.setItem('ing_user_type', 'admin');
-                                window.location.href = 'admin-dashboard.html';
-                            })
-                            .catch((createErr) => {
-                                errorEl.textContent = 'Failed to create admin auth account: ' + createErr.message;
-                                errorEl.classList.remove('hidden');
-                            });
-                    } else {
-                        errorEl.textContent = 'Auth error: ' + err.message;
-                        errorEl.classList.remove('hidden');
-                    }
+                    errorEl.textContent = 'Invalid email or password. Please try again.';
+                    errorEl.classList.remove('hidden');
                 });
         });
     </script>
