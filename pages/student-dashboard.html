@@ -218,6 +218,17 @@ useEffect(() => {
             const [chatPartner, setChatPartner] = useState(null);
             const [chatMessage, setChatMessage] = useState('');
           const [chatThreads, setChatThreads] = useState({});
+          // --- NEW CODE: State to store users and fetch them ---
+const [usersList, setUsersList] = useState({});
+
+useEffect(() => {
+    const usersRef = firebase.database().ref('users');
+    usersRef.on('value', snapshot => {
+        setUsersList(snapshot.val() || {});
+    });
+    return () => usersRef.off();
+}, []);
+// -----------------------------------------------------
 
 useEffect(() => {
     const chatsRef = firebase.database().ref('chats');
