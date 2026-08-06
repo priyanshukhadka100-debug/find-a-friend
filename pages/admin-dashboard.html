@@ -77,37 +77,6 @@
     </style>
 </head>
 <body>
-    <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md mx-auto mt-8">
-  <h2 class="text-xl font-bold mb-4">Add Student</h2>
-  
-  <form id="addStudentForm" class="space-y-4">
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Full Name</label>
-      <input type="text" id="studentName" required
-        class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl" />
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Email</label>
-      <input type="email" id="studentEmail" required
-        class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl" />
-    </div>
-
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Password</label>
-      <input type="text" id="studentPassword" required
-        class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl" 
-        placeholder="Min 6 characters" />
-    </div>
-
-    <button type="submit" class="w-full btn-gold px-4 py-3 rounded-xl font-semibold">
-      Add Student
-    </button>
-
-    <p id="addStudentError" class="text-red-600 text-sm hidden"></p>
-    <p id="addStudentSuccess" class="text-green-600 text-sm hidden"></p>
-  </form>
-</div>
     <div id="root"></div>
     <script type="text/babel">
         const { useState, useEffect } = React;
@@ -260,24 +229,24 @@ firebase.database().ref('activities/' + activityId).set(activity);
                 setTimeout(() => setFormSuccess(''), 3000);
                 setShowCreateModal(false);
 
-                const allUsers = JSON.parse(localStorage.getItem('ing_users') || '[]');
-                const studentsList = allUsers.filter(u => u.type === 'student');
-                const notifications = JSON.parse(localStorage.getItem('ing_notifications') || '[]');
-                
-                studentsList.forEach(student => {
-                    const notif = {
-                        id: 'n_' + Date.now() + '_' + Math.random(),
-                        userId: student.id,
-                        postId: activity.id,
-                        type: 'new_activity',
-                        message: `📢 New Activity: "${activity.title}". Tap here to view the details.`,
-                        read: false,
-                        createdAt: Date.now()
-                    };
-                    notifications.push(notif);
+                firebase.database().ref('users').once('value').then(snapshot => {
+                    const data = snapshot.val() || {};
+                    Object.entries(data).forEach(([uid, u]) => {
+                        if (u.role === 'student') {
+                            const notifId = 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+                            const notif = {
+                                id: notifId,
+                                userId: uid,
+                                postId: activity.id,
+                                type: 'new_activity',
+                                message: `📢 New Activity: "${activity.title}". Tap here to view the details.`,
+                                read: false,
+                                createdAt: Date.now()
+                            };
+                            firebase.database().ref('notifications/' + notifId).set(notif);
+                        }
+                    });
                 });
-                
-                localStorage.setItem('ing_notifications', JSON.stringify(notifications));
             };
 
             const deleteActivity = (activityId) => {
