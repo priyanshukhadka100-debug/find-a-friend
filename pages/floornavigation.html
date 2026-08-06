@@ -111,7 +111,6 @@
                 theme: 'Bagmati',
                 rooms: [
                     { id: '3-1', name: 'Godawari (Library)', type: 'Library', icon: 'fa-book' },
-                    { id: '3-2', name: 'Varanasi', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
                     { id: '3-3', name: 'One More Bite', type: 'Food', icon: 'fa-utensils' },
                 ]
             },
@@ -413,16 +412,18 @@
   </div>
 )}
 
-                   {selectedFloor === '2nd Floor' && (
+{/* 2nd Floor Image */}
+{selectedFloor === '2nd' && (
   <div className="my-6 fade-in">
     <img 
       src="https://github.com/priyanshukhadka100-debug/find-a-friend/blob/main/pages/Images/2nd.jpg?raw=true" 
-      alt="2nd Floor - Academic & Administrative" 
-      className="w-80 rounded-2xl shadow-lg max-h-64 alighn-justify-center mx-auto"
+      alt="2nd Floor - Sudurpashchim" 
+      className="w-full max-h-[80vh] object-contain rounded-2xl shadow-lg"
     />
-    <p className="text-sm text-gray-500 mt-2 text-center">🏸 2nd Floor – Academic, Administrative & more</p>
+    <p className="text-sm text-gray-500 mt-2 text-center">📚 2nd Floor – TR 01 to TR 09 · Sudurpashchim</p>
   </div>
 )}
+
                         <div className="fade-in">
                             {filteredRooms.length === 0 ? (
                                 <div className="bg-white rounded-2xl p-12 text-center border border-gray-100">
