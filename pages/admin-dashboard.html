@@ -105,13 +105,22 @@
             const [students, setStudents] = useState([]);
 
 useEffect(() => {
+    const loadStudents = (attempt) => {
+        firebase.database().ref('users').once('value').then(snapshot => {
+            const data = snapshot.val() || {};
+            const studentList = Object.values(data).filter(u => u.role === 'student');
+            setStudents(studentList);
+        }).catch(err => {
+            console.error('Failed to load students (attempt ' + attempt + '):', err);
+            if (attempt < 3) {
+                setTimeout(() => loadStudents(attempt + 1), 800);
+            }
+        });
+    };
+
     const unsubscribe = firebase.auth().onAuthStateChanged((authUser) => {
         if (authUser) {
-            firebase.database().ref('users').once('value').then(snapshot => {
-                const data = snapshot.val() || {};
-                const studentList = Object.values(data).filter(u => u.role === 'student');
-                setStudents(studentList);
-            }).catch(err => console.error('Failed to load students:', err));
+            loadStudents(1);
         }
     });
     return () => unsubscribe();
@@ -121,18 +130,29 @@ useEffect(() => {
 
 useEffect(() => {
     let activitiesRef = null;
+
+    const attachListener = (attempt) => {
+        activitiesRef = firebase.database().ref('activities');
+        activitiesRef.on('value', (snapshot) => {
+            const data = snapshot.val() || {};
+            const items = Object.values(data).map(item => ({
+                ...item,
+                joined: Array.isArray(item.joined) ? item.joined : []
+            }));
+            items.sort((a, b) => b.createdAt - a.createdAt);
+            setAllActivities(items);
+        }, (err) => {
+            console.error('Activities listener error (attempt ' + attempt + '):', err);
+            if (attempt < 3) {
+                if (activitiesRef) activitiesRef.off();
+                setTimeout(() => attachListener(attempt + 1), 800);
+            }
+        });
+    };
+
     const unsubscribeAuth = firebase.auth().onAuthStateChanged((authUser) => {
         if (authUser && !activitiesRef) {
-            activitiesRef = firebase.database().ref('activities');
-            activitiesRef.on('value', (snapshot) => {
-                const data = snapshot.val() || {};
-                const items = Object.values(data).map(item => ({
-                    ...item,
-                    joined: Array.isArray(item.joined) ? item.joined : []
-                }));
-                items.sort((a, b) => b.createdAt - a.createdAt);
-                setAllActivities(items);
-            });
+            attachListener(1);
         }
     });
 
@@ -306,7 +326,16 @@ firebase.database().ref('activities/' + activityId).set(activity);
             createdAt: new Date().toISOString().split('T')[0]
         };
 
-        await firebase.database().ref('users/' + newUid).set(student);
+        const writeStudent = (attempt) => {
+            return firebase.database().ref('users/' + newUid).set(student).catch(err => {
+                if (attempt < 3) {
+                    return new Promise(resolve => setTimeout(resolve, 800))
+                        .then(() => writeStudent(attempt + 1));
+                }
+                throw err;
+            });
+        };
+        await writeStudent(1);
 
         await secondaryAuth.signOut();
         await secondaryApp.delete();
