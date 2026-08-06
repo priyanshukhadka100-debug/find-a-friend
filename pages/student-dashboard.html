@@ -280,29 +280,33 @@ useEffect(() => {
 
             useEffect(() => {
                 let count = 0;
+                const myId = user.id || user.uid;
+                if (!myId) return;
+                
                 Object.keys(chatThreads).forEach(key => {
-                    if (key.includes(user.id)) {
+                    if (key.includes(myId)) {
                         const thread = chatThreads[key];
                         const lastMsg = thread[thread.length - 1];
-                        if (lastMsg && lastMsg.from !== user.id) {
+                        if (lastMsg && lastMsg.from !== myId) {
                             count++;
                         }
                     }
                 });
                 setUnreadDMs(count);
-            }, [chatThreads]);
+            }, [chatThreads, user]);
 
             // Filter activities based on category
             const filteredActivities = activities.filter(item => {
                 if (filter === 'all') return true;
                 return item.category === filter;
             });
-
-            const getAvatarColor = (name) => {
+const getAvatarColor = (name) => {
+                // Safeguard against missing names to prevent crashes
+                const safeName = name || 'Unknown';
                 const colors = ['avatar-blue','avatar-gold','avatar-green','avatar-purple','avatar-pink','avatar-orange','avatar-red','avatar-teal','avatar-indigo','avatar-cyan','avatar-rose','avatar-emerald','avatar-violet','avatar-amber','avatar-lime','avatar-slate'];
                 let hash = 0;
-                for (let i = 0; i < name.length; i++) {
-                    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+                for (let i = 0; i < safeName.length; i++) {
+                    hash = safeName.charCodeAt(i) + ((hash << 5) - hash);
                 }
                 return colors[Math.abs(hash) % colors.length];
             };
@@ -328,9 +332,9 @@ const post = {
     ...newPost,
     startTime: startTime,
     endTime: endTime,
-    posterId: user.id,
+    posterId: user.id || user.uid,
     posterName: user.name,
-    joined: [{ id: user.id, name: user.name }],
+    joined: [{ id: user.id || user.uid, name: user.name }],
     createdAt: Date.now()
 };
 const writeActivity = (attempt) => {
@@ -384,47 +388,48 @@ writeActivity(1).then(() => {
 });
             };
             const sendMessage = (otherId, text) => {
-    if (!text || !text.trim()) return;
-    const key = [user.id, otherId].sort().join('|');
-    const newMsg = { from: user.id, text: text.trim(), at: Date.now() };
-    const msgId = 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    firebase.database().ref('chats/' + key + '/' + msgId).set(newMsg);
-    setChatMessage('');
-};
-// --- NEW CODE: Missing Chat Functions ---
-const openChat = (otherId, otherName) => {
-    setChatPartner({ id: otherId, name: otherName });
-    setSelectedChatId(otherId);
-    setShowChatModal(true);
-};
+                if (!text || !text.trim()) return;
+                const myId = user.id || user.uid; // Fallback for ID
+                const key = [myId, otherId].sort().join('|');
+                const newMsg = { from: myId, text: text.trim(), at: Date.now() };
+                const msgId = 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+                firebase.database().ref('chats/' + key + '/' + msgId).set(newMsg);
+                setChatMessage('');
+            };
 
-const getUserChats = () => {
-    const list = [];
-    Object.keys(chatThreads).forEach(key => {
-        // Only get chats that include the current logged-in user
-        if (key.includes(user.id)) {
-            const ids = key.split('|');
-            const otherId = ids[0] === user.id ? ids[1] : ids[0];
-            const thread = chatThreads[key];
-            const lastMsg = thread[thread.length - 1];
-            
-            // Look up the other user's name, fallback if deleted
-            const otherUser = usersList[otherId];
-            const otherName = otherUser ? otherUser.name : 'Unknown User';
-            
-            list.push({
-                key,
-                otherId,
-                otherName,
-                lastMsg,
-                isUnread: lastMsg && lastMsg.from !== user.id,
-                updatedAt: lastMsg ? lastMsg.at : 0
-            });
-        }
-    });
-    // Sort so most recent chats are at the top
-    return list.sort((a, b) => b.updatedAt - a.updatedAt);
-};
+            const openChat = (otherId, otherName) => {
+                // Ensure name is always a string to prevent .charAt(0) crashes
+                setChatPartner({ id: otherId, name: otherName || 'Unknown User' });
+                setSelectedChatId(otherId);
+                setShowChatModal(true);
+            };
+
+            const getUserChats = () => {
+                const list = [];
+                const myId = user.id || user.uid || '';
+                Object.keys(chatThreads).forEach(key => {
+                    if (key.includes(myId) && myId !== '') {
+                        const ids = key.split('|');
+                        const otherId = ids[0] === myId ? ids[1] : ids[0];
+                        const thread = chatThreads[key];
+                        const lastMsg = thread[thread.length - 1];
+                        
+                        const otherUser = usersList[otherId];
+                        // Force a fallback string if the user was deleted or has no name
+                        const otherName = (otherUser && otherUser.name) ? otherUser.name : 'Unknown User';
+                        
+                        list.push({
+                            key,
+                            otherId,
+                            otherName,
+                            lastMsg,
+                            isUnread: lastMsg && lastMsg.from !== myId,
+                            updatedAt: lastMsg ? lastMsg.at : 0
+                        });
+                    }
+                });
+                return list.sort((a, b) => b.updatedAt - a.updatedAt);
+            };
 // ----------------------------------------
 
             // Join function - simplified and robust
@@ -438,7 +443,7 @@ const getUserChats = () => {
     const item = activities[index];
     const joinedList = Array.isArray(item.joined) ? item.joined : [];
     
-    if (joinedList.some(j => j.id === user.id)) {
+    if (joinedList.some(j => j.id === user.id || j.id === user.uid)) {
         alert('You have already joined this activity.');
         return;
     }
@@ -448,7 +453,7 @@ const getUserChats = () => {
         return;
     }
     
-    const updatedJoined = [...joinedList, { id: user.id, name: user.name }];
+    const updatedJoined = [...joinedList, { id: user.id || user.uid, name: user.name }];
 
     firebase.database().ref('activities/' + postId + '/joined').set(updatedJoined)
         .then(() => {
@@ -471,12 +476,12 @@ const getUserChats = () => {
     
     const joinedList = Array.isArray(item.joined) ? item.joined : [];
     
-    if (!joinedList.some(j => j.id === user.id)) {
+    if (!joinedList.some(j => j.id === user.id || j.id === user.uid)) {
         alert('You have not joined this activity.');
         return;
     }
     
-    const updatedJoined = joinedList.filter(j => j.id !== user.id);
+    const updatedJoined = joinedList.filter(j => j.id !== user.id && j.id !== user.uid);
 
     firebase.database().ref('activities/' + postId + '/joined').set(updatedJoined)
         .then(() => {
