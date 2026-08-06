@@ -391,6 +391,41 @@ writeActivity(1).then(() => {
     firebase.database().ref('chats/' + key + '/' + msgId).set(newMsg);
     setChatMessage('');
 };
+// --- NEW CODE: Missing Chat Functions ---
+const openChat = (otherId, otherName) => {
+    setChatPartner({ id: otherId, name: otherName });
+    setSelectedChatId(otherId);
+    setShowChatModal(true);
+};
+
+const getUserChats = () => {
+    const list = [];
+    Object.keys(chatThreads).forEach(key => {
+        // Only get chats that include the current logged-in user
+        if (key.includes(user.id)) {
+            const ids = key.split('|');
+            const otherId = ids[0] === user.id ? ids[1] : ids[0];
+            const thread = chatThreads[key];
+            const lastMsg = thread[thread.length - 1];
+            
+            // Look up the other user's name, fallback if deleted
+            const otherUser = usersList[otherId];
+            const otherName = otherUser ? otherUser.name : 'Unknown User';
+            
+            list.push({
+                key,
+                otherId,
+                otherName,
+                lastMsg,
+                isUnread: lastMsg && lastMsg.from !== user.id,
+                updatedAt: lastMsg ? lastMsg.at : 0
+            });
+        }
+    });
+    // Sort so most recent chats are at the top
+    return list.sort((a, b) => b.updatedAt - a.updatedAt);
+};
+// ----------------------------------------
 
             // Join function - simplified and robust
            const joinPost = (postId) => {
