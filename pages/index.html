@@ -375,19 +375,50 @@
                 setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3200);
             }, []);
 
+            // Check login status on mount & keep in sync with Firebase Auth
             useEffect(() => {
-                const savedUser = localStorage.getItem('ing_user');
-                if (savedUser) {
-                    setUser(JSON.parse(savedUser));
-                    setIsLoggedIn(true);
-                }
+                const checkUser = () => {
+                    const savedUser = localStorage.getItem('ing_user');
+                    if (savedUser) {
+                        try {
+                            setUser(JSON.parse(savedUser));
+                            setIsLoggedIn(true);
+                        } catch(e) {
+                            setUser(null);
+                            setIsLoggedIn(false);
+                        }
+                    } else {
+                        setUser(null);
+                        setIsLoggedIn(false);
+                    }
+                };
+
+                checkUser();
+
+                const unsubscribe = firebase.auth().onAuthStateChanged((authUser) => {
+                    if (authUser) {
+                        const savedUser = localStorage.getItem('ing_user');
+                        if (savedUser) {
+                            setUser(JSON.parse(savedUser));
+                            setIsLoggedIn(true);
+                        }
+                    } else {
+                        const savedUser = localStorage.getItem('ing_user');
+                        if (!savedUser) {
+                            setUser(null);
+                            setIsLoggedIn(false);
+                        }
+                    }
+                });
+
+                return () => unsubscribe();
             }, []);
 
             useEffect(() => {
                 localStorage.setItem('recent_searches', JSON.stringify(recentSearches));
             }, [recentSearches]);
 
-            // Fetch REAL activities from Firebase Realtime Database ONLY when user is logged in
+            // Fetch REAL activities directly from Firebase Realtime Database when logged in
             useEffect(() => {
                 if (!isLoggedIn) {
                     setActivities([]);
@@ -396,9 +427,17 @@
                 }
 
                 const activitiesRef = firebase.database().ref('activities');
+                
                 const handleSnapshot = (snapshot) => {
                     const data = snapshot.val() || {};
-                    const items = Object.values(data).map(item => ({
+                    let items = [];
+                    if (Array.isArray(data)) {
+                        items = data.filter(Boolean);
+                    } else if (typeof data === 'object') {
+                        items = Object.values(data);
+                    }
+
+                    items = items.map(item => ({
                         ...item,
                         joined: Array.isArray(item.joined) ? item.joined : []
                     })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -408,7 +447,7 @@
                 };
 
                 const handleError = (err) => {
-                    console.warn("Firebase activities fetch error:", err);
+                    console.warn("Firebase activities fetch notice:", err);
                     setActivities([]);
                     setActivitiesLoaded(true);
                 };
@@ -486,6 +525,7 @@
             const handleLogout = () => {
                 localStorage.removeItem('ing_user');
                 localStorage.removeItem('ing_user_type');
+                firebase.auth().signOut().catch(() => {});
                 setUser(null);
                 setIsLoggedIn(false);
                 setConfirmOpen(false);
