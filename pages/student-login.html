@@ -107,37 +107,33 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Logging in... <i class="fas fa-spinner fa-spin ml-2"></i>';
 
-            function completeStudentLogin(studentData) {
-                localStorage.setItem('ing_user', JSON.stringify(studentData));
-                localStorage.setItem('ing_user_type', 'student');
-                window.location.href = 'student-dashboard.html';
-            }
-
             firebase.auth().signInWithEmailAndPassword(email, password)
-              .then((cred) => {
-                return firebase.database().ref('users/' + cred.user.uid).once('value')
-                  .then(snapshot => {
-                    let userData = snapshot.val();
-                    if (!userData) {
-                      userData = {
-                        id: cred.user.uid,
-                        name: email.split('@')[0],
-                        email: email,
-                        role: 'student',
-                        studentId: 'STU' + String(Date.now()).slice(-6)
-                      };
-                      firebase.database().ref('users/' + cred.user.uid).set(userData);
-                    }
-                    completeStudentLogin(userData);
-                  });
-              })
-              .catch((err) => {
-                console.error('Student login error:', err);
-                errorEl.textContent = 'Invalid email or password. Please check your credentials and try again.';
-                errorEl.classList.remove('hidden');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Login →';
-              });
+                .then((cred) => {
+                    return firebase.database().ref('users/' + cred.user.uid).once('value')
+                        .then(snapshot => {
+                            const dbData = snapshot.val() || {};
+                            const studentUser = {
+                                id: cred.user.uid,
+                                name: dbData.name || cred.user.displayName || email.split('@')[0],
+                                email: cred.user.email || email,
+                                role: 'student',
+                                studentId: dbData.studentId || ('STU' + String(Date.now()).slice(-6)),
+                                ...dbData
+                            };
+                            studentUser.role = 'student';
+
+                            localStorage.setItem('ing_user', JSON.stringify(studentUser));
+                            localStorage.setItem('ing_user_type', 'student');
+                            window.location.href = 'student-dashboard.html';
+                        });
+                })
+                .catch((err) => {
+                    console.error('Student login error:', err);
+                    errorEl.textContent = err.message || 'Invalid email or password. Please check your credentials and try again.';
+                    errorEl.classList.remove('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Login →';
+                });
         });
     </script>
 </body>
