@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -225,46 +224,6 @@
             { name: 'Mathi Cafe', floor: '10th', type: 'Food', icon: 'fa-mug-saucer' },
         ];
 
-        // Sample fallback campus activities if Firebase is empty or offline
-        const SAMPLE_CAMPUS_ACTIVITIES = [
-            {
-                id: 'sample_1',
-                title: 'Rooftop Futsal Tournament',
-                category: 'sport',
-                location: '10th Floor · Rooftop Futsal Court',
-                date: new Date().toISOString().split('T')[0],
-                startTime: '04:00 PM',
-                endTime: '06:00 PM',
-                description: 'Friendly 5v5 futsal tournament for all ING students! Bring your team or join as an individual.',
-                posterName: 'ING Sports Club',
-                spots: 10
-            },
-            {
-                id: 'sample_2',
-                title: 'Web Dev & AI Workshop',
-                category: 'project',
-                location: '1st Floor · IMPACT Lab',
-                date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-                startTime: '11:00 AM',
-                endTime: '01:00 PM',
-                description: 'Hands-on session building React & AI web apps. Open for CS & IT students.',
-                posterName: 'Tech Society',
-                spots: 15
-            },
-            {
-                id: 'sample_3',
-                title: 'Library Study & Coffee Meetup',
-                category: 'hangout',
-                location: '3rd Floor · Godawari Library & One More Bite',
-                date: new Date().toISOString().split('T')[0],
-                startTime: '02:00 PM',
-                endTime: '04:00 PM',
-                description: 'Group study session for upcoming mid-terms followed by coffee at One More Bite cafe.',
-                posterName: 'Student Union',
-                spots: 8
-            }
-        ];
-
         const parseEventDateTime = (dateStr, timeStr) => {
             if (!dateStr) return new Date(0);
             if (!timeStr) return new Date(dateStr + 'T00:00:00');
@@ -428,51 +387,38 @@
                 localStorage.setItem('recent_searches', JSON.stringify(recentSearches));
             }, [recentSearches]);
 
-            // Robust Firebase Listener with Error Handling & Sample Fallback
+            // Fetch REAL activities from Firebase Realtime Database ONLY when user is logged in
             useEffect(() => {
-                let isMounted = true;
-                const activitiesRef = firebase.database().ref('activities');
+                if (!isLoggedIn) {
+                    setActivities([]);
+                    setActivitiesLoaded(true);
+                    return;
+                }
 
+                const activitiesRef = firebase.database().ref('activities');
                 const handleSnapshot = (snapshot) => {
-                    if (!isMounted) return;
                     const data = snapshot.val() || {};
-                    let items = Object.values(data).map(item => ({
+                    const items = Object.values(data).map(item => ({
                         ...item,
                         joined: Array.isArray(item.joined) ? item.joined : []
                     })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-                    if (items.length === 0) {
-                        items = SAMPLE_CAMPUS_ACTIVITIES;
-                    }
 
                     setActivities(items);
                     setActivitiesLoaded(true);
                 };
 
                 const handleError = (err) => {
-                    console.warn("Firebase activities fetch notice:", err);
-                    if (isMounted) {
-                        setActivities(SAMPLE_CAMPUS_ACTIVITIES);
-                        setActivitiesLoaded(true);
-                    }
+                    console.warn("Firebase activities fetch error:", err);
+                    setActivities([]);
+                    setActivitiesLoaded(true);
                 };
 
                 activitiesRef.on('value', handleSnapshot, handleError);
 
-                // Timeout safety to ensure loader never hangs indefinitely
-                const timer = setTimeout(() => {
-                    if (isMounted && !activitiesLoaded) {
-                        setActivities(SAMPLE_CAMPUS_ACTIVITIES);
-                        setActivitiesLoaded(true);
-                    }
-                }, 3000);
-
                 return () => {
-                    isMounted = false;
-                    clearTimeout(timer);
                     activitiesRef.off('value', handleSnapshot);
                 };
-            }, []);
+            }, [isLoggedIn]);
 
             useEffect(() => {
                 const onScroll = () => {
@@ -804,12 +750,32 @@
                                     </h2>
                                     <p className="text-sm text-gray-500 mt-1">Live activities posted by students &amp; staff</p>
                                 </div>
-                                <a href="student-dashboard.html" className="hidden sm:inline-flex items-center gap-1.5 text-forest-teal font-bold hover:underline text-sm bg-white px-4 py-2 rounded-full border border-gray-200 shadow-xs hover:border-forest-teal transition">
-                                    View All Activities →
-                                </a>
+                                {isLoggedIn && (
+                                    <a href="student-dashboard.html" className="hidden sm:inline-flex items-center gap-1.5 text-forest-teal font-bold hover:underline text-sm bg-white px-4 py-2 rounded-full border border-gray-200 shadow-xs hover:border-forest-teal transition">
+                                        View All Activities →
+                                    </a>
+                                )}
                             </div>
 
-                            {!activitiesLoaded ? (
+                            {!isLoggedIn ? (
+                                <div className="bg-white rounded-2xl p-10 md:p-12 text-center border border-gray-100 shadow-sm max-w-2xl mx-auto">
+                                    <div className="w-16 h-16 bg-forest-teal/10 rounded-full flex items-center justify-center text-forest-teal text-3xl mx-auto mb-4">
+                                        <i className="fas fa-lock text-electric-gold"></i>
+                                    </div>
+                                    <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">Log in to see what's going on in campus</h3>
+                                    <p className="text-gray-500 text-sm md:text-base max-w-md mx-auto mb-6">
+                                        Sign in with your ING student or admin account to discover live events, sports matches, workshops, and connect with peers.
+                                    </p>
+                                    <div className="flex flex-wrap justify-center gap-3">
+                                        <a href="student-login.html" className="btn-gold px-6 py-2.5 rounded-full font-bold text-sm text-forest-teal shadow-md hover:scale-105 transition">
+                                            <i className="fas fa-user-graduate mr-2"></i> Student Login
+                                        </a>
+                                        <a href="admin-login.html" className="bg-forest-teal text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-forest-teal-dark hover:scale-105 transition">
+                                            <i className="fas fa-user-shield mr-2"></i> Admin Login
+                                        </a>
+                                    </div>
+                                </div>
+                            ) : !activitiesLoaded ? (
                                 <div className="flex gap-4 overflow-hidden">
                                     {[1,2,3].map(i => (
                                         <div key={i} className="w-72 shrink-0 bg-white rounded-2xl p-5 border border-gray-100">
@@ -822,10 +788,13 @@
                                     ))}
                                 </div>
                             ) : activities.length === 0 ? (
-                                <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-xs">
-                                    <i className="fas fa-calendar-xmark text-4xl text-gray-300 mb-3"></i>
-                                    <p className="text-gray-600 font-semibold">No activities scheduled at this moment</p>
-                                    <p className="text-xs text-gray-400 mt-1">Log in as a student or admin to post the first campus event!</p>
+                                <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-xs max-w-2xl mx-auto">
+                                    <i className="fas fa-calendar-plus text-4xl text-gray-300 mb-3"></i>
+                                    <p className="text-gray-700 font-bold text-lg">No activities posted yet</p>
+                                    <p className="text-xs text-gray-500 mt-1 mb-4">Be the first to create a campus activity!</p>
+                                    <a href="student-dashboard.html" className="inline-block bg-forest-teal text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-forest-teal-dark transition">
+                                        Create Activity in Dashboard →
+                                    </a>
                                 </div>
                             ) : (
                                 <div className="carousel-container flex gap-5 pb-4 overflow-x-auto">
@@ -850,6 +819,7 @@
                                                     <div className="space-y-1.5 text-xs md:text-sm text-gray-600 mb-4">
                                                         <div className="flex items-center gap-2"><i className="fas fa-clock text-electric-gold w-4 text-center"></i><span>{item.startTime || 'TBA'} - {item.endTime || 'TBA'}</span></div>
                                                         <div className="flex items-center gap-2"><i className="fas fa-location-dot text-electric-gold w-4 text-center"></i><span className="truncate">{item.location || 'ING Campus'}</span></div>
+                                                        <div className="flex items-center gap-2"><i className="fas fa-user text-electric-gold w-4 text-center"></i><span className="truncate">by {item.posterName || 'Student'}</span></div>
                                                     </div>
                                                     <a href="student-dashboard.html" className="block w-full bg-forest-teal text-white py-2 rounded-xl font-bold transition-all duration-200 text-xs md:text-sm text-center hover:bg-[#0a4a42]">
                                                         View Activity
