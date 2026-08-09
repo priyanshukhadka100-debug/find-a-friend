@@ -1526,8 +1526,8 @@
 
                                 {/* DELETE CONVERSATION OVERLAY DIRECTLY ON TOP OF CHAT MODAL */}
                                 {confirmDeleteChat && (
-                                    <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4 rounded-2xl animate-fade-in" onClick={() => setConfirmDeleteChat(null)}>
-                                        <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-gray-100 relative z-[101]" onClick={e => e.stopPropagation()}>
+                                    <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-100 flex items-center justify-center p-4 rounded-2xl animate-fade-in" onClick={() => setConfirmDeleteChat(null)}>
+                                        <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-gray-100 relative z-101" onClick={e => e.stopPropagation()}>
                                             <div className="text-center mb-4">
                                                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2 text-red-600 text-xl">
                                                     <i className="fas fa-trash-can"></i>
