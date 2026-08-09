@@ -1,3 +1,4 @@
+<!-- student-login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,130 +6,139 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login · ING College</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <style>
         * { font-family: 'Inter', sans-serif; }
-        body { background: #F0F4F1; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin:0; }
+        body { background: #F0F4F1; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin:0; color: #334155; }
         .bg-forest-teal { background: #0D5C53; }
         .text-forest-teal { color: #0D5C53; }
-        .btn-gold { background: #FFC700; color: #0D5C53; }
-        .btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 25px -8px rgba(255, 199, 0, 0.4); }
-        .error-text { color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem; }
-        .fade-in { animation: fadeUp 0.5s ease forwards; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .btn-gold { background: #FFC700; color: #0D5C53; font-weight: 600; }
+        .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -5px rgba(255, 199, 0, 0.4); }
+        .error-text { color: #dc2626; font-size: 0.85rem; margin-top: 0.35rem; }
+        .fade-in { animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         .live-pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity:0.6; } 50% { opacity:1; } }
     </style>
 </head>
 <body>
     <div class="max-w-md w-full mx-4 fade-in">
-        <div class="bg-white rounded-3xl shadow-2xl p-8">
-            <div class="text-center mb-8">
-                <div class="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto shadow-lg" style="background: #FFC700 !important;">
-                    <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING" class="h-12 w-auto" />
+        <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+            <div class="text-center mb-7">
+                <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto shadow-sm" style="background: #FFC700 !important;">
+                    <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING" class="h-10 w-auto" />
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800 mt-4">Student Login</h2>
-                <p class="text-gray-500 text-sm">Login with your ING College account</p>
-                <div class="flex items-center justify-center gap-2 mt-2">
-                    <span class="live-pulse inline-block w-2 h-2 bg-green-400 rounded-full"></span>
-                    <span class="text-xs text-gray-400">Secure student access</span>
+                <h2 class="text-xl font-bold text-gray-800 mt-4">Student Login</h2>
+                <p class="text-gray-500 text-xs mt-1 font-normal">Login with your ING College student account</p>
+                <div class="flex items-center justify-center gap-1.5 mt-2">
+                    <span class="live-pulse inline-block w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    <span class="text-[11px] text-gray-400 font-normal">Secure student access</span>
                 </div>
-                <p class="text-xs text-gray-400 mt-2">Accounts are created by administration only</p>
             </div>
             
-            <form id="loginForm" class="space-y-5">
+            <form id="loginForm" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Email Address</label>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider">Email Address</label>
                     <input type="email" id="email" required
-                        class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition"
+                        class="w-full mt-1.5 px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition text-sm font-normal"
                         placeholder="student@ing.edu.np" />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Password</label>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider">Password</label>
                     <div class="relative">
                         <input type="password" id="password" required
-                            class="w-full mt-1.5 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition pr-12"
-                            placeholder="Enter your password" />
+                            class="w-full mt-1.5 px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition text-sm font-normal pr-10"
+                            placeholder="Enter password" />
                         <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-eye" id="eyeIcon"></i>
+                            <i class="fas fa-eye text-xs" id="eyeIcon"></i>
                         </button>
                     </div>
                 </div>
-                <div id="loginError" class="error-text hidden"></div>
-                <button type="submit" class="btn-gold w-full py-3.5 rounded-xl font-bold transition-all duration-300 text-lg">
+                <div id="loginError" class="error-text hidden font-normal"></div>
+                <button type="submit" id="submitBtn" class="btn-gold w-full py-3 rounded-xl font-semibold transition-all duration-200 text-sm shadow-xs mt-2">
                     Login →
                 </button>
-                <div class="text-center text-sm">
-                    <a href="admin-login.html" class="text-gray-400 hover:text-gray-600 transition">Admin Login</a>
-                    <span class="text-gray-300 mx-2">·</span>
-                    <a href="../index.html" class="text-gray-400 hover:text-gray-600 transition">Home</a>
+                <div class="text-center text-xs pt-2">
+                    <a href="admin-login.html" class="text-gray-400 hover:text-gray-600 transition font-normal">Admin Login</a>
+                    <span class="text-gray-300 mx-2">•</span>
+                    <a href="../index.html" class="text-gray-400 hover:text-gray-600 transition font-normal">Home Page</a>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyIzNTCeID1uWfIw_17QC5ciUBqtHqNkE",
+            authDomain: "findafriend-535b3.firebaseapp.com",
+            databaseURL: "https://findafriend-535b3-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "findafriend-535b3",
+            storageBucket: "findafriend-535b3.firebasestorage.app",
+            messagingSenderId: "789997283271",
+            appId: "1:789997283271:web:5cb2c1c3c50d9f248d9be2",
+            measurementId: "G-TEGX90V5V8"
+        };
+        firebase.initializeApp(firebaseConfig);
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCyIzNTCeID1uWfIw_17QC5ciUBqtHqNkE",
-    authDomain: "findafriend-535b3.firebaseapp.com",
-    databaseURL: "https://findafriend-535b3-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "findafriend-535b3",
-    storageBucket: "findafriend-535b3.firebasestorage.app",
-    messagingSenderId: "789997283271",
-    appId: "1:789997283271:web:5cb2c1c3c50d9f248d9be2",
-    measurementId: "G-TEGX90V5V8"
-  };
-  firebase.initializeApp(firebaseConfig);
-
-  function togglePassword() {
-    const pwd = document.getElementById('password');
-    const icon = document.getElementById('eyeIcon');
-    if (pwd.type === 'password') {
-      pwd.type = 'text';
-      icon.className = 'fas fa-eye-slash';
-    } else {
-      pwd.type = 'password';
-      icon.className = 'fas fa-eye';
-    }
-  }
-
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const errorEl = document.getElementById('loginError');
-
-    errorEl.classList.add('hidden');
-
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((cred) => {
-        return firebase.database().ref('users/' + cred.user.uid).once('value');
-      })
-      .then((snapshot) => {
-        const userData = snapshot.val();
-
-        if (userData && userData.role === 'student') {
-          localStorage.setItem('ing_user', JSON.stringify(userData));
-          localStorage.setItem('ing_user_type', 'student');
-          window.location.href = 'student-dashboard.html';
-        } else {
-          errorEl.textContent = 'Access denied: this account is not a student account.';
-          errorEl.classList.remove('hidden');
-          firebase.auth().signOut();
+        function togglePassword() {
+            const pwd = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.className = 'fas fa-eye-slash text-xs';
+            } else {
+                pwd.type = 'password';
+                icon.className = 'fas fa-eye text-xs';
+            }
         }
-      })
-      .catch((err) => {
-        console.error(err);
-        errorEl.textContent = 'Invalid email or password. Please try again.';
-        errorEl.classList.remove('hidden');
-      });
-  });
-</script>
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('loginError');
+            const submitBtn = document.getElementById('submitBtn');
+
+            errorEl.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Logging in... <i class="fas fa-spinner fa-spin ml-2"></i>';
+
+            function completeStudentLogin(studentData) {
+                localStorage.setItem('ing_user', JSON.stringify(studentData));
+                localStorage.setItem('ing_user_type', 'student');
+                window.location.href = 'student-dashboard.html';
+            }
+
+            firebase.auth().signInWithEmailAndPassword(email, password)
+              .then((cred) => {
+                return firebase.database().ref('users/' + cred.user.uid).once('value')
+                  .then(snapshot => {
+                    let userData = snapshot.val();
+                    if (!userData) {
+                      userData = {
+                        id: cred.user.uid,
+                        name: email.split('@')[0],
+                        email: email,
+                        role: 'student',
+                        studentId: 'STU' + String(Date.now()).slice(-6)
+                      };
+                      firebase.database().ref('users/' + cred.user.uid).set(userData);
+                    }
+                    completeStudentLogin(userData);
+                  });
+              })
+              .catch((err) => {
+                console.error('Student login error:', err);
+                errorEl.textContent = 'Invalid email or password. Please check your credentials and try again.';
+                errorEl.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Login →';
+              });
+        });
+    </script>
 </body>
 </html>
