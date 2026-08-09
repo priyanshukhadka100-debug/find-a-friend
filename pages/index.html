@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
     <title>Find a Friend · ING College</title>
+    <meta name="description" content="ING College's campus companion — find any classroom, lab or office, discover what's happening on campus right now, and connect with fellow students.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -27,69 +28,127 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
+        :root{
+            --forest-teal: #0D5C53;
+            --forest-teal-dark: #0a4a42;
+            --electric-gold: #FFC700;
+            --light-mint: #F0F4F1;
+        }
         * { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        body { background: #F0F4F1; margin:0; }
-        .bg-forest-teal { background: #0D5C53; }
-        .text-forest-teal { color: #0D5C53; }
-        .bg-electric-gold { background: #FFC700; }
-        .text-electric-gold { color: #FFC700; }
-        .bg-light-mint { background: #F0F4F1; }
-        .btn-gold { background: #FFC700; color: #0D5C53; }
-        .btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 25px -8px rgba(255, 199, 0, 0.4); }
+        html { scroll-padding-top: 90px; }
+        body { background: var(--light-mint); margin:0; overflow-x: hidden; }
+        ::selection { background: var(--electric-gold); color: var(--forest-teal); }
+
+        .bg-forest-teal { background: var(--forest-teal); }
+        .text-forest-teal { color: var(--forest-teal); }
+        .bg-electric-gold { background: var(--electric-gold); }
+        .text-electric-gold { color: var(--electric-gold); }
+        .bg-light-mint { background: var(--light-mint); }
+        .btn-gold { background: var(--electric-gold); color: var(--forest-teal); }
+        .btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 25px -8px rgba(255, 199, 0, 0.45); }
         .glass-effect { background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); }
         .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15); }
+
+        /* ---------- Entrance animations ---------- */
         .fade-in { animation: fadeUp 0.5s ease forwards; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         .slide-in { animation: slideIn 0.4s ease forwards; }
         @keyframes slideIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
         .live-pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity:0.6; } 50% { opacity:1; } }
+
+        .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+        /* ---------- Hero blobs ---------- */
+        .hero-blobs { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.35; }
+        .blob-1 { width: 380px; height: 380px; background: var(--electric-gold); top: -120px; right: -80px; animation: blobFloat1 14s ease-in-out infinite; }
+        .blob-2 { width: 300px; height: 300px; background: #2a9a8a; bottom: -140px; left: -60px; animation: blobFloat2 16s ease-in-out infinite; }
+        .blob-3 { width: 220px; height: 220px; background: #FFC700; top: 40%; left: 30%; opacity: 0.15; animation: blobFloat1 20s ease-in-out infinite reverse; }
+        @keyframes blobFloat1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-40px, 30px) scale(1.1); } }
+        @keyframes blobFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px, -25px) scale(1.08); } }
+
         .hero-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
-        .room-card { border-left: 4px solid #FFC700; }
+        .room-card { border-left: 4px solid var(--electric-gold); }
         .content-wrapper { position: relative; z-index: 1; }
+
+        /* ---------- Nav ---------- */
         .nav-link { position: relative; }
-        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #FFC700; transition: width 0.3s; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--electric-gold); transition: width 0.3s; }
         .nav-link:hover::after { width: 100%; }
-        .search-input:focus { outline: none; border-color: #0D5C53; box-shadow: 0 0 0 3px rgba(13, 92, 83, 0.1); }
-        .search-result-card { transition: all 0.2s; cursor: pointer; }
-        .search-result-card:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .header-shrink { padding-top: 0.65rem !important; padding-bottom: 0.65rem !important; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.35) !important; }
+
+        /* ---------- Search ---------- */
+        .search-input:focus { outline: none; border-color: var(--forest-teal); box-shadow: 0 0 0 4px rgba(13, 92, 83, 0.12); }
+        .search-result-card { transition: all 0.15s; cursor: pointer; }
+        .search-result-card:hover, .search-result-card.kbd-active { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: #f8faf9; }
+
+        /* ---------- Floating button ---------- */
         .floating-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #FFC700;
-            color: #0D5C53;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 8px 25px rgba(255, 199, 0, 0.4);
-            z-index: 100;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--electric-gold); color: var(--forest-teal);
+            width: 64px; height: 64px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; box-shadow: 0 8px 25px rgba(255, 199, 0, 0.4);
+            z-index: 100; transition: all 0.3s; border: none; cursor: pointer;
             animation: floatPulse 2s infinite;
         }
         .floating-btn:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(255, 199, 0, 0.5); }
         @keyframes floatPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        .back-to-top {
+            position: fixed; bottom: 30px; left: 30px;
+            width: 48px; height: 48px; border-radius: 50%;
+            background: var(--forest-teal); color: white;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(13,92,83,0.35);
+            z-index: 100; border: none; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .back-to-top:hover { transform: translateY(-4px); }
+
         .carousel-container { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .carousel-container::-webkit-scrollbar { display: none; }
         .carousel-item { scroll-snap-align: start; flex-shrink: 0; width: 280px; }
         .footer__cta { background: linear-gradient(135deg, #0D5C53 0%, #1a7a6e 50%, #2a9a8a 100%); padding: 40px 0; position: relative; overflow: hidden; }
         .art__animation { position: absolute; right: 0; bottom: 0; opacity: 0.1; }
         .status-live { background: #10b981; color: white; }
-        .status-today { background: #FFC700; color: #0D5C53; }
+        .status-today { background: var(--electric-gold); color: var(--forest-teal); }
         .status-upcoming { background: #3b82f6; color: white; }
+
+        /* ---------- Stat counters ---------- */
+        .stat-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; }
+        .stat-num { font-variant-numeric: tabular-nums; }
+
+        /* ---------- Button ripple ---------- */
+        .ripple-btn { position: relative; overflow: hidden; }
+        .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: rippleAnim 0.6s linear; background: rgba(255,255,255,0.55); pointer-events: none; }
+        @keyframes rippleAnim { to { transform: scale(3.2); opacity: 0; } }
+
+        /* ---------- Skeleton loading ---------- */
+        .skeleton { background: linear-gradient(90deg, #eef1ef 25%, #e3e8e5 37%, #eef1ef 63%); background-size: 400% 100%; animation: skeletonShine 1.4s ease infinite; }
+        @keyframes skeletonShine { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+        /* ---------- Toast ---------- */
+        .toast-wrap { position: fixed; top: 20px; right: 20px; z-index: 200; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: white; border-left: 4px solid var(--forest-teal); border-radius: 10px; padding: 14px 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); min-width: 260px; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1); }
+        @keyframes toastIn { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: translateX(0); } }
+
+        /* ---------- Mobile menu ---------- */
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        .mobile-menu.open { max-height: 300px; }
+
+        /* ---------- Modal ---------- */
+        .modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.5); z-index: 300; display:flex; align-items:center; justify-content:center; animation: fadeUp 0.2s ease; }
+        .modal-box { background: white; border-radius: 20px; padding: 28px; max-width: 380px; width: 90%; animation: fadeUp 0.25s cubic-bezier(0.16,1,0.3,1); }
     </style>
 </head>
 <body>
     <div id="root"></div>
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect, useRef, useCallback } = React;
 
         const FLOOR_SEARCH_DATA = [
             { name: 'Parking Area', floor: 'B2', type: 'Parking', icon: 'fa-car' },
@@ -139,6 +198,8 @@
             { name: 'Biology Lab', floor: '6th', type: 'Lab', icon: 'fa-dna' },
             { name: 'Finance Department', floor: '7th', type: 'Office', icon: 'fa-money-bill' },
             { name: "CEO's Office", floor: '7th', type: 'Office', icon: 'fa-user-tie' },
+            { name: 'Infirmary', floor: '7th', type: 'Medical', icon: 'fa-kit-medical' },
+            { name: "Teachers' Lounge", floor: '7th', type: 'Office', icon: 'fa-mug-hot' },
             { name: 'TR 26 · Salahesh Fulbari', floor: '8th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
             { name: 'TR 27 · Nadhiman Taal', floor: '8th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
             { name: 'TR 28 · Simraungadh', floor: '8th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
@@ -152,7 +213,7 @@
             { name: 'TR 36 · Tinjure', floor: '9th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
             { name: 'TR 37 · Okhaldhunga', floor: '9th', type: 'Classroom', icon: 'fa-chalkboard-teacher' },
             { name: 'Rooftop Futsal Court', floor: '10th', type: 'Sports', icon: 'fa-futbol' },
-            { name: 'Rooftop Cafeteria', floor: '10th', type: 'Food', icon: 'fa-utensils' },
+            { name: 'Mathi Cafe', floor: '10th', type: 'Food', icon: 'fa-mug-saucer' },
         ];
 
         // Helper for date parsing
@@ -173,18 +234,142 @@
             return new Date(dateStr + 'T' + timeStr);
         };
 
+        // ---------- New: reveal-on-scroll hook ----------
+        function useReveal() {
+            const ref = useRef(null);
+            useEffect(() => {
+                const el = ref.current;
+                if (!el) return;
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('in-view');
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    },
+                    { threshold: 0.12 }
+                );
+                observer.observe(el);
+                return () => observer.disconnect();
+            }, []);
+            return ref;
+        }
+
+        const Reveal = ({ children, className = '', delay = 0 }) => {
+            const ref = useReveal();
+            return (
+                <div ref={ref} className={`reveal ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+                    {children}
+                </div>
+            );
+        };
+
+        // ---------- New: animated count-up ----------
+        const CountUp = ({ end, duration = 1400, suffix = '' }) => {
+            const [value, setValue] = useState(0);
+            const ref = useReveal();
+            const started = useRef(false);
+            useEffect(() => {
+                const el = ref.current;
+                if (!el) return;
+                const obs = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !started.current) {
+                            started.current = true;
+                            const start = performance.now();
+                            const tick = (now) => {
+                                const progress = Math.min((now - start) / duration, 1);
+                                const eased = 1 - Math.pow(1 - progress, 3);
+                                setValue(Math.floor(eased * end));
+                                if (progress < 1) requestAnimationFrame(tick);
+                                else setValue(end);
+                            };
+                            requestAnimationFrame(tick);
+                        }
+                    });
+                }, { threshold: 0.3 });
+                obs.observe(el);
+                return () => obs.disconnect();
+            }, [end, duration]);
+            return <span ref={ref} className="stat-num">{value}{suffix}</span>;
+        };
+
+        // ---------- New: ripple effect for buttons ----------
+        const addRipple = (e) => {
+            const btn = e.currentTarget;
+            const rect = btn.getBoundingClientRect();
+            const circle = document.createElement('span');
+            const size = Math.max(rect.width, rect.height);
+            circle.style.width = circle.style.height = `${size}px`;
+            circle.style.left = `${e.clientX - rect.left - size / 2}px`;
+            circle.style.top = `${e.clientY - rect.top - size / 2}px`;
+            circle.className = 'ripple';
+            btn.appendChild(circle);
+            setTimeout(() => circle.remove(), 600);
+        };
+
+        // ---------- New: toast system ----------
+        const Toasts = ({ toasts }) => (
+            <div className="toast-wrap">
+                {toasts.map(t => (
+                    <div key={t.id} className="toast">
+                        <div className="font-semibold text-forest-teal text-sm flex items-center gap-2">
+                            <i className={`fas ${t.icon || 'fa-circle-check'} text-electric-gold`}></i>
+                            {t.title}
+                        </div>
+                        {t.message && <div className="text-gray-500 text-xs mt-1">{t.message}</div>}
+                    </div>
+                ))}
+            </div>
+        );
+
+        // ---------- New: confirm modal (replaces window.confirm) ----------
+        const ConfirmModal = ({ open, title, message, onConfirm, onCancel }) => {
+            if (!open) return null;
+            return (
+                <div className="modal-backdrop" onClick={onCancel}>
+                    <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                        <div className="w-12 h-12 rounded-full bg-forest-teal/10 flex items-center justify-center text-forest-teal text-xl mb-4">
+                            <i className="fas fa-right-from-bracket"></i>
+                        </div>
+                        <h3 className="text-lg font-bold text-forest-teal mb-1">{title}</h3>
+                        <p className="text-sm text-gray-500 mb-6">{message}</p>
+                        <div className="flex gap-3">
+                            <button onClick={onCancel} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition">Cancel</button>
+                            <button onClick={onConfirm} className="flex-1 py-2.5 rounded-xl bg-forest-teal text-white font-semibold hover:bg-[#0a4a42] transition">Log Out</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         const App = () => {
             const [user, setUser] = useState(null);
             const [isLoggedIn, setIsLoggedIn] = useState(false);
             const [searchQuery, setSearchQuery] = useState('');
             const [searchResults, setSearchResults] = useState([]);
             const [showResults, setShowResults] = useState(false);
+            const [activeIndex, setActiveIndex] = useState(-1);
             const [recentSearches, setRecentSearches] = useState(() => {
                 const saved = localStorage.getItem('recent_searches');
                 return saved ? JSON.parse(saved) : [];
             });
             const [activities, setActivities] = useState([]);
+            const [activitiesLoaded, setActivitiesLoaded] = useState(false);
+            const [scrolled, setScrolled] = useState(false);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+            const [showBackToTop, setShowBackToTop] = useState(false);
+            const [toasts, setToasts] = useState([]);
+            const [confirmOpen, setConfirmOpen] = useState(false);
             const searchRef = useRef(null);
+
+            const pushToast = useCallback((title, message, icon) => {
+                const id = Date.now() + Math.random();
+                setToasts(t => [...t, { id, title, message, icon }]);
+                setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3200);
+            }, []);
 
             useEffect(() => {
                 const savedUser = localStorage.getItem('ing_user');
@@ -208,11 +393,23 @@
                         joined: Array.isArray(item.joined) ? item.joined : []
                     })).sort((a, b) => b.createdAt - a.createdAt);
                     setActivities(items);
+                    setActivitiesLoaded(true);
                 });
                 return () => activitiesRef.off();
             }, []);
 
+            // scroll handling: shrink header + show back-to-top
+            useEffect(() => {
+                const onScroll = () => {
+                    setScrolled(window.scrollY > 40);
+                    setShowBackToTop(window.scrollY > 500);
+                };
+                window.addEventListener('scroll', onScroll);
+                return () => window.removeEventListener('scroll', onScroll);
+            }, []);
+
             const handleSearch = (query) => {
+                setActiveIndex(-1);
                 if (!query.trim()) {
                     setSearchResults([]);
                     setShowResults(false);
@@ -245,50 +442,76 @@
                 window.location.href = `floornavigation.html#${floor}`;
             };
 
-            const clearRecentSearches = () => {
-                setRecentSearches([]);
-            };
-
-            const getStatusBadge = (status) => {
-                const classes = {
-                    'Live': 'status-live',
-                    'Today': 'status-today',
-                    'Upcoming': 'status-upcoming'
-                };
-                return classes[status] || 'status-upcoming';
-            };
-
-            const handleLogout = () => {
-                if (confirm('Are you sure you want to log out?')) {
-                    localStorage.removeItem('ing_user');
-                    localStorage.removeItem('ing_user_type');
-                    setUser(null);
-                    setIsLoggedIn(false);
+            const handleSearchKeyDown = (e) => {
+                if (!showResults || searchResults.length === 0) return;
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    setActiveIndex(i => Math.min(i + 1, searchResults.length - 1));
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    setActiveIndex(i => Math.max(i - 1, 0));
+                } else if (e.key === 'Enter' && activeIndex >= 0) {
+                    handleResultClick(searchResults[activeIndex]);
+                } else if (e.key === 'Escape') {
+                    setShowResults(false);
                 }
             };
 
+            const clearRecentSearches = () => {
+                setRecentSearches([]);
+                pushToast('Recent searches cleared', null, 'fa-broom');
+            };
+
+            const handleLogout = () => {
+                localStorage.removeItem('ing_user');
+                localStorage.removeItem('ing_user_type');
+                setUser(null);
+                setIsLoggedIn(false);
+                setConfirmOpen(false);
+                pushToast('Logged out', 'See you again soon!', 'fa-hand-wave');
+            };
+
+            // ---- derived stats for the "Why ING" section, computed live from real data ----
+            const totalFacilities = FLOOR_SEARCH_DATA.length;
+            const totalFloors = new Set(FLOOR_SEARCH_DATA.map(f => f.floor)).size;
+            const totalClassrooms = FLOOR_SEARCH_DATA.filter(f => f.type === 'Classroom').length;
+            const totalLabs = FLOOR_SEARCH_DATA.filter(f => f.type === 'Lab').length;
+
+            const popularSearches = ['Library', 'Cafeteria', 'Computer Lab', 'Admin Office', 'Futsal'];
+
             return (
                 <div className="content-wrapper min-h-screen bg-light-mint">
-                    <header className="bg-forest-teal text-white px-6 py-4 shadow-xl relative overflow-hidden">
+                    <Toasts toasts={toasts} />
+                    <ConfirmModal
+                        open={confirmOpen}
+                        title="Log out of Find a Friend?"
+                        message="You'll need to sign back in to see your dashboard and activities."
+                        onConfirm={handleLogout}
+                        onCancel={() => setConfirmOpen(false)}
+                    />
+
+                    <header className={`bg-forest-teal text-white px-6 py-4 shadow-xl relative overflow-hidden top-0 z-50 transition-all duration-300 ${scrolled ? 'header-shrink' : ''}`}>
                         <div className="absolute inset-0 bg-linear-to-b from-transparent to-[#0D5C53]/30"></div>
+                        <div className="hero-pattern absolute inset-0 opacity-60"></div>
                         <div className="max-w-6xl mx-auto relative z-10">
-                            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                                <div className="slide-in flex items-center gap-3">
-                                    <div className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'transparent' }}>
-                                        <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING College" className="h-15 w-auto" />
+                            <div className="flex items-center justify-between gap-4">
+                                <a href="index.html" className="slide-in flex items-center gap-3">
+                                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'transparent' }}>
+                                        <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING College" className="h-11 md:h-15 w-auto" />
                                     </div>
-                                    <div>
-                                        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Find a Friend</h1>
-                                        <p className="text-blue-200 text-lg font-light">ING College · Connect & Collaborate</p>
+                                    <div className="hidden sm:block">
+                                        <h1 className="text-xl md:text-3xl font-extrabold tracking-tight leading-tight">Find a Friend</h1>
+                                        <p className="text-blue-200 text-xs md:text-base font-light">ING College · Connect &amp; Collaborate</p>
                                     </div>
-                                </div>
-                                <div className="flex flex-wrap gap-3">
+                                </a>
+
+                                <div className="hidden md:flex flex-wrap gap-3">
                                     {!isLoggedIn ? (
                                         <>
-                                            <a href="student-login.html" className="btn-gold px-6 py-2.5 rounded-full font-bold shadow-lg transition-all duration-300 flex items-center gap-2 text-forest-teal">
+                                            <a href="student-login.html" onMouseDown={addRipple} className="ripple-btn btn-gold px-6 py-2.5 rounded-full font-bold shadow-lg transition-all duration-300 flex items-center gap-2 text-forest-teal">
                                                 <i className="fas fa-user-graduate"></i> Student Login
                                             </a>
-                                            <a href="admin-login.html" className="bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2.5 rounded-full font-semibold hover:bg-white/30 transition flex items-center gap-2 text-white">
+                                            <a href="admin-login.html" onMouseDown={addRipple} className="ripple-btn bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2.5 rounded-full font-semibold hover:bg-white/30 transition flex items-center gap-2 text-white">
                                                 <i className="fas fa-user-shield"></i> Admin Login
                                             </a>
                                         </>
@@ -296,7 +519,30 @@
                                         <div className="glass-effect px-5 py-2.5 rounded-full flex items-center gap-4">
                                             <span className="text-white font-medium">👋 {user?.name}</span>
                                             <a href="student-dashboard.html" className="text-white border border-white/40 px-4 py-1 rounded-full text-sm hover:bg-white/10 transition">Dashboard</a>
-                                            <button onClick={handleLogout} className="text-white/60 text-sm hover:text-white transition">Logout</button>
+                                            <button onClick={() => setConfirmOpen(true)} className="text-white/60 text-sm hover:text-white transition">Logout</button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <button className="md:hidden text-white text-2xl" onClick={() => setMobileMenuOpen(o => !o)} aria-label="Toggle menu">
+                                    <i className={`fas ${mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+                                </button>
+                            </div>
+
+                            <div className={`mobile-menu md:hidden relative z-10 ${mobileMenuOpen ? 'open' : ''}`}>
+                                <div className="pt-4 flex flex-col gap-2">
+                                    {!isLoggedIn ? (
+                                        <>
+                                            <a href="student-login.html" className="btn-gold px-5 py-2.5 rounded-full font-bold text-center text-forest-teal">Student Login</a>
+                                            <a href="admin-login.html" className="bg-white/15 border border-white/30 px-5 py-2.5 rounded-full font-semibold text-center text-white">Admin Login</a>
+                                        </>
+                                    ) : (
+                                        <div className="glass-effect px-4 py-3 rounded-2xl flex items-center justify-between">
+                                            <span className="text-white font-medium">👋 {user?.name}</span>
+                                            <div className="flex items-center gap-3">
+                                                <a href="student-dashboard.html" className="text-white border border-white/40 px-3 py-1 rounded-full text-sm">Dashboard</a>
+                                                <button onClick={() => setConfirmOpen(true)} className="text-white/70 text-sm">Logout</button>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -304,13 +550,34 @@
                         </div>
                     </header>
 
-                    <div className="max-w-6xl mx-auto px-4 py-8">
-                        <div className="bg-light-mint rounded-2xl p-8 mb-8">
-                            <div className="max-w-3xl mx-auto text-center">
-                                <h2 className="text-3xl md:text-4xl font-bold text-forest-teal mb-2">Find Your Classroom</h2>
-                                <p className="text-gray-600 mb-6">Search for any classroom, lab, office, or facility on campus</p>
-                                
-                                <div className="relative">
+                    {/* ---------------- HERO ---------------- */}
+                    <div className="relative bg-forest-teal overflow-hidden">
+                        <div className="hero-blobs">
+                            <div className="blob blob-1"></div>
+                            <div className="blob blob-2"></div>
+                            <div className="blob blob-3"></div>
+                        </div>
+                        <div className="hero-pattern absolute inset-0"></div>
+                        <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 relative z-10 text-center">
+                            <Reveal>
+                                <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/90 text-xs md:text-sm px-4 py-1.5 rounded-full mb-6">
+                                    <span className="live-pulse w-2 h-2 rounded-full bg-electric-gold"></span>
+                                    Live campus companion — built by students, for students
+                                </span>
+                            </Reveal>
+                            <Reveal delay={80}>
+                                <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4">
+                                    Never get lost on campus.<br className="hidden md:block" /> Never miss what's happening.
+                                </h2>
+                            </Reveal>
+                            <Reveal delay={160}>
+                                <p className="text-blue-200 text-base md:text-lg max-w-2xl mx-auto mb-8">
+                                    Search any classroom, lab or office across all 13 floors, see live activities happening right now, and connect with your fellow students — all in one place.
+                                </p>
+                            </Reveal>
+
+                            <Reveal delay={220}>
+                                <div className="max-w-2xl mx-auto relative">
                                     <div className="relative">
                                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                                             <i className="fas fa-search text-xl"></i>
@@ -324,11 +591,12 @@
                                                 setSearchQuery(e.target.value);
                                                 handleSearch(e.target.value);
                                             }}
+                                            onKeyDown={handleSearchKeyDown}
                                             onFocus={() => setShowResults(true)}
-                                            className="search-input w-full pl-14 pr-4 py-4 rounded-2xl bg-white border-2 border-gray-200 focus:border-forest-teal text-lg transition-all"
+                                            className="search-input w-full pl-14 pr-4 py-4 rounded-2xl bg-white border-2 border-gray-200 focus:border-forest-teal text-lg transition-all shadow-xl"
                                         />
                                         {searchQuery && (
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     setSearchQuery('');
                                                     setSearchResults([]);
@@ -340,9 +608,9 @@
                                             </button>
                                         )}
                                     </div>
-                                    
+
                                     {showResults && searchQuery && (
-                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 max-h-96 overflow-y-auto z-50">
+                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-96 overflow-y-auto z-50 text-left">
                                             {searchResults.length === 0 ? (
                                                 <div className="p-6 text-center text-gray-500">
                                                     <i className="fas fa-search text-2xl block mb-2"></i>
@@ -353,8 +621,9 @@
                                                     {searchResults.map((result, index) => (
                                                         <div
                                                             key={index}
-                                                            className="search-result-card p-3 rounded-xl hover:bg-gray-50 border-b border-gray-100 last:border-0 flex items-center gap-3"
+                                                            className={`search-result-card p-3 rounded-xl border-b border-gray-100 last:border-0 flex items-center gap-3 ${index === activeIndex ? 'kbd-active' : ''}`}
                                                             onClick={() => handleResultClick(result)}
+                                                            onMouseEnter={() => setActiveIndex(index)}
                                                         >
                                                             <div className="w-10 h-10 rounded-lg bg-forest-teal/10 flex items-center justify-center text-forest-teal">
                                                                 <i className={`fas ${result.icon || 'fa-building'}`}></i>
@@ -372,48 +641,100 @@
                                             )}
                                         </div>
                                     )}
-                                </div>
 
-                                {recentSearches.length > 0 && !searchQuery && (
-                                    <div className="mt-4 text-left">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-sm font-medium text-gray-600">Recent Searches</span>
-                                            <button onClick={clearRecentSearches} className="text-xs text-gray-400 hover:text-gray-600 transition">
-                                                Clear All
-                                            </button>
+                                    {recentSearches.length > 0 && !searchQuery && (
+                                        <div className="mt-4 text-left">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-sm font-medium text-blue-200">Recent Searches</span>
+                                                <button onClick={clearRecentSearches} className="text-xs text-blue-300 hover:text-white transition">
+                                                    Clear All
+                                                </button>
+                                            </div>
+                                            <div className="flex flex-wrap gap-2">
+                                                {recentSearches.map((search, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => {
+                                                            setSearchQuery(search);
+                                                            handleSearch(search);
+                                                        }}
+                                                        className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-sm text-white hover:bg-white/20 transition"
+                                                    >
+                                                        {search}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            {recentSearches.map((search, index) => (
+                                    )}
+
+                                    {recentSearches.length === 0 && !searchQuery && (
+                                        <div className="mt-4 flex flex-wrap justify-center gap-2">
+                                            {popularSearches.map((s, i) => (
                                                 <button
-                                                    key={index}
-                                                    onClick={() => {
-                                                        setSearchQuery(search);
-                                                        handleSearch(search);
-                                                    }}
-                                                    className="px-3 py-1.5 bg-white rounded-full text-sm text-gray-600 border border-gray-200 hover:border-forest-teal hover:text-forest-teal transition"
+                                                    key={i}
+                                                    onClick={() => { setSearchQuery(s); handleSearch(s); }}
+                                                    className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-sm text-blue-100 hover:bg-white/20 transition"
                                                 >
-                                                    {search}
+                                                    {s}
                                                 </button>
                                             ))}
                                         </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                                    )}
+                                </div>
+                            </Reveal>
 
-                        <div className="mb-8">
+                            {/* Live stat counters, computed from real facility data */}
+                            <Reveal delay={280}>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto mt-12">
+                                    <div className="stat-card py-4">
+                                        <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalFloors} /></div>
+                                        <div className="text-xs md:text-sm text-blue-200 mt-1">Floors Mapped</div>
+                                    </div>
+                                    <div className="stat-card py-4">
+                                        <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalFacilities} /></div>
+                                        <div className="text-xs md:text-sm text-blue-200 mt-1">Total Facilities</div>
+                                    </div>
+                                    <div className="stat-card py-4">
+                                        <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalClassrooms} /></div>
+                                        <div className="text-xs md:text-sm text-blue-200 mt-1">Classrooms</div>
+                                    </div>
+                                    <div className="stat-card py-4">
+                                        <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalLabs} /></div>
+                                        <div className="text-xs md:text-sm text-blue-200 mt-1">Labs</div>
+                                    </div>
+                                </div>
+                            </Reveal>
+                        </div>
+                    </div>
+
+                    <div className="max-w-6xl mx-auto px-4 py-10">
+                        {/* ---------------- ACTIVITIES ---------------- */}
+                        <Reveal className="mb-8">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-2xl font-bold text-forest-teal">
+                                <h2 className="text-xl md:text-2xl font-bold text-forest-teal">
                                     <i className="fas fa-calendar-check text-electric-gold mr-2"></i>
                                     Happening on Campus Right Now
                                 </h2>
-                                <a href="student-dashboard.html" className="text-forest-teal font-medium hover:underline text-sm">
-                                    View All Activities →
+                                <a href="student-dashboard.html" className="text-forest-teal font-medium hover:underline text-sm whitespace-nowrap">
+                                    View All →
                                 </a>
                             </div>
-                            
-                            {activities.length === 0 ? (
+
+                            {!activitiesLoaded ? (
+                                <div className="flex gap-4 overflow-hidden">
+                                    {[1,2,3].map(i => (
+                                        <div key={i} className="w-72 shrink-0 bg-white rounded-2xl p-5 border border-gray-100">
+                                            <div className="skeleton h-4 w-16 rounded-full mb-3"></div>
+                                            <div className="skeleton h-5 w-40 rounded mb-2"></div>
+                                            <div className="skeleton h-4 w-full rounded mb-1"></div>
+                                            <div className="skeleton h-4 w-3/4 rounded mb-4"></div>
+                                            <div className="skeleton h-9 w-full rounded-full"></div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : activities.length === 0 ? (
                                 <div className="bg-white rounded-2xl p-8 text-center border border-gray-100">
+                                    <i className="fas fa-calendar-xmark text-3xl text-gray-300 mb-3"></i>
                                     <p className="text-gray-500">No activities happening right now. Check back soon!</p>
                                 </div>
                             ) : (
@@ -446,29 +767,35 @@
                                     })}
                                 </div>
                             )}
-                        </div>
+                        </Reveal>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <a href="floornavigation.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
-                                <div className="text-2xl mb-1">🏛️</div>
-                                <span className="text-sm font-medium text-gray-700">Floor Navigation</span>
-                            </a>
-                            <a href="student-login.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
-                                <div className="text-2xl mb-1">🎓</div>
-                                <span className="text-sm font-medium text-gray-700">Student Login</span>
-                            </a>
-                            <a href="admin-login.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
-                                <div className="text-2xl mb-1">👔</div>
-                                <span className="text-sm font-medium text-gray-700">Admin Login</span>
-                            </a>
-                            <a href="student-dashboard.html" className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100 card-hover">
-                                <div className="text-2xl mb-1">📊</div>
-                                <span className="text-sm font-medium text-gray-700">Dashboard</span>
-                            </a>
-                        </div>
+                        {/* ---------------- QUICK LINKS ---------------- */}
+                        <Reveal className="mb-4">
+                            <h2 className="text-xl md:text-2xl font-bold text-forest-teal mb-4">
+                                <i className="fas fa-bolt text-electric-gold mr-2"></i>Quick Access
+                            </h2>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <a href="floornavigation.html" className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-100 card-hover">
+                                    <div className="text-3xl mb-2">🏛️</div>
+                                    <span className="text-sm font-semibold text-gray-700">Floor Navigation</span>
+                                </a>
+                                <a href="student-login.html" className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-100 card-hover">
+                                    <div className="text-3xl mb-2">🎓</div>
+                                    <span className="text-sm font-semibold text-gray-700">Student Login</span>
+                                </a>
+                                <a href="admin-login.html" className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-100 card-hover">
+                                    <div className="text-3xl mb-2">👔</div>
+                                    <span className="text-sm font-semibold text-gray-700">Admin Login</span>
+                                </a>
+                                <a href="student-dashboard.html" className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-100 card-hover">
+                                    <div className="text-3xl mb-2">📊</div>
+                                    <span className="text-sm font-semibold text-gray-700">Dashboard</span>
+                                </a>
+                            </div>
+                        </Reveal>
                     </div>
 
-                    <button 
+                    <button
                         className="floating-btn"
                         onClick={() => window.location.href = 'student-dashboard.html'}
                         title="Find a Friend"
@@ -476,16 +803,22 @@
                         <span className="flex items-center gap-1 text-2xl">👥</span>
                     </button>
 
+                    {showBackToTop && (
+                        <button className="back-to-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} title="Back to top">
+                            <i className="fas fa-arrow-up"></i>
+                        </button>
+                    )}
+
                     <div className="footer__cta mt-8">
                         <div className="art__animation">
                             <img src="https://ing.edu.np/images/art-animation.png" alt="" className="art__animation-img" />
                         </div>
                         <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
-                            <h2 className="text-3xl font-bold text-white mb-4">ING College of Innovation & Leadership</h2>
+                            <h2 className="text-3xl font-bold text-white mb-4">ING College of Innovation &amp; Leadership</h2>
                             <p className="text-blue-200 mb-6">New Baneshwor, Kathmandu | +977 9715000120 | info@ing.edu.np</p>
                             <div className="flex flex-wrap justify-center gap-4">
-                                <a href="student-login.html" className="btn-gold px-6 py-2 rounded-full font-bold transition-all duration-300 text-forest-teal">Student Login</a>
-                                <a href="admin-login.html" className="bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2 rounded-full font-semibold hover:bg-white/30 transition text-white">Admin Login</a>
+                                <a href="student-login.html" onMouseDown={addRipple} className="ripple-btn btn-gold px-6 py-2 rounded-full font-bold transition-all duration-300 text-forest-teal">Student Login</a>
+                                <a href="admin-login.html" onMouseDown={addRipple} className="ripple-btn bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2 rounded-full font-semibold hover:bg-white/30 transition text-white">Admin Login</a>
                             </div>
                             <div className="mt-6 text-sm text-blue-300">
                                 © 2026 ING College of Innovation and Leadership. All Rights Reserved.
