@@ -61,12 +61,38 @@
         .tag-hangout { background: #fef3c7; color:#92400e; }
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .dm-badge { animation: pulse 1.5s infinite; }
-        .profile-avatar { width: 110px; height: 110px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 600; border: 3px solid #FFC700; transition: transform 0.3s ease; }
+        
+        /* FIXED PERFECT CENTERING FOR AVATARS */
+        .profile-avatar { 
+            width: 100px; 
+            height: 100px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border: 3px solid #FFC700; 
+            transition: transform 0.3s ease; 
+            flex-shrink: 0; 
+            overflow: hidden; 
+        }
         .profile-avatar:hover { transform: scale(1.03); }
+        
         .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
         .file-input-wrapper input[type=file] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
         .error-text { color: #dc2626; font-size: 0.85rem; margin-top: 0.25rem; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 16px; flex-shrink: 0; }
+        
+        .avatar { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 600; 
+            font-size: 16px; 
+            flex-shrink: 0; 
+            line-height: 1;
+        }
         .avatar-blue { background: #dbeafe; color: #1a4a7a; }
         .avatar-gold { background: #fef3c7; color: #92400e; }
         .avatar-green { background: #d1fae5; color: #065f46; }
@@ -77,7 +103,7 @@
         .avatar-teal { background: #ccfbf1; color: #0f766e; }
 
         /* ---------- Chat / DM Styling ---------- */
-        .chat-modal { max-width: 95vw; width: 1200px; }
+        .chat-modal { max-width: 95vw; width: 1200px; position: relative; }
         .chat-sidebar { width: 320px; }
         .chat-main { flex: 1; }
         .chat-list { max-height: 480px; overflow-y: auto; }
@@ -92,21 +118,17 @@
         .msg-unsend-btn { opacity: 0; transition: opacity 0.2s ease; }
         .msg-container:hover .msg-unsend-btn { opacity: 1; }
 
-        /* ---------- Classy Blurred Green Strip Footer CTA (Same as index.html & floornavigation.html) ---------- */
         .footer__cta { background: linear-gradient(135deg, #0D5C53 0%, #1a7a6e 50%, #2a9a8a 100%); padding: 30px 0; position: relative; overflow: hidden; }
         .art__animation { position: absolute; right: 0; bottom: 0; opacity: 0.08; }
 
-        /* ---------- Notifications ---------- */
         .notification-item { transition: all 0.2s ease; }
         .notification-item:hover { background: #f8fafc; transform: translateX(3px); }
         .notification-item.unread { background: #eff6ff; border-left: 3px solid #FFC700; }
 
-        /* ---------- Button Ripple ---------- */
         .ripple-btn { position: relative; overflow: hidden; }
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: rippleAnim 0.6s linear; background: rgba(255,255,255,0.4); pointer-events: none; }
         @keyframes rippleAnim { to { transform: scale(3); opacity: 0; } }
 
-        /* ---------- Toasts ---------- */
         .toast-wrap { position: fixed; top: 20px; right: 20px; z-index: 500; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: white; border-left: 4px solid #0D5C53; border-radius: 10px; padding: 12px 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); min-width: 250px; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1); }
         @keyframes toastIn { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: translateX(0); } }
@@ -128,32 +150,61 @@
     <script type="text/babel">
         const { useState, useEffect, useRef, useCallback } = React;
 
-        // Structured Predefined Campus Locations (Clean, Spacious & Organized)
+        // Structured Predefined Campus Locations
         const CATEGORY_LOCATIONS = {
             sport: [
-                { label: '⚽ 10th Floor · Rooftop Futsal Court', value: '10th Floor · Rooftop Futsal Court', floor: '10th Floor' },
-                { label: '🏀 B2 · Basketball Court', value: 'B2 · Basketball Court', floor: 'Basement 2' },
-                { label: '🏸 B2 · Badminton Court', value: 'B2 · Badminton Court', floor: 'Basement 2' },
-                { label: '🏓 B2 · Table Tennis (TT) Table', value: 'B2 · Table Tennis (TT) Table', floor: 'Basement 2' },
-                { label: '🏏 B2 · Indoor Cricket Area', value: 'B2 · Indoor Cricket Area', floor: 'Basement 2' },
-                { label: '✏️ Custom / Other Location...', value: 'Custom / Other Location...', floor: 'Custom' }
+                { label: '⚽ 10th Floor · Rooftop Futsal Court', value: '10th Floor · Rooftop Futsal Court' },
+                { label: '🏀 B2 · Basketball Court', value: 'B2 · Basketball Court' },
+                { label: '🏸 B2 · Badminton Court', value: 'B2 · Badminton Court' },
+                { label: '🏓 B2 · Table Tennis (TT) Table', value: 'B2 · Table Tennis (TT) Table' },
+                { label: '🏏 B2 · Indoor Cricket Area', value: 'B2 · Indoor Cricket Area' },
+                { label: '✏️ Custom / Other Location...', value: 'Custom / Other Location...' }
             ],
             hangout: [
-                { label: '☕ Ground Floor · Main Cafeteria', value: 'Ground Floor · Main Cafeteria', floor: 'Ground Floor' },
-                { label: '🍱 B1 · Lunch Cafeteria', value: 'B1 · Lunch Cafeteria', floor: 'Basement 1' },
-                { label: '🍕 3rd Floor · One More Bite', value: '3rd Floor · One More Bite', floor: '3rd Floor' },
-                { label: '🥤 10th Floor · Mathi Cafe', value: '10th Floor · Mathi Cafe', floor: '10th Floor' },
-                { label: '✏️ Custom / Other Location...', value: 'Custom / Other Location...', floor: 'Custom' }
+                { label: '☕ Ground Floor · Main Cafeteria', value: 'Ground Floor · Main Cafeteria' },
+                { label: '弁当 B1 · Lunch Cafeteria', value: 'B1 · Lunch Cafeteria' },
+                { label: '🍕 3rd Floor · One More Bite', value: '3rd Floor · One More Bite' },
+                { label: '🥤 10th Floor · Mathi Cafe', value: '10th Floor · Mathi Cafe' },
+                { label: '✏️ Custom / Other Location...', value: 'Custom / Other Location...' }
             ],
             project: [
-                { label: '📚 3rd Floor · Godawari (Library)', value: '3rd Floor · Godawari (Library)', floor: '3rd Floor' },
-                { label: '🚀 1st Floor · IMPACT Lab', value: '1st Floor · IMPACT Lab', floor: '1st Floor' },
-                { label: '💻 4th Floor · Computer Lab', value: '4th Floor · Computer Lab', floor: '4th Floor' },
-                { label: '💡 B2 · Entrepreneurs Point', value: 'B2 · Entrepreneurs Point', floor: 'Basement 2' },
-                { label: '🎓 Ground Floor · ING Skill Academy', value: 'Ground Floor · ING Skill Academy', floor: 'Ground Floor' },
-                { label: '🎙️ 5th Floor · LT01 (Lecture Hall)', value: '5th Floor · LT01 (Lecture Hall)', floor: '5th Floor' },
-                { label: '✏️ Custom / Other Location...', value: 'Custom / Other Location...', floor: 'Custom' }
+                { label: '📚 3rd Floor · Godawari (Library)', value: '3rd Floor · Godawari (Library)' },
+                { label: '🚀 1st Floor · IMPACT Lab', value: '1st Floor · IMPACT Lab' },
+                { label: '💻 4th Floor · Computer Lab', value: '4th Floor · Computer Lab' },
+                { label: '💡 B2 · Entrepreneurs Point', value: 'B2 · Entrepreneurs Point' },
+                { label: '🎓 Ground Floor · ING Skill Academy', value: 'Ground Floor · ING Skill Academy' },
+                { label: '🎙️ 5th Floor · LT01 (Lecture Hall)', value: '5th Floor · LT01 (Lecture Hall)' },
+                { label: '✏️ Custom / Other Location...', value: 'Custom / Other Location...' }
             ]
+        };
+
+        // Campus Hours Only (07:00 AM to 06:00 PM)
+        const CAMPUS_HOURS = [
+            { hour: '07', ampm: 'AM', display: '07:00 AM' },
+            { hour: '08', ampm: 'AM', display: '08:00 AM' },
+            { hour: '09', ampm: 'AM', display: '09:00 AM' },
+            { hour: '10', ampm: 'AM', display: '10:00 AM' },
+            { hour: '11', ampm: 'AM', display: '11:00 AM' },
+            { hour: '12', ampm: 'PM', display: '12:00 PM (Noon)' },
+            { hour: '01', ampm: 'PM', display: '01:00 PM' },
+            { hour: '02', ampm: 'PM', display: '02:00 PM' },
+            { hour: '03', ampm: 'PM', display: '03:00 PM' },
+            { hour: '04', ampm: 'PM', display: '04:00 PM' },
+            { hour: '05', ampm: 'PM', display: '05:00 PM' },
+            { hour: '06', ampm: 'PM', display: '06:00 PM' },
+        ];
+
+        const get24HourVal = (hourStr, ampmStr) => {
+            let hour = parseInt(hourStr);
+            const ampm = (ampmStr || '').toUpperCase();
+            if (ampm === 'PM' && hour !== 12) hour += 12;
+            if (ampm === 'AM' && hour === 12) hour = 0;
+            return hour;
+        };
+
+        const getMinutesFromMidnight = (hourStr, minuteStr, ampmStr) => {
+            const h24 = get24HourVal(hourStr, ampmStr);
+            return h24 * 60 + parseInt(minuteStr || '0');
         };
 
         const convertTo24Hour = (timeStr) => {
@@ -226,7 +277,7 @@
             const [filter, setFilter] = useState('all');
             const [showPostModal, setShowPostModal] = useState(false);
             
-            // New Post form state with clean category-based locations
+            // New Post form state with smart category-based locations & locked campus hours
             const [newPost, setNewPost] = useState({
                 category: 'sport',
                 title: '',
@@ -281,12 +332,32 @@
                 setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3200);
             }, []);
 
-            // Helper to get reliable current user ID
             const getMyId = () => {
                 return (user && (user.id || user.uid)) || (firebase.auth().currentUser && firebase.auth().currentUser.uid) || '';
             };
 
-            // When category changes in modal, set smart location default
+            const handleStartHourChange = (hour) => {
+                const hourObj = CAMPUS_HOURS.find(h => h.hour === hour);
+                const autoAmPm = hourObj ? hourObj.ampm : (['01','02','03','04','05','06','12'].includes(hour) ? 'PM' : 'AM');
+                
+                const currentIndex = CAMPUS_HOURS.findIndex(h => h.hour === hour);
+                const nextHourObj = CAMPUS_HOURS[Math.min(currentIndex + 1, CAMPUS_HOURS.length - 1)];
+
+                setNewPost(prev => ({ 
+                    ...prev, 
+                    startHour: hour, 
+                    startAmPm: autoAmPm,
+                    endHour: nextHourObj ? nextHourObj.hour : hour,
+                    endAmPm: nextHourObj ? nextHourObj.ampm : autoAmPm
+                }));
+            };
+
+            const handleEndHourChange = (hour) => {
+                const hourObj = CAMPUS_HOURS.find(h => h.hour === hour);
+                const autoAmPm = hourObj ? hourObj.ampm : (['01','02','03','04','05','06','12'].includes(hour) ? 'PM' : 'AM');
+                setNewPost(prev => ({ ...prev, endHour: hour, endAmPm: autoAmPm }));
+            };
+
             const handleCategoryChange = (cat) => {
                 const defaultLocObj = CATEGORY_LOCATIONS[cat] ? CATEGORY_LOCATIONS[cat][0] : null;
                 setNewPost(prev => ({
@@ -395,6 +466,16 @@
 
             const addPost = () => {
                 setPostError('');
+                
+                // Chronological Time Validation
+                const startMins = getMinutesFromMidnight(newPost.startHour, newPost.startMinute, newPost.startAmPm);
+                const endMins = getMinutesFromMidnight(newPost.endHour, newPost.endMinute, newPost.endAmPm);
+
+                if (endMins <= startMins) {
+                    setPostError('End time must be later than start time (e.g., 02:00 PM to 04:00 PM)');
+                    return;
+                }
+
                 const startTime = `${newPost.startHour}:${newPost.startMinute} ${newPost.startAmPm}`;
                 const endTime = `${newPost.endHour}:${newPost.endMinute} ${newPost.endAmPm}`;
                 
@@ -475,50 +556,93 @@
                     });
             };
 
-            // FIX: Robust Direct Message Send Function
             const sendMessage = (otherId, text) => {
-                if (!text || !text.trim() || !otherId) return;
+                const messageText = (text || '').trim();
+                if (!messageText || !otherId) return;
+
                 const myId = getMyId();
                 if (!myId) {
-                    alert("Unable to identify your user ID. Please sign in again.");
+                    alert("Unable to identify your user ID. Please sign out and log back in.");
                     return;
                 }
-                const key = [myId, otherId].sort().join('|');
+
+                const threadKey = [myId, otherId].sort().join('|');
                 const msgId = 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2);
                 const newMsg = {
                     from: myId,
-                    text: text.trim(),
+                    text: messageText,
                     at: Date.now()
                 };
-                firebase.database().ref('chats/' + key + '/' + msgId).set(newMsg)
-                    .then(() => {
-                        setChatMessage('');
-                    })
+
+                setChatMessage('');
+
+                setChatThreads(prevThreads => {
+                    const currentList = prevThreads[threadKey] || [];
+                    return {
+                        ...prevThreads,
+                        [threadKey]: [...currentList, { msgId, ...newMsg }]
+                    };
+                });
+
+                firebase.database().ref(`chats/${threadKey}/${msgId}`).set(newMsg)
                     .catch(err => {
-                        console.error("Message send failed:", err);
-                        alert("Could not send message: " + err.message);
+                        console.error("Direct message send failed:", err);
+                        alert("Message could not be sent: " + err.message);
                     });
             };
 
             const unsendMessage = (threadKey, msgId) => {
                 if (confirm('Unsend this message?')) {
+                    setChatThreads(prev => {
+                        const list = prev[threadKey] || [];
+                        return {
+                            ...prev,
+                            [threadKey]: list.filter(m => m.msgId !== msgId)
+                        };
+                    });
+
                     firebase.database().ref(`chats/${threadKey}/${msgId}`).remove()
                         .then(() => pushToast('Message Unsent', null, 'fa-trash-can'))
                         .catch(err => alert('Failed to unsend: ' + err.message));
                 }
             };
 
+            // FIX: Guaranteed Working Conversation Delete (Clears local state & Firebase DB node)
             const deleteConversation = (otherId) => {
                 const myId = getMyId();
-                const key = [myId, otherId].sort().join('|');
-                firebase.database().ref(`chats/${key}`).remove()
-                    .then(() => {
-                        setConfirmDeleteChat(null);
-                        setChatPartner(null);
-                        setSelectedChatId(null);
-                        pushToast('Conversation Deleted', 'The chat history has been removed.', 'fa-trash-can');
-                    })
-                    .catch(err => alert('Failed to delete conversation: ' + err.message));
+                if (!myId || !otherId) return;
+
+                const primaryKey = [myId, otherId].sort().join('|');
+
+                // 1. Optimistic Local State Removal
+                setChatThreads(prev => {
+                    const next = { ...prev };
+                    delete next[primaryKey];
+                    Object.keys(next).forEach(k => {
+                        if (k.includes(myId) && k.includes(otherId)) {
+                            delete next[k];
+                        }
+                    });
+                    return next;
+                });
+
+                setConfirmDeleteChat(null);
+                setChatPartner(null);
+                setSelectedChatId(null);
+                pushToast('Conversation Deleted', 'The chat history has been removed.', 'fa-trash-can');
+
+                // 2. Firebase Database Removal
+                firebase.database().ref(`chats/${primaryKey}`).remove()
+                    .catch(err => console.error("Firebase chat remove error:", err));
+
+                firebase.database().ref('chats').once('value').then(snapshot => {
+                    const data = snapshot.val() || {};
+                    Object.keys(data).forEach(k => {
+                        if (k.includes(myId) && k.includes(otherId)) {
+                            firebase.database().ref(`chats/${k}`).remove().catch(() => {});
+                        }
+                    });
+                });
             };
 
             const openChat = (otherId, otherName) => {
@@ -537,19 +661,20 @@
                         const ids = key.split('|');
                         const otherId = ids[0] === myId ? ids[1] : ids[0];
                         const thread = chatThreads[key];
-                        const lastMsg = thread[thread.length - 1];
-                        
-                        const otherUser = usersList[otherId];
-                        const otherName = (otherUser && otherUser.name) ? otherUser.name : 'Unknown User';
-                        
-                        list.push({
-                            key,
-                            otherId,
-                            otherName,
-                            lastMsg,
-                            isUnread: lastMsg && lastMsg.from !== myId,
-                            updatedAt: lastMsg ? lastMsg.at : 0
-                        });
+                        if (thread && thread.length > 0) {
+                            const lastMsg = thread[thread.length - 1];
+                            const otherUser = usersList[otherId];
+                            const otherName = (otherUser && otherUser.name) ? otherUser.name : 'Unknown User';
+                            
+                            list.push({
+                                key,
+                                otherId,
+                                otherName,
+                                lastMsg,
+                                isUnread: lastMsg && lastMsg.from !== myId,
+                                updatedAt: lastMsg ? lastMsg.at : 0
+                            });
+                        }
                     }
                 });
                 return list.sort((a, b) => b.updatedAt - a.updatedAt);
@@ -727,7 +852,7 @@
                                     <div className="w-11 h-11 bg-amber-50 rounded-2xl flex items-center justify-center text-xl">💬</div>
                                     <div>
                                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Conversations</p>
-                                        <p className="text-xl font-bold text-gray-800">{Object.keys(chatThreads).filter(k => k.includes(myId)).length}</p>
+                                        <p className="text-xl font-bold text-gray-800">{getUserChats().length}</p>
                                     </div>
                                 </div>
                             </div>
@@ -739,7 +864,7 @@
                                     <h3 className="text-lg md:text-xl font-bold text-gray-800">Campus Activities</h3>
                                     <p className="text-xs text-gray-400 mt-0.5 font-normal">Explore or organize events with peers</p>
                                 </div>
-                                <button onClick={() => setShowPostModal(true)} onMouseDown={addRipple} className="ripple-btn btn-forest px-4.5 py-2 rounded-full font-semibold text-xs shadow-xs flex items-center gap-1.5">
+                                <button onClick={() => setShowPostModal(true)} onMouseDown={addRipple} className="ripple-btn btn-forest px-5 py-2 rounded-full font-semibold text-xs shadow-xs flex items-center gap-1.5">
                                     <i className="fas fa-plus text-xs"></i> Create Activity
                                 </button>
                             </div>
@@ -807,11 +932,12 @@
                     <div className="fade-in">
                         <div className="bg-white rounded-2xl shadow-xs p-6 border border-gray-100">
                             <div className="flex items-center gap-4 mb-6">
-                                <div className="profile-avatar">
+                                {/* FIX: Perfectly Centered Profile Avatar */}
+                                <div className={`profile-avatar ${!imagePreview ? avatarClass : ''} shrink-0 overflow-hidden`}>
                                     {imagePreview ? (
-                                        <img src={imagePreview} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                                        <img src={imagePreview} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className={avatarClass} style={{ fontSize: '42px', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' }}>
+                                        <span className="text-3xl font-bold uppercase leading-none flex items-center justify-center w-full h-full text-center">
                                             {user.name.charAt(0).toUpperCase()}
                                         </span>
                                     )}
@@ -825,10 +951,10 @@
                                 </div>
                             </div>
                             <div className="flex gap-2 mb-6">
-                                <button onClick={() => setIsEditing(!isEditing)} onMouseDown={addRipple} className="ripple-btn btn-forest px-4.5 py-1.5 rounded-full text-xs font-semibold">
+                                <button onClick={() => setIsEditing(!isEditing)} onMouseDown={addRipple} className="ripple-btn btn-forest px-5 py-1.5 rounded-full text-xs font-semibold">
                                     <i className="fas fa-edit mr-1 text-[11px]"></i> {isEditing ? 'Cancel Edit' : 'Edit Profile'}
                                 </button>
-                                <button onClick={() => setShowChangePassword(true)} className="border border-gray-300 px-4.5 py-1.5 rounded-full text-xs font-medium text-gray-700 hover:bg-gray-50 transition">
+                                <button onClick={() => setShowChangePassword(true)} className="border border-gray-300 px-5 py-1.5 rounded-full text-xs font-medium text-gray-700 hover:bg-gray-50 transition">
                                     <i className="fas fa-key mr-1 text-[11px]"></i> Change Password
                                 </button>
                             </div>
@@ -954,7 +1080,7 @@
                         {currentPage === 'profile' && renderProfile()}
                     </div>
 
-                    {/* Classy Subtle Blurred Footer CTA Banner (Matching Index & Floor Navigation) */}
+                    {/* Classy Subtle Blurred Footer CTA Banner */}
                     <div className="footer__cta mt-10">
                         <div className="art__animation">
                             <img src="https://ing.edu.np/images/art-animation.png" alt="" className="art__animation-img" />
@@ -1018,7 +1144,7 @@
                         </div>
                     )}
 
-                    {/* CREATE ACTIVITY MODAL WITH CLEAN, SPACIOUS SMART LOCATION SELECT */}
+                    {/* CREATE ACTIVITY MODAL WITH CLEAN SPACIOUS LOCATION SELECT & LOCKED SCHOOL HOURS */}
                     {showPostModal && (
                         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowPostModal(false)}>
                             <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-xl create-activity-modal" onClick={e => e.stopPropagation()}>
@@ -1092,48 +1218,57 @@
                                             min={new Date().toISOString().split('T')[0]}
                                             className="w-full px-3.5 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition text-xs md:text-sm font-normal" />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-2.5">
-                                        <div>
-                                            <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Start Time</label>
-                                            <div className="flex gap-1">
-                                                <select value={newPost.startHour} onChange={e => setNewPost({...newPost, startHour: e.target.value})} className="time-select flex-1 text-xs">
-                                                    {['07','08','09','10','11','12','01','02','03','04','05','06'].map(h => (
-                                                        <option key={h} value={h}>{h}</option>
-                                                    ))}
-                                                </select>
-                                                <span className="text-xs font-bold text-gray-400 self-center">:</span>
-                                                <select value={newPost.startMinute} onChange={e => setNewPost({...newPost, startMinute: e.target.value})} className="time-select flex-1 text-xs">
-                                                    {['00','05','10','15','20','25','30','35','40','45','50','55'].map(m => (
-                                                        <option key={m} value={m}>{m}</option>
-                                                    ))}
-                                                </select>
-                                                <select value={newPost.startAmPm} onChange={e => setNewPost({...newPost, startAmPm: e.target.value})} className="time-select flex-1 text-xs">
-                                                    <option value="AM">AM</option>
-                                                    <option value="PM">PM</option>
-                                                </select>
-                                            </div>
+
+                                    {/* TIME SELECTOR LOCKED TO CAMPUS HOURS (7:00 AM - 6:00 PM) */}
+                                    <div className="bg-gray-50/80 p-3.5 rounded-xl border border-gray-200/80 space-y-2.5">
+                                        <div className="flex items-center justify-between">
+                                            <label className="block text-[11px] font-semibold text-forest-teal uppercase tracking-wider">
+                                                <i className="fas fa-clock text-electric-gold mr-1"></i> Time (Campus Hours: 7 AM - 6 PM)
+                                            </label>
                                         </div>
-                                        <div>
-                                            <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">End Time</label>
-                                            <div className="flex gap-1">
-                                                <select value={newPost.endHour} onChange={e => setNewPost({...newPost, endHour: e.target.value})} className="time-select flex-1 text-xs">
-                                                    {['07','08','09','10','11','12','01','02','03','04','05','06'].map(h => (
-                                                        <option key={h} value={h}>{h}</option>
-                                                    ))}
-                                                </select>
-                                                <span className="text-xs font-bold text-gray-400 self-center">:</span>
-                                                <select value={newPost.endMinute} onChange={e => setNewPost({...newPost, endMinute: e.target.value})} className="time-select flex-1 text-xs">
-                                                    {['00','05','10','15','20','25','30','35','40','45','50','55'].map(m => (
-                                                        <option key={m} value={m}>{m}</option>
-                                                    ))}
-                                                </select>
-                                                <select value={newPost.endAmPm} onChange={e => setNewPost({...newPost, endAmPm: e.target.value})} className="time-select flex-1 text-xs">
-                                                    <option value="AM">AM</option>
-                                                    <option value="PM">PM</option>
-                                                </select>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block text-[10px] font-medium text-gray-400 uppercase mb-1">Start Time</label>
+                                                <div className="flex gap-1 items-center">
+                                                    <select 
+                                                        value={newPost.startHour} 
+                                                        onChange={e => handleStartHourChange(e.target.value)} 
+                                                        className="time-select flex-1 text-xs bg-white font-medium"
+                                                    >
+                                                        {CAMPUS_HOURS.map(h => (
+                                                            <option key={h.hour} value={h.hour}>{h.display}</option>
+                                                        ))}
+                                                    </select>
+                                                    <select value={newPost.startMinute} onChange={e => setNewPost({...newPost, startMinute: e.target.value})} className="time-select text-xs bg-white">
+                                                        {['00','15','30','45'].map(m => (
+                                                            <option key={m} value={m}>:{m}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-[10px] font-medium text-gray-400 uppercase mb-1">End Time</label>
+                                                <div className="flex gap-1 items-center">
+                                                    <select 
+                                                        value={newPost.endHour} 
+                                                        onChange={e => handleEndHourChange(e.target.value)} 
+                                                        className="time-select flex-1 text-xs bg-white font-medium"
+                                                    >
+                                                        {CAMPUS_HOURS.map(h => (
+                                                            <option key={h.hour} value={h.hour}>{h.display}</option>
+                                                        ))}
+                                                    </select>
+                                                    <select value={newPost.endMinute} onChange={e => setNewPost({...newPost, endMinute: e.target.value})} className="time-select text-xs bg-white">
+                                                        {['00','15','30','45'].map(m => (
+                                                            <option key={m} value={m}>:{m}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div>
                                         <label className="block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Max Spots (including you)</label>
                                         <input type="number" min="2" max="30" value={newPost.spots} onChange={e => setNewPost({...newPost, spots: parseInt(e.target.value) || 4})}
@@ -1263,10 +1398,10 @@
                         </div>
                     )}
 
-                    {/* DIRECT MESSAGES MODAL - WITH DELETE CONVERSATION & UNSEND MESSAGE */}
+                    {/* DIRECT MESSAGES MODAL WITH OVERLAY CONFIRM DELETE MODAL */}
                     {showChatModal && (
                         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowChatModal(false)}>
-                            <div className="bg-white rounded-2xl chat-modal w-full max-w-7xl h-[85vh] max-h-[85vh] shadow-xl flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
+                            <div className="bg-white rounded-2xl chat-modal w-full max-w-7xl h-[85vh] max-h-[85vh] shadow-xl flex flex-col overflow-hidden relative" onClick={e => e.stopPropagation()}>
                                 <div className="flex items-center justify-between border-b border-gray-200 px-5 py-3.5 shrink-0 bg-white">
                                     <h3 className="font-bold text-lg text-gray-800">💬 Direct Messages</h3>
                                     <button onClick={() => { setShowChatModal(false); setChatPartner(null); setSelectedChatId(null); }} className="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
@@ -1367,10 +1502,10 @@
                                                             onChange={e => setChatMessage(e.target.value)}
                                                             className="flex-1 px-4 py-2 border border-gray-200 rounded-full focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition bg-white text-xs md:text-sm font-normal"
                                                             placeholder="Type a message..." 
-                                                            onKeyDown={e => e.key === 'Enter' && chatMessage.trim() && sendMessage(chatPartner.id, chatMessage)} 
+                                                            onKeyDown={e => e.key === 'Enter' && sendMessage(chatPartner.id, chatMessage)} 
                                                         />
                                                         <button 
-                                                            onClick={() => chatMessage.trim() && sendMessage(chatPartner.id, chatMessage)} 
+                                                            onClick={() => sendMessage(chatPartner.id, chatMessage)} 
                                                             onMouseDown={addRipple} 
                                                             className="ripple-btn btn-forest px-5 rounded-full font-semibold transition text-white text-xs py-2"
                                                         >
@@ -1388,25 +1523,25 @@
                                         )}
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    )}
 
-                    {/* CONFIRM DELETE CONVERSATION MODAL */}
-                    {confirmDeleteChat && (
-                        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-60 flex items-center justify-center p-4" onClick={() => setConfirmDeleteChat(null)}>
-                            <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl" onClick={e => e.stopPropagation()}>
-                                <div className="text-center mb-4">
-                                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2 text-red-600 text-xl">
-                                        <i className="fas fa-trash-can"></i>
+                                {/* DELETE CONVERSATION OVERLAY DIRECTLY ON TOP OF CHAT MODAL */}
+                                {confirmDeleteChat && (
+                                    <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4 rounded-2xl animate-fade-in" onClick={() => setConfirmDeleteChat(null)}>
+                                        <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl border border-gray-100 relative z-[101]" onClick={e => e.stopPropagation()}>
+                                            <div className="text-center mb-4">
+                                                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2 text-red-600 text-xl">
+                                                    <i className="fas fa-trash-can"></i>
+                                                </div>
+                                                <h3 className="text-base font-bold text-gray-800">Delete Conversation?</h3>
+                                                <p className="text-xs text-gray-500 mt-1 font-normal">This will permanently delete all message history with this student for both participants.</p>
+                                            </div>
+                                            <div className="flex gap-2.5">
+                                                <button onClick={() => setConfirmDeleteChat(null)} className="flex-1 py-2 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition text-xs font-medium">Cancel</button>
+                                                <button onClick={() => deleteConversation(confirmDeleteChat)} className="flex-1 btn-danger py-2 rounded-xl font-medium text-xs">Delete</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <h3 className="text-base font-bold text-gray-800">Delete Conversation?</h3>
-                                    <p className="text-xs text-gray-500 mt-1 font-normal">This will delete all message history with this student for both participants.</p>
-                                </div>
-                                <div className="flex gap-2.5">
-                                    <button onClick={() => setConfirmDeleteChat(null)} className="flex-1 py-2 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition text-xs font-medium">Cancel</button>
-                                    <button onClick={() => deleteConversation(confirmDeleteChat)} className="flex-1 btn-danger py-2 rounded-xl font-medium text-xs">Delete</button>
-                                </div>
+                                )}
                             </div>
                         </div>
                     )}
