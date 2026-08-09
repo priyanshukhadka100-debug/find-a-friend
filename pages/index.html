@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,58 +46,66 @@
         .text-electric-gold { color: var(--electric-gold); }
         .bg-light-mint { background: var(--light-mint); }
         .btn-gold { background: var(--electric-gold); color: var(--forest-teal); }
-        .btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 25px -8px rgba(255, 199, 0, 0.45); }
-        .glass-effect { background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); }
-        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15); }
+        .btn-gold:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 25px -5px rgba(255, 199, 0, 0.45); }
+        .glass-effect { background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.18); }
+        .card-hover { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .card-hover:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 40px -12px rgba(13, 92, 83, 0.18); }
 
-        /* ---------- Entrance animations ---------- */
+        /* ---------- Entrance & Interactive Animations ---------- */
         .fade-in { animation: fadeUp 0.5s ease forwards; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         .slide-in { animation: slideIn 0.4s ease forwards; }
         @keyframes slideIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
         .live-pulse { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity:0.6; } 50% { opacity:1; } }
+        @keyframes pulse { 0%, 100% { opacity:0.6; transform: scale(1); } 50% { opacity:1; transform: scale(1.2); } }
 
         .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
         .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-        /* ---------- Hero blobs ---------- */
+        /* ---------- Hero background design ---------- */
         .hero-blobs { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
-        .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.35; }
-        .blob-1 { width: 380px; height: 380px; background: var(--electric-gold); top: -120px; right: -80px; animation: blobFloat1 14s ease-in-out infinite; }
-        .blob-2 { width: 300px; height: 300px; background: #2a9a8a; bottom: -140px; left: -60px; animation: blobFloat2 16s ease-in-out infinite; }
-        .blob-3 { width: 220px; height: 220px; background: #FFC700; top: 40%; left: 30%; opacity: 0.15; animation: blobFloat1 20s ease-in-out infinite reverse; }
-        @keyframes blobFloat1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-40px, 30px) scale(1.1); } }
-        @keyframes blobFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(30px, -25px) scale(1.08); } }
+        .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; }
+        .blob-1 { width: 420px; height: 420px; background: radial-gradient(circle, #FFC700 0%, rgba(255,199,0,0) 70%); top: -140px; right: -100px; animation: blobFloat1 14s ease-in-out infinite; }
+        .blob-2 { width: 360px; height: 360px; background: radial-gradient(circle, #2a9a8a 0%, rgba(42,154,138,0) 70%); bottom: -160px; left: -80px; animation: blobFloat2 16s ease-in-out infinite; }
+        .blob-3 { width: 280px; height: 280px; background: radial-gradient(circle, #FFC700 0%, rgba(255,199,0,0) 70%); top: 35%; left: 25%; opacity: 0.2; animation: blobFloat1 18s ease-in-out infinite reverse; }
+        @keyframes blobFloat1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-45px, 35px) scale(1.12); } }
+        @keyframes blobFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(35px, -30px) scale(1.08); } }
 
-        .hero-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
-        .room-card { border-left: 4px solid var(--electric-gold); }
+        /* Modern Dot Matrix Grid Background */
+        .hero-pattern {
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px),
+                radial-gradient(rgba(255, 199, 0, 0.1) 1.5px, transparent 1.5px);
+            background-size: 28px 28px;
+            background-position: 0 0, 14px 14px;
+        }
+
         .content-wrapper { position: relative; z-index: 1; }
 
-        /* ---------- Nav ---------- */
+        /* ---------- Nav & Header ---------- */
         .nav-link { position: relative; }
         .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--electric-gold); transition: width 0.3s; }
         .nav-link:hover::after { width: 100%; }
         .header-shrink { padding-top: 0.65rem !important; padding-bottom: 0.65rem !important; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.35) !important; }
 
-        /* ---------- Search ---------- */
-        .search-input:focus { outline: none; border-color: var(--forest-teal); box-shadow: 0 0 0 4px rgba(13, 92, 83, 0.12); }
-        .search-result-card { transition: all 0.15s; cursor: pointer; }
-        .search-result-card:hover, .search-result-card.kbd-active { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: #f8faf9; }
+        /* ---------- Search input styling ---------- */
+        .search-input { transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+        .search-input:focus { outline: none; border-color: var(--electric-gold); box-shadow: 0 0 0 4px rgba(255, 199, 0, 0.35), 0 20px 40px -10px rgba(0,0,0,0.25); }
+        .search-result-card { transition: all 0.2s; cursor: pointer; }
+        .search-result-card:hover, .search-result-card.kbd-active { transform: translateX(6px); background: #f0f7f5; border-left: 4px solid var(--forest-teal); }
 
-        /* ---------- Floating button ---------- */
+        /* ---------- Floating & Scroll elements ---------- */
         .floating-btn {
             position: fixed; bottom: 30px; right: 30px;
             background: var(--electric-gold); color: var(--forest-teal);
             width: 64px; height: 64px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 28px; box-shadow: 0 8px 25px rgba(255, 199, 0, 0.4);
+            font-size: 28px; box-shadow: 0 8px 25px rgba(255, 199, 0, 0.45);
             z-index: 100; transition: all 0.3s; border: none; cursor: pointer;
-            animation: floatPulse 2s infinite;
+            animation: floatPulse 2.5s infinite;
         }
-        .floating-btn:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(255, 199, 0, 0.5); }
-        @keyframes floatPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .floating-btn:hover { transform: scale(1.12) rotate(6deg); box-shadow: 0 12px 35px rgba(255, 199, 0, 0.6); }
+        @keyframes floatPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
 
         .back-to-top {
             position: fixed; bottom: 30px; left: 30px;
@@ -107,22 +116,22 @@
             z-index: 100; border: none; cursor: pointer;
             transition: all 0.3s;
         }
-        .back-to-top:hover { transform: translateY(-4px); }
+        .back-to-top:hover { transform: translateY(-4px) scale(1.05); background: var(--forest-teal-dark); }
 
         .carousel-container { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .carousel-container::-webkit-scrollbar { display: none; }
         .carousel-item { scroll-snap-align: start; flex-shrink: 0; width: 280px; }
         .footer__cta { background: linear-gradient(135deg, #0D5C53 0%, #1a7a6e 50%, #2a9a8a 100%); padding: 40px 0; position: relative; overflow: hidden; }
         .art__animation { position: absolute; right: 0; bottom: 0; opacity: 0.1; }
-        .status-live { background: #10b981; color: white; }
         .status-today { background: var(--electric-gold); color: var(--forest-teal); }
         .status-upcoming { background: #3b82f6; color: white; }
 
-        /* ---------- Stat counters ---------- */
-        .stat-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; }
+        /* ---------- Stat Counters ---------- */
+        .stat-card { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.18); border-radius: 18px; backdrop-filter: blur(8px); transition: all 0.3s; }
+        .stat-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.15); border-color: rgba(255,199,0,0.5); }
         .stat-num { font-variant-numeric: tabular-nums; }
 
-        /* ---------- Button ripple ---------- */
+        /* ---------- Button Ripple ---------- */
         .ripple-btn { position: relative; overflow: hidden; }
         .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: rippleAnim 0.6s linear; background: rgba(255,255,255,0.55); pointer-events: none; }
         @keyframes rippleAnim { to { transform: scale(3.2); opacity: 0; } }
@@ -141,8 +150,8 @@
         .mobile-menu.open { max-height: 300px; }
 
         /* ---------- Modal ---------- */
-        .modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.5); z-index: 300; display:flex; align-items:center; justify-content:center; animation: fadeUp 0.2s ease; }
-        .modal-box { background: white; border-radius: 20px; padding: 28px; max-width: 380px; width: 90%; animation: fadeUp 0.25s cubic-bezier(0.16,1,0.3,1); }
+        .modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.55); z-index: 300; display:flex; align-items:center; justify-content:center; animation: fadeUp 0.2s ease; backdrop-filter: blur(4px); }
+        .modal-box { background: white; border-radius: 24px; padding: 28px; max-width: 380px; width: 90%; animation: fadeUp 0.25s cubic-bezier(0.16,1,0.3,1); }
     </style>
 </head>
 <body>
@@ -216,25 +225,65 @@
             { name: 'Mathi Cafe', floor: '10th', type: 'Food', icon: 'fa-mug-saucer' },
         ];
 
-        // Helper for date parsing
+        // Sample fallback campus activities if Firebase is empty or offline
+        const SAMPLE_CAMPUS_ACTIVITIES = [
+            {
+                id: 'sample_1',
+                title: 'Rooftop Futsal Tournament',
+                category: 'sport',
+                location: '10th Floor · Rooftop Futsal Court',
+                date: new Date().toISOString().split('T')[0],
+                startTime: '04:00 PM',
+                endTime: '06:00 PM',
+                description: 'Friendly 5v5 futsal tournament for all ING students! Bring your team or join as an individual.',
+                posterName: 'ING Sports Club',
+                spots: 10
+            },
+            {
+                id: 'sample_2',
+                title: 'Web Dev & AI Workshop',
+                category: 'project',
+                location: '1st Floor · IMPACT Lab',
+                date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+                startTime: '11:00 AM',
+                endTime: '01:00 PM',
+                description: 'Hands-on session building React & AI web apps. Open for CS & IT students.',
+                posterName: 'Tech Society',
+                spots: 15
+            },
+            {
+                id: 'sample_3',
+                title: 'Library Study & Coffee Meetup',
+                category: 'hangout',
+                location: '3rd Floor · Godawari Library & One More Bite',
+                date: new Date().toISOString().split('T')[0],
+                startTime: '02:00 PM',
+                endTime: '04:00 PM',
+                description: 'Group study session for upcoming mid-terms followed by coffee at One More Bite cafe.',
+                posterName: 'Student Union',
+                spots: 8
+            }
+        ];
+
         const parseEventDateTime = (dateStr, timeStr) => {
             if (!dateStr) return new Date(0);
             if (!timeStr) return new Date(dateStr + 'T00:00:00');
-            const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/);
+            const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
             if (match) {
                 let hour = parseInt(match[1]);
                 const minute = match[2];
-                const ampm = match[3];
+                const ampm = match[3].toUpperCase();
                 if (ampm === 'PM' && hour !== 12) hour += 12;
                 if (ampm === 'AM' && hour === 12) hour = 0;
                 const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return new Date(0);
                 date.setHours(hour, parseInt(minute), 0, 0);
                 return date;
             }
-            return new Date(dateStr + 'T' + timeStr);
+            const d = new Date(dateStr + 'T' + timeStr);
+            return isNaN(d.getTime()) ? new Date(0) : d;
         };
 
-        // ---------- New: reveal-on-scroll hook ----------
         function useReveal() {
             const ref = useRef(null);
             useEffect(() => {
@@ -257,16 +306,15 @@
             return ref;
         }
 
-        const Reveal = ({ children, className = '', delay = 0 }) => {
+        const Reveal = ({ children, className = '', delay = 0, style = {} }) => {
             const ref = useReveal();
             return (
-                <div ref={ref} className={`reveal ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+                <div ref={ref} className={`reveal ${className}`} style={{ ...style, transitionDelay: `${delay}ms` }}>
                     {children}
                 </div>
             );
         };
 
-        // ---------- New: animated count-up ----------
         const CountUp = ({ end, duration = 1400, suffix = '' }) => {
             const [value, setValue] = useState(0);
             const ref = useReveal();
@@ -296,7 +344,6 @@
             return <span ref={ref} className="stat-num">{value}{suffix}</span>;
         };
 
-        // ---------- New: ripple effect for buttons ----------
         const addRipple = (e) => {
             const btn = e.currentTarget;
             const rect = btn.getBoundingClientRect();
@@ -310,7 +357,6 @@
             setTimeout(() => circle.remove(), 600);
         };
 
-        // ---------- New: toast system ----------
         const Toasts = ({ toasts }) => (
             <div className="toast-wrap">
                 {toasts.map(t => (
@@ -325,7 +371,6 @@
             </div>
         );
 
-        // ---------- New: confirm modal (replaces window.confirm) ----------
         const ConfirmModal = ({ open, title, message, onConfirm, onCancel }) => {
             if (!open) return null;
             return (
@@ -383,22 +428,52 @@
                 localStorage.setItem('recent_searches', JSON.stringify(recentSearches));
             }, [recentSearches]);
 
-            // Firebase listener for activities
+            // Robust Firebase Listener with Error Handling & Sample Fallback
             useEffect(() => {
+                let isMounted = true;
                 const activitiesRef = firebase.database().ref('activities');
-                activitiesRef.on('value', (snapshot) => {
+
+                const handleSnapshot = (snapshot) => {
+                    if (!isMounted) return;
                     const data = snapshot.val() || {};
-                    const items = Object.values(data).map(item => ({
+                    let items = Object.values(data).map(item => ({
                         ...item,
                         joined: Array.isArray(item.joined) ? item.joined : []
-                    })).sort((a, b) => b.createdAt - a.createdAt);
+                    })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                    if (items.length === 0) {
+                        items = SAMPLE_CAMPUS_ACTIVITIES;
+                    }
+
                     setActivities(items);
                     setActivitiesLoaded(true);
-                });
-                return () => activitiesRef.off();
+                };
+
+                const handleError = (err) => {
+                    console.warn("Firebase activities fetch notice:", err);
+                    if (isMounted) {
+                        setActivities(SAMPLE_CAMPUS_ACTIVITIES);
+                        setActivitiesLoaded(true);
+                    }
+                };
+
+                activitiesRef.on('value', handleSnapshot, handleError);
+
+                // Timeout safety to ensure loader never hangs indefinitely
+                const timer = setTimeout(() => {
+                    if (isMounted && !activitiesLoaded) {
+                        setActivities(SAMPLE_CAMPUS_ACTIVITIES);
+                        setActivitiesLoaded(true);
+                    }
+                }, 3000);
+
+                return () => {
+                    isMounted = false;
+                    clearTimeout(timer);
+                    activitiesRef.off('value', handleSnapshot);
+                };
             }, []);
 
-            // scroll handling: shrink header + show back-to-top
             useEffect(() => {
                 const onScroll = () => {
                     setScrolled(window.scrollY > 40);
@@ -471,7 +546,6 @@
                 pushToast('Logged out', 'See you again soon!', 'fa-hand-wave');
             };
 
-            // ---- derived stats for the "Why ING" section, computed live from real data ----
             const totalFacilities = FLOOR_SEARCH_DATA.length;
             const totalFloors = new Set(FLOOR_SEARCH_DATA.map(f => f.floor)).size;
             const totalClassrooms = FLOOR_SEARCH_DATA.filter(f => f.type === 'Classroom').length;
@@ -490,9 +564,9 @@
                         onCancel={() => setConfirmOpen(false)}
                     />
 
-                    <header className={`bg-forest-teal text-white px-6 py-4 shadow-xl relative overflow-hidden top-0 z-50 transition-all duration-300 ${scrolled ? 'header-shrink' : ''}`}>
-                        <div className="absolute inset-0 bg-linear-to-b from-transparent to-[#0D5C53]/30"></div>
-                        <div className="hero-pattern absolute inset-0 opacity-60"></div>
+                    <header className={`bg-forest-teal text-white px-6 py-4 shadow-xl relative top-0 z-50 transition-all duration-300 ${scrolled ? 'header-shrink' : ''}`}>
+                        <div className="absolute inset-0 bg-linear-to-b from-transparent to-[#0D5C53]/40"></div>
+                        <div className="hero-pattern absolute inset-0 opacity-40"></div>
                         <div className="max-w-6xl mx-auto relative z-10">
                             <div className="flex items-center justify-between gap-4">
                                 <a href="index.html" className="slide-in flex items-center gap-3">
@@ -519,7 +593,7 @@
                                         <div className="glass-effect px-5 py-2.5 rounded-full flex items-center gap-4">
                                             <span className="text-white font-medium">👋 {user?.name}</span>
                                             <a href="student-dashboard.html" className="text-white border border-white/40 px-4 py-1 rounded-full text-sm hover:bg-white/10 transition">Dashboard</a>
-                                            <button onClick={() => setConfirmOpen(true)} className="text-white/60 text-sm hover:text-white transition">Logout</button>
+                                            <button onClick={() => setConfirmOpen(true)} className="text-white/70 text-sm hover:text-white transition">Logout</button>
                                         </div>
                                     )}
                                 </div>
@@ -550,36 +624,38 @@
                         </div>
                     </header>
 
-                    {/* ---------------- HERO ---------------- */}
-                    <div className="relative bg-forest-teal overflow-hidden">
+                    {/* ---------------- HERO SECTION ---------------- */}
+                    <div className="relative bg-forest-teal pt-12 pb-20 md:py-24">
                         <div className="hero-blobs">
                             <div className="blob blob-1"></div>
                             <div className="blob blob-2"></div>
                             <div className="blob blob-3"></div>
                         </div>
-                        <div className="hero-pattern absolute inset-0"></div>
-                        <div className="max-w-6xl mx-auto px-4 py-14 md:py-20 relative z-10 text-center">
+                        <div className="hero-pattern absolute inset-0 opacity-50"></div>
+                        
+                        <div className="max-w-6xl mx-auto px-4 relative text-center">
                             <Reveal>
-                                <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/90 text-xs md:text-sm px-4 py-1.5 rounded-full mb-6">
-                                    <span className="live-pulse w-2 h-2 rounded-full bg-electric-gold"></span>
+                                <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs md:text-sm px-4 py-1.5 rounded-full mb-6 shadow-sm">
+                                    <span className="live-pulse w-2.5 h-2.5 rounded-full bg-electric-gold"></span>
                                     Live campus companion — built by students, for students
                                 </span>
                             </Reveal>
                             <Reveal delay={80}>
-                                <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4">
+                                <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4">
                                     Never get lost on campus.<br className="hidden md:block" /> Never miss what's happening.
                                 </h2>
                             </Reveal>
                             <Reveal delay={160}>
-                                <p className="text-blue-200 text-base md:text-lg max-w-2xl mx-auto mb-8">
+                                <p className="text-blue-100/90 text-base md:text-lg max-w-2xl mx-auto mb-10 font-normal">
                                     Search any classroom, lab or office across all 13 floors, see live activities happening right now, and connect with your fellow students — all in one place.
                                 </p>
                             </Reveal>
 
-                            <Reveal delay={220}>
+                            {/* SEARCH BAR CONTAINER WITH EXPLICIT Z-INDEX STACKING */}
+                            <Reveal delay={220} style={{ position: 'relative', zIndex: 60 }}>
                                 <div className="max-w-2xl mx-auto relative">
-                                    <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <div className="relative z-50">
+                                        <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400">
                                             <i className="fas fa-search text-xl"></i>
                                         </span>
                                         <input
@@ -592,8 +668,8 @@
                                                 handleSearch(e.target.value);
                                             }}
                                             onKeyDown={handleSearchKeyDown}
-                                            onFocus={() => setShowResults(true)}
-                                            className="search-input w-full pl-14 pr-4 py-4 rounded-2xl bg-white border-2 border-gray-200 focus:border-forest-teal text-lg transition-all shadow-xl"
+                                            onFocus={() => { if(searchQuery) setShowResults(true); }}
+                                            className="search-input w-full pl-14 pr-12 py-4.5 rounded-2xl bg-white border-2 border-white/40 focus:border-electric-gold text-gray-800 text-base md:text-lg shadow-[0_15px_35px_-5px_rgba(0,0,0,0.3)] transition-all"
                                         />
                                         {searchQuery && (
                                             <button
@@ -602,39 +678,46 @@
                                                     setSearchResults([]);
                                                     setShowResults(false);
                                                 }}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition"
                                             >
                                                 <i className="fas fa-times"></i>
                                             </button>
                                         )}
                                     </div>
 
+                                    {/* SEARCH RESULTS DROPDOWN - OPAQUE HIGH Z-INDEX FLOATING OVERLAY */}
                                     {showResults && searchQuery && (
-                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 max-h-96 overflow-y-auto z-50 text-left">
+                                        <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] border border-gray-100 max-h-96 overflow-y-auto z-100 text-left opacity-100 min-w-full">
                                             {searchResults.length === 0 ? (
-                                                <div className="p-6 text-center text-gray-500">
-                                                    <i className="fas fa-search text-2xl block mb-2"></i>
-                                                    <p>No results found for "{searchQuery}"</p>
+                                                <div className="p-8 text-center text-gray-500">
+                                                    <i className="fas fa-search text-3xl block text-gray-300 mb-2"></i>
+                                                    <p className="font-medium text-gray-700">No facilities found for "{searchQuery}"</p>
+                                                    <p className="text-xs text-gray-400 mt-1">Try searching "Cafeteria", "Library", "TR 01", or "Futsal"</p>
                                                 </div>
                                             ) : (
-                                                <div className="p-2">
+                                                <div className="p-2 space-y-1">
+                                                    <div className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400 border-b border-gray-100">
+                                                        Found {searchResults.length} Match{searchResults.length > 1 ? 'es' : ''}
+                                                    </div>
                                                     {searchResults.map((result, index) => (
                                                         <div
                                                             key={index}
-                                                            className={`search-result-card p-3 rounded-xl border-b border-gray-100 last:border-0 flex items-center gap-3 ${index === activeIndex ? 'kbd-active' : ''}`}
+                                                            className={`search-result-card p-3 rounded-xl border border-transparent flex items-center gap-3.5 ${index === activeIndex ? 'kbd-active' : ''}`}
                                                             onClick={() => handleResultClick(result)}
                                                             onMouseEnter={() => setActiveIndex(index)}
                                                         >
-                                                            <div className="w-10 h-10 rounded-lg bg-forest-teal/10 flex items-center justify-center text-forest-teal">
+                                                            <div className="w-10 h-10 rounded-xl bg-forest-teal/10 flex items-center justify-center text-forest-teal font-bold shrink-0">
                                                                 <i className={`fas ${result.icon || 'fa-building'}`}></i>
                                                             </div>
-                                                            <div className="flex-1 text-left">
-                                                                <div className="font-semibold text-forest-teal">{result.name}</div>
-                                                                <div className="text-sm text-gray-500">
-                                                                    <span className="font-medium">{result.floor}</span> · {result.type}
+                                                            <div className="flex-1 text-left min-w-0">
+                                                                <div className="font-bold text-gray-800 text-sm md:text-base truncate">{result.name}</div>
+                                                                <div className="text-xs md:text-sm text-gray-500 flex items-center gap-2 mt-0.5">
+                                                                    <span className="font-semibold text-forest-teal bg-teal-50 px-2 py-0.5 rounded">{result.floor} Floor</span>
+                                                                    <span>•</span>
+                                                                    <span>{result.type}</span>
                                                                 </div>
                                                             </div>
-                                                            <i className="fas fa-chevron-right text-gray-400"></i>
+                                                            <i className="fas fa-arrow-right text-gray-300 text-sm"></i>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -642,10 +725,11 @@
                                         </div>
                                     )}
 
+                                    {/* RECENT SEARCHES */}
                                     {recentSearches.length > 0 && !searchQuery && (
                                         <div className="mt-4 text-left">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-sm font-medium text-blue-200">Recent Searches</span>
+                                            <div className="flex items-center justify-between mb-2 px-1">
+                                                <span className="text-xs font-medium uppercase tracking-wider text-blue-200">Recent Searches</span>
                                                 <button onClick={clearRecentSearches} className="text-xs text-blue-300 hover:text-white transition">
                                                     Clear All
                                                 </button>
@@ -658,22 +742,24 @@
                                                             setSearchQuery(search);
                                                             handleSearch(search);
                                                         }}
-                                                        className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-sm text-white hover:bg-white/20 transition"
+                                                        className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-xs md:text-sm text-white transition flex items-center gap-1.5"
                                                     >
-                                                        {search}
+                                                        <i className="fas fa-history text-electric-gold text-xs"></i> {search}
                                                     </button>
                                                 ))}
                                             </div>
                                         </div>
                                     )}
 
+                                    {/* POPULAR SEARCH SUGGESTIONS */}
                                     {recentSearches.length === 0 && !searchQuery && (
-                                        <div className="mt-4 flex flex-wrap justify-center gap-2">
+                                        <div className="mt-4 flex flex-wrap justify-center items-center gap-2">
+                                            <span className="text-xs text-blue-200 font-medium mr-1">Popular:</span>
                                             {popularSearches.map((s, i) => (
                                                 <button
                                                     key={i}
                                                     onClick={() => { setSearchQuery(s); handleSearch(s); }}
-                                                    className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-full text-sm text-blue-100 hover:bg-white/20 transition"
+                                                    className="px-3 py-1 bg-white/10 hover:bg-white/20 border border-white/15 rounded-full text-xs text-blue-100 transition"
                                                 >
                                                     {s}
                                                 </button>
@@ -683,40 +769,43 @@
                                 </div>
                             </Reveal>
 
-                            {/* Live stat counters, computed from real facility data */}
-                            <Reveal delay={280}>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto mt-12">
-                                    <div className="stat-card py-4">
+                            {/* LIVE STAT COUNTERS */}
+                            <Reveal delay={280} style={{ position: 'relative', zIndex: 10 }}>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto mt-12 md:mt-16">
+                                    <div className="stat-card py-4 px-3">
                                         <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalFloors} /></div>
-                                        <div className="text-xs md:text-sm text-blue-200 mt-1">Floors Mapped</div>
+                                        <div className="text-xs md:text-sm text-blue-100/90 font-medium mt-1">Floors Mapped</div>
                                     </div>
-                                    <div className="stat-card py-4">
+                                    <div className="stat-card py-4 px-3">
                                         <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalFacilities} /></div>
-                                        <div className="text-xs md:text-sm text-blue-200 mt-1">Total Facilities</div>
+                                        <div className="text-xs md:text-sm text-blue-100/90 font-medium mt-1">Total Facilities</div>
                                     </div>
-                                    <div className="stat-card py-4">
+                                    <div className="stat-card py-4 px-3">
                                         <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalClassrooms} /></div>
-                                        <div className="text-xs md:text-sm text-blue-200 mt-1">Classrooms</div>
+                                        <div className="text-xs md:text-sm text-blue-100/90 font-medium mt-1">Classrooms</div>
                                     </div>
-                                    <div className="stat-card py-4">
+                                    <div className="stat-card py-4 px-3">
                                         <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalLabs} /></div>
-                                        <div className="text-xs md:text-sm text-blue-200 mt-1">Labs</div>
+                                        <div className="text-xs md:text-sm text-blue-100/90 font-medium mt-1">Labs &amp; Offices</div>
                                     </div>
                                 </div>
                             </Reveal>
                         </div>
                     </div>
 
-                    <div className="max-w-6xl mx-auto px-4 py-10">
-                        {/* ---------------- ACTIVITIES ---------------- */}
-                        <Reveal className="mb-8">
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-xl md:text-2xl font-bold text-forest-teal">
-                                    <i className="fas fa-calendar-check text-electric-gold mr-2"></i>
-                                    Happening on Campus Right Now
-                                </h2>
-                                <a href="student-dashboard.html" className="text-forest-teal font-medium hover:underline text-sm whitespace-nowrap">
-                                    View All →
+                    <div className="max-w-6xl mx-auto px-4 py-12">
+                        {/* ---------------- ACTIVITIES SECTION ---------------- */}
+                        <Reveal className="mb-12">
+                            <div className="flex items-center justify-between mb-6">
+                                <div>
+                                    <h2 className="text-2xl md:text-3xl font-extrabold text-forest-teal flex items-center gap-2.5">
+                                        <i className="fas fa-calendar-check text-electric-gold"></i>
+                                        Happening on Campus Right Now
+                                    </h2>
+                                    <p className="text-sm text-gray-500 mt-1">Live activities posted by students &amp; staff</p>
+                                </div>
+                                <a href="student-dashboard.html" className="hidden sm:inline-flex items-center gap-1.5 text-forest-teal font-bold hover:underline text-sm bg-white px-4 py-2 rounded-full border border-gray-200 shadow-xs hover:border-forest-teal transition">
+                                    View All Activities →
                                 </a>
                             </div>
 
@@ -733,35 +822,39 @@
                                     ))}
                                 </div>
                             ) : activities.length === 0 ? (
-                                <div className="bg-white rounded-2xl p-8 text-center border border-gray-100">
-                                    <i className="fas fa-calendar-xmark text-3xl text-gray-300 mb-3"></i>
-                                    <p className="text-gray-500">No activities happening right now. Check back soon!</p>
+                                <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-xs">
+                                    <i className="fas fa-calendar-xmark text-4xl text-gray-300 mb-3"></i>
+                                    <p className="text-gray-600 font-semibold">No activities scheduled at this moment</p>
+                                    <p className="text-xs text-gray-400 mt-1">Log in as a student or admin to post the first campus event!</p>
                                 </div>
                             ) : (
-                                <div className="carousel-container flex gap-4 pb-4 overflow-x-auto">
+                                <div className="carousel-container flex gap-5 pb-4 overflow-x-auto">
                                     {activities.slice(0, 10).map((item) => {
                                         const eventDate = parseEventDateTime(item.date, item.startTime);
                                         const now = new Date();
                                         const status = eventDate < now ? 'Past' :
-                                                      new Date(item.date).getDate() === new Date().getDate() ? 'Today' : 'Upcoming';
+                                                      (item.date && new Date(item.date).toDateString() === new Date().toDateString()) ? 'Today' : 'Upcoming';
                                         return (
-                                            <div key={item.id} className="carousel-item bg-white rounded-2xl p-5 shadow-sm border border-gray-100 card-hover w-72">
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${status === 'Past' ? 'bg-gray-300 text-gray-600' : status === 'Today' ? 'status-today' : 'status-upcoming'}`}>
-                                                        {status}
-                                                    </span>
-                                                    <span className="text-xs text-gray-400">{item.date}</span>
+                                            <div key={item.id || Math.random()} className="carousel-item bg-white rounded-2xl p-5 shadow-sm border border-gray-100 card-hover w-72 flex flex-col justify-between">
+                                                <div>
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${status === 'Past' ? 'bg-gray-200 text-gray-600' : status === 'Today' ? 'status-today font-extrabold' : 'status-upcoming'}`}>
+                                                            {status}
+                                                        </span>
+                                                        <span className="text-xs text-gray-400 font-medium">{item.date || 'Campus Event'}</span>
+                                                    </div>
+                                                    <h3 className="font-bold text-gray-800 text-lg line-clamp-1">{item.title}</h3>
+                                                    <p className="text-xs md:text-sm text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">{item.description || 'Join fellow ING students for this campus activity.'}</p>
                                                 </div>
-                                                <h3 className="font-bold text-gray-800 text-lg">{item.title}</h3>
-                                                <p className="text-sm text-gray-500 mt-1 line-clamp-2">{item.description || 'No description'}</p>
-                                                <div className="mt-3 space-y-1 text-sm text-gray-600">
-                                                    <div><i className="fas fa-clock mr-2 text-electric-gold"></i>{item.startTime} - {item.endTime}</div>
-                                                    <div><i className="fas fa-location-dot mr-2 text-electric-gold"></i>{item.location}</div>
-                                                    <div><i className="fas fa-user mr-2 text-electric-gold"></i>{item.posterName || 'Student'}</div>
+                                                <div className="mt-4 pt-3 border-t border-gray-100">
+                                                    <div className="space-y-1.5 text-xs md:text-sm text-gray-600 mb-4">
+                                                        <div className="flex items-center gap-2"><i className="fas fa-clock text-electric-gold w-4 text-center"></i><span>{item.startTime || 'TBA'} - {item.endTime || 'TBA'}</span></div>
+                                                        <div className="flex items-center gap-2"><i className="fas fa-location-dot text-electric-gold w-4 text-center"></i><span className="truncate">{item.location || 'ING Campus'}</span></div>
+                                                    </div>
+                                                    <a href="student-dashboard.html" className="block w-full bg-forest-teal text-white py-2 rounded-xl font-bold transition-all duration-200 text-xs md:text-sm text-center hover:bg-[#0a4a42]">
+                                                        View Activity
+                                                    </a>
                                                 </div>
-                                                <a href="student-dashboard.html" className="mt-3 block w-full bg-forest-teal text-white py-2 rounded-full font-semibold transition-all duration-300 text-sm text-center hover:bg-[#0a4a42]">
-                                                    View Activity
-                                                </a>
                                             </div>
                                         );
                                     })}
@@ -769,27 +862,31 @@
                             )}
                         </Reveal>
 
-                        {/* ---------------- QUICK LINKS ---------------- */}
-                        <Reveal className="mb-4">
-                            <h2 className="text-xl md:text-2xl font-bold text-forest-teal mb-4">
-                                <i className="fas fa-bolt text-electric-gold mr-2"></i>Quick Access
+                        {/* ---------------- QUICK ACCESS SECTION ---------------- */}
+                        <Reveal delay={100} className="mb-8">
+                            <h2 className="text-2xl font-extrabold text-forest-teal mb-5 flex items-center gap-2">
+                                <i className="fas fa-bolt text-electric-gold"></i> Quick Navigation
                             </h2>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <a href="floornavigation.html" className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-100 card-hover">
-                                    <div className="text-3xl mb-2">🏛️</div>
-                                    <span className="text-sm font-semibold text-gray-700">Floor Navigation</span>
+                                <a href="floornavigation.html" className="bg-white rounded-2xl p-6 text-center shadow-xs border border-gray-100 card-hover group">
+                                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition">🏛️</div>
+                                    <span className="text-sm font-bold text-gray-800 block">Floor Navigation</span>
+                                    <span className="text-xs text-gray-400 mt-1 block">Interactive 13-Floor Map</span>
                                 </a>
-                                <a href="student-login.html" className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-100 card-hover">
-                                    <div className="text-3xl mb-2">🎓</div>
-                                    <span className="text-sm font-semibold text-gray-700">Student Login</span>
+                                <a href="student-login.html" className="bg-white rounded-2xl p-6 text-center shadow-xs border border-gray-100 card-hover group">
+                                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition">🎓</div>
+                                    <span className="text-sm font-bold text-gray-800 block">Student Portal</span>
+                                    <span className="text-xs text-gray-400 mt-1 block">Log in to view events</span>
                                 </a>
-                                <a href="admin-login.html" className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-100 card-hover">
-                                    <div className="text-3xl mb-2">👔</div>
-                                    <span className="text-sm font-semibold text-gray-700">Admin Login</span>
+                                <a href="admin-login.html" className="bg-white rounded-2xl p-6 text-center shadow-xs border border-gray-100 card-hover group">
+                                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition">👔</div>
+                                    <span className="text-sm font-bold text-gray-800 block">Admin Portal</span>
+                                    <span className="text-xs text-gray-400 mt-1 block">Manage Campus Data</span>
                                 </a>
-                                <a href="student-dashboard.html" className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-100 card-hover">
-                                    <div className="text-3xl mb-2">📊</div>
-                                    <span className="text-sm font-semibold text-gray-700">Dashboard</span>
+                                <a href="student-dashboard.html" className="bg-white rounded-2xl p-6 text-center shadow-xs border border-gray-100 card-hover group">
+                                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition">📊</div>
+                                    <span className="text-sm font-bold text-gray-800 block">Dashboard</span>
+                                    <span className="text-xs text-gray-400 mt-1 block">Activities &amp; Messages</span>
                                 </a>
                             </div>
                         </Reveal>
@@ -800,7 +897,7 @@
                         onClick={() => window.location.href = 'student-dashboard.html'}
                         title="Find a Friend"
                     >
-                        <span className="flex items-center gap-1 text-2xl">👥</span>
+                        <span className="flex items-center justify-center text-2xl">👥</span>
                     </button>
 
                     {showBackToTop && (
@@ -809,18 +906,18 @@
                         </button>
                     )}
 
-                    <div className="footer__cta mt-8">
+                    <div className="footer__cta mt-12">
                         <div className="art__animation">
                             <img src="https://ing.edu.np/images/art-animation.png" alt="" className="art__animation-img" />
                         </div>
                         <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
-                            <h2 className="text-3xl font-bold text-white mb-4">ING College of Innovation &amp; Leadership</h2>
-                            <p className="text-blue-200 mb-6">New Baneshwor, Kathmandu | +977 9715000120 | info@ing.edu.np</p>
+                            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-3">ING College of Innovation &amp; Leadership</h2>
+                            <p className="text-blue-100 text-sm md:text-base mb-6">New Baneshwor, Kathmandu | +977 9715000120 | info@ing.edu.np</p>
                             <div className="flex flex-wrap justify-center gap-4">
-                                <a href="student-login.html" onMouseDown={addRipple} className="ripple-btn btn-gold px-6 py-2 rounded-full font-bold transition-all duration-300 text-forest-teal">Student Login</a>
-                                <a href="admin-login.html" onMouseDown={addRipple} className="ripple-btn bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2 rounded-full font-semibold hover:bg-white/30 transition text-white">Admin Login</a>
+                                <a href="student-login.html" onMouseDown={addRipple} className="ripple-btn btn-gold px-7 py-2.5 rounded-full font-bold transition-all duration-300 text-forest-teal text-sm">Student Login</a>
+                                <a href="admin-login.html" onMouseDown={addRipple} className="ripple-btn bg-white/20 backdrop-blur-sm border border-white/30 px-7 py-2.5 rounded-full font-semibold hover:bg-white/30 transition text-white text-sm">Admin Login</a>
                             </div>
-                            <div className="mt-6 text-sm text-blue-300">
+                            <div className="mt-8 text-xs text-blue-200">
                                 © 2026 ING College of Innovation and Leadership. All Rights Reserved.
                             </div>
                         </div>
