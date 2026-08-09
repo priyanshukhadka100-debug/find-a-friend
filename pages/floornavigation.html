@@ -1,3 +1,4 @@
+<!-- floornavigation.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Floor Navigation · ING College</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Pannellum: 360 degree panorama viewer -->
+    <!-- Pannellum 360 viewer -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -15,35 +16,34 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         * { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        body { background: #F0F4F1; margin:0; }
+        body { background: #F0F4F1; margin:0; color: #334155; }
         .bg-forest-teal { background: #0D5C53; }
         .text-forest-teal { color: #0D5C53; }
         .bg-electric-gold { background: #FFC700; }
         .text-electric-gold { color: #FFC700; }
-        .btn-gold { background: #FFC700; color: #0D5C53; }
-        .btn-gold:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 8px 25px -8px rgba(255, 199, 0, 0.45); }
+        .btn-gold { background: #FFC700; color: #0D5C53; font-weight: 600; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -5px rgba(255, 199, 0, 0.35); }
         .card-hover { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(13, 92, 83, 0.15); }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 15px 30px -10px rgba(13, 92, 83, 0.12); }
         
-        /* ---------- Keyframe Animations ---------- */
         .fade-in { animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
         .slide-in { animation: slideIn 0.4s ease forwards; }
-        @keyframes slideIn { from { opacity:0; transform:translateX(-18px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes slideIn { from { opacity:0; transform:translateX(-14px); } to { opacity:1; transform:translateX(0); } }
         
-        .room-card { border-left: 4px solid #FFC700; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .room-card:hover { transform: translateX(6px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
-        .floor-btn { transition: all 0.25s ease; position: relative; overflow: hidden; }
-        .floor-btn:hover { transform: translateY(-2px) scale(1.04); background: #FFC700; color: #0D5C53; }
-        .floor-btn.active { background: #FFC700; color: #0D5C53; transform: scale(1.05); font-weight: 700; box-shadow: 0 4px 15px rgba(255, 199, 0, 0.4); }
+        .room-card { border-left: 3px solid #FFC700; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+        .room-card:hover { transform: translateX(4px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+        .floor-btn { transition: all 0.2s ease; position: relative; overflow: hidden; font-weight: 500; }
+        .floor-btn:hover { transform: translateY(-1px); background: #FFC700; color: #0D5C53; }
+        .floor-btn.active { background: #FFC700; color: #0D5C53; font-weight: 600; box-shadow: 0 4px 12px rgba(255, 199, 0, 0.35); }
         .floor-btn.all-btn { background: #0D5C53; color: white; }
         .floor-btn.all-btn:hover { background: #FFC700; color: #0D5C53; }
-        .floor-btn.all-btn.active { background: #FFC700; color: #0D5C53; transform: scale(1.05); box-shadow: 0 4px 15px rgba(255, 199, 0, 0.4); }
+        .floor-btn.all-btn.active { background: #FFC700; color: #0D5C53; font-weight: 600; box-shadow: 0 4px 12px rgba(255, 199, 0, 0.35); }
         
-        .floor-indicator { height: 4px; border-radius: 999px; background: linear-gradient(90deg, #FFC700, #0D5C53); transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .floor-indicator { height: 3px; border-radius: 999px; background: linear-gradient(90deg, #FFC700, #0D5C53); transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         
-        .facility-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; transition: transform 0.3s; }
-        .room-card:hover .facility-icon { transform: scale(1.1) rotate(4deg); }
+        .facility-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; transition: transform 0.25s; }
+        .room-card:hover .facility-icon { transform: scale(1.08); }
         
         .bg-facility-sport { background: #dbeafe; color: #1a4a7a; }
         .bg-facility-food { background: #fef3c7; color: #92400e; }
@@ -54,40 +54,37 @@
         .bg-facility-lecture { background: #fef3c7; color: #92400e; }
         .bg-facility-medical { background: #fee2e2; color: #991b1b; }
         .footer__cta { background: linear-gradient(135deg, #0D5C53 0%, #1a7a6e 50%, #2a9a8a 100%); padding: 30px 0; position: relative; overflow: hidden; }
-        .art__animation { position: absolute; right: 0; bottom: 0; opacity: 0.1; }
+        .art__animation { position: absolute; right: 0; bottom: 0; opacity: 0.08; }
 
         /* ---------- Media tabs ---------- */
-        .media-tab { padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600; transition: all 0.25s; cursor: pointer; border: 1px solid transparent; }
-        .media-tab.active { background: #0D5C53; color: white; box-shadow: 0 4px 12px rgba(13,92,83,0.3); }
+        .media-tab { padding: 7px 16px; border-radius: 999px; font-size: 12px; font-weight: 500; transition: all 0.2s; cursor: pointer; border: 1px solid transparent; }
+        .media-tab.active { background: #0D5C53; color: white; font-weight: 600; }
         .media-tab.inactive { background: #e5eae7; color: #4b5563; }
         .media-tab.inactive:hover { background: #d8e0dc; }
         .media-tab.locked { background: #e5eae7; color: #9ca3af; cursor: not-allowed; }
-        .soon-pill { background: #FFC700; color: #0D5C53; font-size: 9px; padding: 1px 6px; border-radius: 999px; font-weight: 800; margin-left: 6px; vertical-align: middle; }
+        .soon-pill { background: #FFC700; color: #0D5C53; font-size: 9px; padding: 1px 5px; border-radius: 999px; font-weight: 700; margin-left: 5px; vertical-align: middle; }
 
-        .plan-frame { position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 35px -10px rgba(0,0,0,0.18); background: white; border: 1px solid #e5eae7; }
-        .plan-frame img { cursor: zoom-in; transition: transform 0.4s ease; }
-        .plan-frame:hover img { transform: scale(1.015); }
+        .plan-frame { position: relative; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 30px -8px rgba(0,0,0,0.15); background: white; border: 1px solid #e5eae7; }
+        .plan-frame img { cursor: zoom-in; transition: transform 0.3s ease; }
+        .plan-frame:hover img { transform: scale(1.01); }
         
         .plan-skeleton { background: linear-gradient(90deg, #eef1ef 25%, #e3e8e5 37%, #eef1ef 63%); background-size: 400% 100%; animation: skeletonShine 1.4s ease infinite; }
         @keyframes skeletonShine { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
 
-        .no-media-box { border: 2px dashed #cbd5e1; border-radius: 20px; padding: 48px 24px; text-align: center; background: white; }
+        .no-media-box { border: 2px dashed #cbd5e1; border-radius: 18px; padding: 40px 20px; text-align: center; background: white; }
 
-        /* ---------- Lightbox ---------- */
-        .lightbox-backdrop { position: fixed; inset: 0; background: rgba(6,17,17,0.92); z-index: 400; display: flex; align-items: center; justify-content: center; animation: fadeUp 0.2s ease; padding: 24px; backdrop-filter: blur(8px); }
-        .lightbox-close { position: absolute; top: 20px; right: 24px; color: white; font-size: 28px; cursor: pointer; z-index: 401; transition: transform 0.2s; }
-        .lightbox-close:hover { transform: scale(1.2); }
-        .lightbox-img { max-width: 100%; max-height: 88vh; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .lightbox-backdrop { position: fixed; inset: 0; background: rgba(6,17,17,0.9); z-index: 400; display: flex; align-items: center; justify-content: center; animation: fadeUp 0.2s ease; padding: 20px; backdrop-filter: blur(6px); }
+        .lightbox-close { position: absolute; top: 16px; right: 20px; color: white; font-size: 24px; cursor: pointer; z-index: 401; }
+        .lightbox-img { max-width: 100%; max-height: 88vh; border-radius: 10px; box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
 
-        .panorama-shell { border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.2); height: 420px; }
+        .panorama-shell { border-radius: 18px; overflow: hidden; box-shadow: 0 10px 30px -8px rgba(0,0,0,0.15); height: 400px; }
 
-        /* ---------- Toast ---------- */
         .toast-wrap { position: fixed; top: 20px; right: 20px; z-index: 500; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: white; border-left: 4px solid #FFC700; border-radius: 12px; padding: 14px 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); min-width: 260px; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1); }
+        .toast { background: white; border-left: 4px solid #FFC700; border-radius: 10px; padding: 12px 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.12); min-width: 250px; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1); }
         @keyframes toastIn { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: translateX(0); } }
 
-        .top-btn { position: fixed; bottom: 25px; right: 25px; width: 44px; height: 44px; border-radius: 50%; background: #0D5C53; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,0.2); z-index: 100; cursor: pointer; transition: all 0.3s; }
-        .top-btn:hover { transform: translateY(-4px); background: #0a4a42; }
+        .top-btn { position: fixed; bottom: 25px; right: 25px; width: 40px; height: 44px; border-radius: 50%; background: #0D5C53; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.18); z-index: 100; cursor: pointer; transition: all 0.25s; }
+        .top-btn:hover { transform: translateY(-3px); background: #0a4a42; }
     </style>
 </head>
 <body>
@@ -289,11 +286,11 @@
             <div className="toast-wrap">
                 {toasts.map(t => (
                     <div key={t.id} className="toast">
-                        <div className="font-semibold text-forest-teal text-sm flex items-center gap-2">
+                        <div className="font-semibold text-forest-teal text-xs md:text-sm flex items-center gap-2">
                             <i className={`fas ${t.icon || 'fa-circle-info'} text-electric-gold`}></i>
                             {t.title}
                         </div>
-                        {t.message && <div className="text-gray-500 text-xs mt-1">{t.message}</div>}
+                        {t.message && <div className="text-gray-500 text-xs mt-0.5">{t.message}</div>}
                     </div>
                 ))}
             </div>
@@ -326,7 +323,7 @@
             }, [tab, panoramaUrl]);
 
             return (
-                <div className="my-6 fade-in">
+                <div className="my-5 fade-in">
                     <div className="flex items-center gap-2 mb-3">
                         <button
                             className={`media-tab ${tab === 'plan' ? 'active' : 'inactive'}`}
@@ -348,7 +345,7 @@
 
                     {tab === 'plan' && plan && (
                         <div className="plan-frame group">
-                            {!imgLoaded && <div className="plan-skeleton w-full" style={{ height: 420 }}></div>}
+                            {!imgLoaded && <div className="plan-skeleton w-full" style={{ height: 400 }}></div>}
                             <img
                                 src={plan.url}
                                 alt={`${floor} floor plan`}
@@ -361,20 +358,20 @@
 
                     {tab === 'plan' && !plan && (
                         <div className="no-media-box">
-                            <i className="fas fa-drafting-compass text-4xl text-gray-300 mb-3 animate-pulse"></i>
-                            <h4 className="font-bold text-gray-700">Floor plan map coming soon</h4>
-                            <p className="text-sm text-gray-400 mt-1 max-w-sm mx-auto">
+                            <i className="fas fa-drafting-compass text-3xl text-gray-300 mb-2 animate-pulse"></i>
+                            <h4 className="font-semibold text-gray-700 text-sm">Floor plan map coming soon</h4>
+                            <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto font-normal">
                                 We are preparing the architectural diagram for floor {floor}. The room directory below is updated &amp; accurate.
                             </p>
                         </div>
                     )}
 
                     {tab === 'plan' && plan && imgLoaded && (
-                        <p className="text-xs md:text-sm text-gray-500 mt-2 text-center flex items-center justify-center gap-2">
+                        <p className="text-xs text-gray-500 mt-2 text-center flex items-center justify-center gap-2 font-normal">
                             <span>{plan.caption}</span>
                             <span className="text-gray-300">•</span>
-                            <button className="text-forest-teal font-semibold hover:underline flex items-center gap-1" onClick={() => setLightbox(true)}>
-                                Zoom Map <i className="fas fa-magnifying-glass-plus text-xs"></i>
+                            <button className="text-forest-teal font-medium hover:underline flex items-center gap-1" onClick={() => setLightbox(true)}>
+                                Zoom Map <i className="fas fa-magnifying-glass-plus text-[10px]"></i>
                             </button>
                         </p>
                     )}
@@ -491,117 +488,117 @@
                 <div className="min-h-screen bg-[#F0F4F1]">
                     <Toasts toasts={toasts} />
 
-                    <header className="bg-forest-teal text-white sticky top-0 z-30 shadow-lg">
-                        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+                    <header className="bg-forest-teal text-white sticky top-0 z-30 shadow-md">
+                        <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                                    <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING" className="h-12 w-auto" />
+                                <div className="w-9 h-9 rounded-xl flex items-center justify-center">
+                                    <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING" className="h-10 w-auto" />
                                 </div>
                                 <div>
-                                    <h1 className="text-lg md:text-xl font-bold">🏛️ Floor Navigation</h1>
-                                    <p className="text-xs text-blue-200 font-light">ING College · {totalFloors} Floors Mapped</p>
+                                    <h1 className="text-base md:text-lg font-bold tracking-tight">🏛️ Floor Navigation</h1>
+                                    <p className="text-[11px] text-blue-200 font-light">ING College · {totalFloors} Floors Mapped</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 md:gap-3">
-                                <a href="../index.html" className="text-xs md:text-sm text-white/80 hover:text-white px-3 py-1.5 border border-white/20 rounded-full transition hover:bg-white/10 flex items-center gap-1.5">
+                                <a href="../index.html" className="text-xs text-white/80 hover:text-white px-3 py-1.5 border border-white/20 rounded-full transition hover:bg-white/10 flex items-center gap-1">
                                     <i className="fas fa-home"></i> <span className="hidden sm:inline">Home</span>
                                 </a>
-                                <a href="student-dashboard.html" className="text-xs md:text-sm text-white/80 hover:text-white px-3 py-1.5 border border-white/20 rounded-full transition hover:bg-white/10 flex items-center gap-1.5">
+                                <a href="student-dashboard.html" className="text-xs text-white/80 hover:text-white px-3 py-1.5 border border-white/20 rounded-full transition hover:bg-white/10 flex items-center gap-1">
                                     <i className="fas fa-arrow-left"></i> <span className="hidden sm:inline">Dashboard</span>
                                 </a>
                             </div>
                         </div>
                     </header>
 
-                    <div className="max-w-7xl mx-auto px-4 py-6">
+                    <div className="max-w-7xl mx-auto px-4 py-5">
                         {/* FLOOR SELECTOR CONTROLS */}
-                        <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100 mb-6 slide-in">
-                            <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                                <div className="flex items-center gap-2.5">
-                                    <span className="text-xs md:text-sm font-semibold text-gray-500">Active Floor:</span>
-                                    <span className="text-sm md:text-base font-extrabold text-forest-teal bg-teal-50 px-3 py-1 rounded-lg border border-teal-100">{currentFloorData.label}</span>
+                        <div className="bg-white rounded-2xl shadow-xs p-3.5 border border-gray-100 mb-5 slide-in">
+                            <div className="flex items-center justify-between mb-2.5 flex-wrap gap-2">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs font-semibold text-gray-500">Active Floor:</span>
+                                    <span className="text-xs md:text-sm font-semibold text-forest-teal bg-teal-50 px-2.5 py-0.5 rounded-md border border-teal-100">{currentFloorData.label}</span>
                                     {selectedFloor === 'All' && (
-                                        <span className="text-xs bg-amber-100 text-amber-800 font-semibold px-2.5 py-0.5 rounded-full">
+                                        <span className="text-[11px] bg-amber-100 text-amber-800 font-medium px-2 py-0.5 rounded-full">
                                             {currentRooms.length} rooms total
                                         </span>
                                     )}
                                 </div>
-                                <div className="flex gap-2">
-                                    <button onClick={prevFloor} className="px-3 py-1.5 border border-gray-200 rounded-xl hover:bg-gray-50 transition text-xs md:text-sm font-semibold text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed" disabled={floorIndex <= 0}>
-                                        <i className="fas fa-chevron-left mr-1"></i> Prev
+                                <div className="flex gap-1.5">
+                                    <button onClick={prevFloor} className="px-2.5 py-1 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-xs font-medium text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed" disabled={floorIndex <= 0}>
+                                        <i className="fas fa-chevron-left mr-1 text-[10px]"></i> Prev
                                     </button>
-                                    <button onClick={nextFloor} className="px-3 py-1.5 border border-gray-200 rounded-xl hover:bg-gray-50 transition text-xs md:text-sm font-semibold text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed" disabled={floorIndex >= FLOOR_ORDER.length - 1}>
-                                        Next <i className="fas fa-chevron-right ml-1"></i>
+                                    <button onClick={nextFloor} className="px-2.5 py-1 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-xs font-medium text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed" disabled={floorIndex >= FLOOR_ORDER.length - 1}>
+                                        Next <i className="fas fa-chevron-right ml-1 text-[10px]"></i>
                                     </button>
                                 </div>
                             </div>
                             
-                            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pt-1 pb-2">
+                            <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto pt-1 pb-1">
                                 {FLOOR_ORDER.map(floor => (
                                     <button
                                         key={floor}
                                         onClick={() => goToFloor(floor)}
-                                        className={`floor-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedFloor === floor ? 'active' : floor === 'All' ? 'all-btn' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                        className={`floor-btn px-3 py-1 rounded-lg text-xs transition-all ${selectedFloor === floor ? 'active' : floor === 'All' ? 'all-btn' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                                     >
                                         {floor === 'All' ? '🌟 All Floors' : floor}
                                     </button>
                                 ))}
                             </div>
-                            <div className="floor-indicator mt-2" style={{ width: `${((floorIndex + 1) / FLOOR_ORDER.length) * 100}%` }}></div>
+                            <div className="floor-indicator mt-1.5" style={{ width: `${((floorIndex + 1) / FLOOR_ORDER.length) * 100}%` }}></div>
                         </div>
 
                         {/* CURRENT FLOOR BANNER */}
-                        <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 mb-6 fade-in">
-                            <div className="flex items-center gap-4 mb-2">
-                                <div className="w-12 h-12 md:w-14 md:h-14 bg-electric-gold rounded-2xl flex items-center justify-center text-2xl md:text-3xl shadow-md text-forest-teal shrink-0">
+                        <div className="bg-white rounded-2xl shadow-xs p-5 border border-gray-100 mb-5 fade-in">
+                            <div className="flex items-center gap-3.5 mb-1.5">
+                                <div className="w-11 h-11 md:w-12 md:h-12 bg-electric-gold rounded-xl flex items-center justify-center text-xl md:text-2xl shadow-xs text-forest-teal shrink-0">
                                     {selectedFloor === 'All' ? '🏛️' :
                                      selectedFloor === 'Ground' ? '🏢' :
                                      selectedFloor === 'B2' || selectedFloor === 'B1' ? '🚗' :
                                      selectedFloor === '10th' ? '🌅' : '📚'}
                                 </div>
                                 <div>
-                                    <h2 className="text-xl md:text-3xl font-extrabold text-gray-800 tracking-tight">{currentFloorData.label}</h2>
+                                    <h2 className="text-lg md:text-2xl font-bold text-gray-800 tracking-tight">{currentFloorData.label}</h2>
                                     {currentFloorData.theme && (
-                                        <p className="text-xs md:text-sm text-forest-teal font-semibold mt-0.5">{currentFloorData.theme}</p>
+                                        <p className="text-xs text-forest-teal font-medium mt-0.5">{currentFloorData.theme}</p>
                                     )}
                                     {selectedFloor === 'All' && (
-                                        <p className="text-xs text-gray-400">Viewing comprehensive index across all {totalFloors} campus levels</p>
+                                        <p className="text-xs text-gray-400 font-normal">Viewing comprehensive index across all {totalFloors} campus levels</p>
                                     )}
                                 </div>
                             </div>
-                            <div className="text-xs md:text-sm text-gray-500 mt-3 pt-3 border-t border-gray-100 flex items-center gap-2">
-                                <i className="fas fa-door-open text-electric-gold"></i>
+                            <div className="text-xs text-gray-500 mt-2.5 pt-2.5 border-t border-gray-100 flex items-center gap-2 font-normal">
+                                <i className="fas fa-door-open text-electric-gold text-xs"></i>
                                 <span>{filteredRooms.length} room/facility items listed</span>
                                 {searchQuery && filteredRooms.length !== currentRooms.length && (
-                                    <span className="text-xs text-forest-teal font-bold">(filtered from {currentRooms.length})</span>
+                                    <span className="text-xs text-forest-teal font-medium">(filtered from {currentRooms.length})</span>
                                 )}
                             </div>
                         </div>
 
                         {/* SEARCH INPUT */}
-                        <div className="mb-6 slide-in">
+                        <div className="mb-5 slide-in">
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                                    <i className="fas fa-search"></i>
+                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <i className="fas fa-search text-xs"></i>
                                 </span>
                                 <input
                                     type="text"
                                     placeholder={selectedFloor === 'All' ? "Search all floors for room, lab, cafeteria..." : `Search rooms or facilities on ${selectedFloor} floor...`}
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                    className="w-full pl-12 pr-10 py-3.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition bg-white shadow-xs text-sm md:text-base"
+                                    className="w-full pl-10 pr-9 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#0D5C53] focus:border-transparent transition bg-white shadow-xs text-xs md:text-sm font-normal"
                                 />
                                 {searchQuery && (
                                     <button
                                         onClick={() => setSearchQuery('')}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                     >
-                                        <i className="fas fa-times"></i>
+                                        <i className="fas fa-times text-xs"></i>
                                     </button>
                                 )}
                             </div>
                             {selectedFloor === 'All' && searchQuery && (
-                                <div className="mt-2 text-xs md:text-sm text-gray-500 pl-1">
+                                <div className="mt-1.5 text-xs text-gray-500 pl-1 font-normal">
                                     Found {filteredRooms.length} result{filteredRooms.length !== 1 ? 's' : ''}
                                     {filteredRooms.length > 0 && ` across ${new Set(filteredRooms.map(r => r.floor)).size} floor(s)`}
                                 </div>
@@ -616,44 +613,44 @@
                             />
                         )}
 
-                        {/* ROOM DIRECTORY GRID WITH STAGGERED ENTRANCE */}
+                        {/* ROOM DIRECTORY GRID */}
                         <div className="fade-in">
                             {filteredRooms.length === 0 ? (
-                                <div className="bg-white rounded-2xl p-12 text-center border border-gray-100 shadow-xs">
-                                    <span className="text-5xl block mb-3">🔍</span>
-                                    <h3 className="text-lg font-bold text-gray-700">No facilities found</h3>
-                                    <p className="text-xs md:text-sm text-gray-400 mt-1">
+                                <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-xs">
+                                    <span className="text-4xl block mb-2">🔍</span>
+                                    <h3 className="text-base font-semibold text-gray-700">No facilities found</h3>
+                                    <p className="text-xs text-gray-400 mt-1 font-normal">
                                         {searchQuery ? 'Try adjusting your search criteria' : 'No rooms listed for this floor yet'}
                                     </p>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
                                     {filteredRooms.map((room, index) => (
                                         <div
                                             key={room.id}
-                                            className={`bg-white rounded-xl p-4 border border-gray-100 room-card card-hover shadow-xs ${room.isNew ? 'border-l-teal-500' : ''}`}
-                                            style={{ animation: `fadeUp 0.35s ease forwards`, animationDelay: `${Math.min(index * 35, 400)}ms` }}
+                                            className={`bg-white rounded-xl p-3.5 border border-gray-100 room-card card-hover shadow-xs ${room.isNew ? 'border-l-teal-500' : ''}`}
+                                            style={{ animation: `fadeUp 0.35s ease forwards`, animationDelay: `${Math.min(index * 30, 350)}ms` }}
                                         >
                                             <div className="flex items-start gap-3">
                                                 <div className={`facility-icon ${getIconBg(room.type)}`}>
                                                     <i className={`fas ${room.icon || 'fa-building'}`}></i>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <h4 className="font-bold text-gray-800 text-sm md:text-base truncate flex items-center gap-1.5">
+                                                    <h4 className="font-semibold text-gray-800 text-xs md:text-sm truncate">
                                                         {room.name}
                                                     </h4>
-                                                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                                                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 font-semibold text-gray-600">
+                                                    <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                                                        <span className="text-[11px] px-2 py-0.5 rounded-md bg-gray-100 font-medium text-gray-600">
                                                             {room.type}
                                                         </span>
                                                         {selectedFloor === 'All' && room.floor && (
-                                                            <span className="text-xs px-2.5 py-0.5 rounded-full bg-teal-50 text-forest-teal font-bold">
-                                                                <i className="fas fa-location-dot mr-1 text-electric-gold"></i>{room.floor}
+                                                            <span className="text-[11px] px-2 py-0.5 rounded-md bg-teal-50 text-forest-teal font-semibold">
+                                                                <i className="fas fa-location-dot mr-1 text-electric-gold text-[10px]"></i>{room.floor}
                                                             </span>
                                                         )}
                                                         {selectedFloor !== 'All' && (
-                                                            <span className="text-xs text-gray-400">
-                                                                <i className="fas fa-location-dot mr-1"></i>{selectedFloor}
+                                                            <span className="text-[11px] text-gray-400 font-normal">
+                                                                <i className="fas fa-location-dot mr-1 text-[10px]"></i>{selectedFloor}
                                                             </span>
                                                         )}
                                                     </div>
@@ -666,52 +663,52 @@
                         </div>
 
                         {/* STATS OVERVIEW */}
-                        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 slide-in">
-                            <div className="bg-white rounded-xl p-4 shadow-xs border border-gray-100 text-center card-hover">
-                                <div className="text-2xl font-extrabold text-forest-teal">{totalFloors}</div>
-                                <div className="text-xs text-gray-500 font-medium">Total Floors</div>
+                        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 slide-in">
+                            <div className="bg-white rounded-xl p-3.5 shadow-xs border border-gray-100 text-center card-hover">
+                                <div className="text-xl font-bold text-forest-teal">{totalFloors}</div>
+                                <div className="text-xs text-gray-500 font-normal mt-0.5">Total Floors</div>
                             </div>
-                            <div className="bg-white rounded-xl p-4 shadow-xs border border-gray-100 text-center card-hover">
-                                <div className="text-2xl font-extrabold text-forest-teal">{totalRooms}</div>
-                                <div className="text-xs text-gray-500 font-medium">Total Facilities</div>
+                            <div className="bg-white rounded-xl p-3.5 shadow-xs border border-gray-100 text-center card-hover">
+                                <div className="text-xl font-bold text-forest-teal">{totalRooms}</div>
+                                <div className="text-xs text-gray-500 font-normal mt-0.5">Total Facilities</div>
                             </div>
-                            <div className="bg-white rounded-xl p-4 shadow-xs border border-gray-100 text-center card-hover">
-                                <div className="text-2xl font-extrabold text-forest-teal">{filteredRooms.length}</div>
-                                <div className="text-xs text-gray-500 font-medium">{selectedFloor === 'All' ? 'Matching Results' : 'Floor Facilities'}</div>
+                            <div className="bg-white rounded-xl p-3.5 shadow-xs border border-gray-100 text-center card-hover">
+                                <div className="text-xl font-bold text-forest-teal">{filteredRooms.length}</div>
+                                <div className="text-xs text-gray-500 font-normal mt-0.5">{selectedFloor === 'All' ? 'Matching Results' : 'Floor Facilities'}</div>
                             </div>
-                            <div className="bg-white rounded-xl p-4 shadow-xs border border-gray-100 text-center card-hover">
-                                <div className="text-2xl font-extrabold text-forest-teal">{selectedFloor === 'All' ? '🌟' : floorIndex}</div>
-                                <div className="text-xs text-gray-500 font-medium">{selectedFloor === 'All' ? 'All Selected' : 'Floor Index'}</div>
+                            <div className="bg-white rounded-xl p-3.5 shadow-xs border border-gray-100 text-center card-hover">
+                                <div className="text-xl font-bold text-forest-teal">{selectedFloor === 'All' ? '🌟' : floorIndex}</div>
+                                <div className="text-xs text-gray-500 font-normal mt-0.5">{selectedFloor === 'All' ? 'All Selected' : 'Floor Index'}</div>
                             </div>
                         </div>
 
                         {/* LEGEND */}
-                        <div className="mt-6 bg-white rounded-xl p-4 border border-gray-100 slide-in">
-                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2.5">Category Legend</h4>
-                            <div className="flex flex-wrap gap-3.5">
-                                <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700"><span className="w-3 h-3 rounded-full bg-facility-sport"></span> Classroom/Sports</span>
-                                <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700"><span className="w-3 h-3 rounded-full bg-facility-food"></span> Cafeteria/Food</span>
-                                <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700"><span className="w-3 h-3 rounded-full bg-facility-office"></span> Administration/Office</span>
-                                <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700"><span className="w-3 h-3 rounded-full bg-facility-lab"></span> Laboratory</span>
-                                <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700"><span className="w-3 h-3 rounded-full bg-facility-parking"></span> Parking</span>
-                                <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700"><span className="w-3 h-3 rounded-full bg-facility-library"></span> Library</span>
-                                <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-700"><span className="w-3 h-3 rounded-full bg-facility-lecture"></span> Lecture Hall</span>
+                        <div className="mt-5 bg-white rounded-xl p-3.5 border border-gray-100 slide-in">
+                            <h4 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Category Legend</h4>
+                            <div className="flex flex-wrap gap-3">
+                                <span className="flex items-center gap-1.5 text-xs font-normal text-gray-600"><span className="w-2.5 h-2.5 rounded-full bg-facility-sport"></span> Classroom/Sports</span>
+                                <span className="flex items-center gap-1.5 text-xs font-normal text-gray-600"><span className="w-2.5 h-2.5 rounded-full bg-facility-food"></span> Cafeteria/Food</span>
+                                <span className="flex items-center gap-1.5 text-xs font-normal text-gray-600"><span className="w-2.5 h-2.5 rounded-full bg-facility-office"></span> Administration/Office</span>
+                                <span className="flex items-center gap-1.5 text-xs font-normal text-gray-600"><span className="w-2.5 h-2.5 rounded-full bg-facility-lab"></span> Laboratory</span>
+                                <span className="flex items-center gap-1.5 text-xs font-normal text-gray-600"><span className="w-2.5 h-2.5 rounded-full bg-facility-parking"></span> Parking</span>
+                                <span className="flex items-center gap-1.5 text-xs font-normal text-gray-600"><span className="w-2.5 h-2.5 rounded-full bg-facility-library"></span> Library</span>
+                                <span className="flex items-center gap-1.5 text-xs font-normal text-gray-600"><span className="w-2.5 h-2.5 rounded-full bg-facility-lecture"></span> Lecture Hall</span>
                             </div>
                         </div>
                     </div>
 
                     {showTopBtn && (
                         <div className="top-btn" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} title="Back to Top">
-                            <i className="fas fa-arrow-up"></i>
+                            <i className="fas fa-arrow-up text-xs"></i>
                         </div>
                     )}
 
-                    <div className="footer__cta mt-12">
+                    <div className="footer__cta mt-10">
                         <div className="art__animation">
                             <img src="https://ing.edu.np/images/art-animation.png" alt="" className="art__animation-img" />
                         </div>
                         <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
-                            <p className="text-xs md:text-sm text-blue-200 font-medium">
+                            <p className="text-xs text-blue-200/80 font-normal">
                                 © 2026 ING College of Innovation and Leadership. All Rights Reserved.
                             </p>
                         </div>
@@ -723,4 +720,4 @@
         ReactDOM.createRoot(document.getElementById('root')).render(<FloorNavigationApp />);
     </script>
 </body>
-</html>
+</htm

@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,7 @@
     <title>Find a Friend · ING College</title>
     <meta name="description" content="ING College's campus companion — find any classroom, lab or office, discover what's happening on campus right now, and connect with fellow students.">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -36,7 +37,7 @@
         }
         * { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         html { scroll-padding-top: 90px; }
-        body { background: var(--light-mint); margin:0; overflow-x: hidden; }
+        body { background: var(--light-mint); margin:0; overflow-x: hidden; color: #334155; }
         ::selection { background: var(--electric-gold); color: var(--forest-teal); }
 
         .bg-forest-teal { background: var(--forest-teal); }
@@ -44,37 +45,37 @@
         .bg-electric-gold { background: var(--electric-gold); }
         .text-electric-gold { color: var(--electric-gold); }
         .bg-light-mint { background: var(--light-mint); }
-        .btn-gold { background: var(--electric-gold); color: var(--forest-teal); }
-        .btn-gold:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 25px -5px rgba(255, 199, 0, 0.45); }
+        
+        .btn-gold { background: var(--electric-gold); color: var(--forest-teal); font-weight: 600; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(255, 199, 0, 0.35); }
         .glass-effect { background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.18); }
         .card-hover { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .card-hover:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 40px -12px rgba(13, 92, 83, 0.18); }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 15px 30px -10px rgba(13, 92, 83, 0.12); }
 
-        /* ---------- Entrance & Interactive Animations ---------- */
+        /* ---------- Animations ---------- */
         .fade-in { animation: fadeUp 0.5s ease forwards; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         .slide-in { animation: slideIn 0.4s ease forwards; }
-        @keyframes slideIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes slideIn { from { opacity:0; transform:translateX(-16px); } to { opacity:1; transform:translateX(0); } }
         .live-pulse { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity:0.6; transform: scale(1); } 50% { opacity:1; transform: scale(1.2); } }
+        @keyframes pulse { 0%, 100% { opacity:0.6; transform: scale(1); } 50% { opacity:1; transform: scale(1.15); } }
 
-        .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+        .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1); }
         .reveal.in-view { opacity: 1; transform: translateY(0); }
 
-        /* ---------- Hero background design ---------- */
+        /* ---------- Background Design ---------- */
         .hero-blobs { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
-        .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; }
-        .blob-1 { width: 420px; height: 420px; background: radial-gradient(circle, #FFC700 0%, rgba(255,199,0,0) 70%); top: -140px; right: -100px; animation: blobFloat1 14s ease-in-out infinite; }
-        .blob-2 { width: 360px; height: 360px; background: radial-gradient(circle, #2a9a8a 0%, rgba(42,154,138,0) 70%); bottom: -160px; left: -80px; animation: blobFloat2 16s ease-in-out infinite; }
-        .blob-3 { width: 280px; height: 280px; background: radial-gradient(circle, #FFC700 0%, rgba(255,199,0,0) 70%); top: 35%; left: 25%; opacity: 0.2; animation: blobFloat1 18s ease-in-out infinite reverse; }
-        @keyframes blobFloat1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-45px, 35px) scale(1.12); } }
-        @keyframes blobFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(35px, -30px) scale(1.08); } }
+        .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.35; }
+        .blob-1 { width: 400px; height: 420px; background: radial-gradient(circle, #FFC700 0%, rgba(255,199,0,0) 70%); top: -140px; right: -100px; animation: blobFloat1 16s ease-in-out infinite; }
+        .blob-2 { width: 360px; height: 360px; background: radial-gradient(circle, #2a9a8a 0%, rgba(42,154,138,0) 70%); bottom: -160px; left: -80px; animation: blobFloat2 18s ease-in-out infinite; }
+        .blob-3 { width: 280px; height: 280px; background: radial-gradient(circle, #FFC700 0%, rgba(255,199,0,0) 70%); top: 35%; left: 25%; opacity: 0.15; animation: blobFloat1 20s ease-in-out infinite reverse; }
+        @keyframes blobFloat1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-30px, 25px) scale(1.08); } }
+        @keyframes blobFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(25px, -20px) scale(1.05); } }
 
-        /* Modern Dot Matrix Grid Background */
         .hero-pattern {
             background-image: 
-                radial-gradient(rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px),
-                radial-gradient(rgba(255, 199, 0, 0.1) 1.5px, transparent 1.5px);
+                radial-gradient(rgba(255, 255, 255, 0.12) 1.2px, transparent 1.2px),
+                radial-gradient(rgba(255, 199, 0, 0.08) 1.2px, transparent 1.2px);
             background-size: 28px 28px;
             background-position: 0 0, 14px 14px;
         }
@@ -87,70 +88,64 @@
         .nav-link:hover::after { width: 100%; }
         .header-shrink { padding-top: 0.65rem !important; padding-bottom: 0.65rem !important; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.35) !important; }
 
-        /* ---------- Search input styling ---------- */
-        .search-input { transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-        .search-input:focus { outline: none; border-color: var(--electric-gold); box-shadow: 0 0 0 4px rgba(255, 199, 0, 0.35), 0 20px 40px -10px rgba(0,0,0,0.25); }
+        /* ---------- Search Input ---------- */
+        .search-input { transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); font-weight: 400; }
+        .search-input:focus { outline: none; border-color: var(--electric-gold); box-shadow: 0 0 0 3px rgba(255, 199, 0, 0.25), 0 15px 30px -8px rgba(0,0,0,0.2); }
         .search-result-card { transition: all 0.2s; cursor: pointer; }
-        .search-result-card:hover, .search-result-card.kbd-active { transform: translateX(6px); background: #f0f7f5; border-left: 4px solid var(--forest-teal); }
+        .search-result-card:hover, .search-result-card.kbd-active { transform: translateX(4px); background: #f0f7f5; border-left: 3px solid var(--forest-teal); }
 
-        /* ---------- Floating & Scroll elements ---------- */
+        /* ---------- Floating Controls ---------- */
         .floating-btn {
             position: fixed; bottom: 30px; right: 30px;
             background: var(--electric-gold); color: var(--forest-teal);
-            width: 64px; height: 64px; border-radius: 50%;
+            width: 58px; height: 58px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 28px; box-shadow: 0 8px 25px rgba(255, 199, 0, 0.45);
+            font-size: 24px; box-shadow: 0 8px 25px rgba(255, 199, 0, 0.35);
             z-index: 100; transition: all 0.3s; border: none; cursor: pointer;
-            animation: floatPulse 2.5s infinite;
+            animation: floatPulse 3s infinite;
         }
-        .floating-btn:hover { transform: scale(1.12) rotate(6deg); box-shadow: 0 12px 35px rgba(255, 199, 0, 0.6); }
-        @keyframes floatPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+        .floating-btn:hover { transform: scale(1.08); box-shadow: 0 12px 30px rgba(255, 199, 0, 0.5); }
+        @keyframes floatPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
         .back-to-top {
             position: fixed; bottom: 30px; left: 30px;
-            width: 48px; height: 48px; border-radius: 50%;
+            width: 44px; height: 44px; border-radius: 50%;
             background: var(--forest-teal); color: white;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 20px rgba(13,92,83,0.35);
+            box-shadow: 0 6px 18px rgba(13,92,83,0.3);
             z-index: 100; border: none; cursor: pointer;
             transition: all 0.3s;
         }
-        .back-to-top:hover { transform: translateY(-4px) scale(1.05); background: var(--forest-teal-dark); }
+        .back-to-top:hover { transform: translateY(-3px); background: var(--forest-teal-dark); }
 
         .carousel-container { overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .carousel-container::-webkit-scrollbar { display: none; }
         .carousel-item { scroll-snap-align: start; flex-shrink: 0; width: 280px; }
-        .footer__cta { background: linear-gradient(135deg, #0D5C53 0%, #1a7a6e 50%, #2a9a8a 100%); padding: 40px 0; position: relative; overflow: hidden; }
-        .art__animation { position: absolute; right: 0; bottom: 0; opacity: 0.1; }
-        .status-today { background: var(--electric-gold); color: var(--forest-teal); }
-        .status-upcoming { background: #3b82f6; color: white; }
+        .footer__cta { background: linear-gradient(135deg, #0D5C53 0%, #1a7a6e 50%, #2a9a8a 100%); padding: 36px 0; position: relative; overflow: hidden; }
+        .art__animation { position: absolute; right: 0; bottom: 0; opacity: 0.08; }
+        .status-today { background: var(--electric-gold); color: var(--forest-teal); font-weight: 600; }
+        .status-upcoming { background: #3b82f6; color: white; font-weight: 500; }
 
-        /* ---------- Stat Counters ---------- */
-        .stat-card { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.18); border-radius: 18px; backdrop-filter: blur(8px); transition: all 0.3s; }
-        .stat-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.15); border-color: rgba(255,199,0,0.5); }
+        .stat-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; backdrop-filter: blur(8px); transition: all 0.3s; }
+        .stat-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); border-color: rgba(255,199,0,0.4); }
         .stat-num { font-variant-numeric: tabular-nums; }
 
-        /* ---------- Button Ripple ---------- */
         .ripple-btn { position: relative; overflow: hidden; }
-        .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: rippleAnim 0.6s linear; background: rgba(255,255,255,0.55); pointer-events: none; }
-        @keyframes rippleAnim { to { transform: scale(3.2); opacity: 0; } }
+        .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: rippleAnim 0.6s linear; background: rgba(255,255,255,0.4); pointer-events: none; }
+        @keyframes rippleAnim { to { transform: scale(3); opacity: 0; } }
 
-        /* ---------- Skeleton loading ---------- */
         .skeleton { background: linear-gradient(90deg, #eef1ef 25%, #e3e8e5 37%, #eef1ef 63%); background-size: 400% 100%; animation: skeletonShine 1.4s ease infinite; }
         @keyframes skeletonShine { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
 
-        /* ---------- Toast ---------- */
         .toast-wrap { position: fixed; top: 20px; right: 20px; z-index: 200; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: white; border-left: 4px solid var(--forest-teal); border-radius: 10px; padding: 14px 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); min-width: 260px; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1); }
+        .toast { background: white; border-left: 4px solid var(--forest-teal); border-radius: 10px; padding: 14px 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); min-width: 260px; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1); }
         @keyframes toastIn { from { opacity:0; transform: translateX(30px); } to { opacity:1; transform: translateX(0); } }
 
-        /* ---------- Mobile menu ---------- */
         .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
         .mobile-menu.open { max-height: 300px; }
 
-        /* ---------- Modal ---------- */
-        .modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.55); z-index: 300; display:flex; align-items:center; justify-content:center; animation: fadeUp 0.2s ease; backdrop-filter: blur(4px); }
-        .modal-box { background: white; border-radius: 24px; padding: 28px; max-width: 380px; width: 90%; animation: fadeUp 0.25s cubic-bezier(0.16,1,0.3,1); }
+        .modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.45); z-index: 300; display:flex; align-items:center; justify-content:center; animation: fadeUp 0.2s ease; backdrop-filter: blur(4px); }
+        .modal-box { background: white; border-radius: 20px; padding: 26px; max-width: 380px; width: 90%; animation: fadeUp 0.25s cubic-bezier(0.16,1,0.3,1); }
     </style>
 </head>
 <body>
@@ -335,14 +330,14 @@
             return (
                 <div className="modal-backdrop" onClick={onCancel}>
                     <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                        <div className="w-12 h-12 rounded-full bg-forest-teal/10 flex items-center justify-center text-forest-teal text-xl mb-4">
+                        <div className="w-10 h-10 rounded-full bg-forest-teal/10 flex items-center justify-center text-forest-teal text-lg mb-3">
                             <i className="fas fa-right-from-bracket"></i>
                         </div>
-                        <h3 className="text-lg font-bold text-forest-teal mb-1">{title}</h3>
-                        <p className="text-sm text-gray-500 mb-6">{message}</p>
-                        <div className="flex gap-3">
-                            <button onClick={onCancel} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-medium hover:bg-gray-50 transition">Cancel</button>
-                            <button onClick={onConfirm} className="flex-1 py-2.5 rounded-xl bg-forest-teal text-white font-semibold hover:bg-[#0a4a42] transition">Log Out</button>
+                        <h3 className="text-base font-semibold text-gray-800 mb-1">{title}</h3>
+                        <p className="text-xs text-gray-500 mb-5 leading-relaxed">{message}</p>
+                        <div className="flex gap-2.5">
+                            <button onClick={onCancel} className="flex-1 py-2 rounded-xl border border-gray-200 text-gray-600 font-medium text-xs hover:bg-gray-50 transition">Cancel</button>
+                            <button onClick={onConfirm} className="flex-1 py-2 rounded-xl bg-forest-teal text-white font-medium text-xs hover:bg-[#0a4a42] transition">Log Out</button>
                         </div>
                     </div>
                 </div>
@@ -375,7 +370,6 @@
                 setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3200);
             }, []);
 
-            // Check login status on mount & keep in sync with Firebase Auth
             useEffect(() => {
                 const checkUser = () => {
                     const savedUser = localStorage.getItem('ing_user');
@@ -418,7 +412,7 @@
                 localStorage.setItem('recent_searches', JSON.stringify(recentSearches));
             }, [recentSearches]);
 
-            // Fetch REAL activities directly from Firebase Realtime Database when logged in
+            // Fetch REAL activities directly from Firebase Realtime Database
             useEffect(() => {
                 if (!isLoggedIn) {
                     setActivities([]);
@@ -550,58 +544,58 @@
                         onCancel={() => setConfirmOpen(false)}
                     />
 
-                    <header className={`bg-forest-teal text-white px-6 py-4 shadow-xl relative top-0 z-50 transition-all duration-300 ${scrolled ? 'header-shrink' : ''}`}>
+                    <header className={`bg-forest-teal text-white px-6 py-4 shadow-lg relative top-0 z-50 transition-all duration-300 ${scrolled ? 'header-shrink' : ''}`}>
                         <div className="absolute inset-0 bg-linear-to-b from-transparent to-[#0D5C53]/40"></div>
                         <div className="hero-pattern absolute inset-0 opacity-40"></div>
                         <div className="max-w-6xl mx-auto relative z-10">
                             <div className="flex items-center justify-between gap-4">
                                 <a href="index.html" className="slide-in flex items-center gap-3">
-                                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'transparent' }}>
-                                        <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING College" className="h-11 md:h-15 w-auto" />
+                                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shadow-xs" style={{ background: 'transparent' }}>
+                                        <img src="https://ing.edu.np/images/footer/logo-new.svg" alt="ING College" className="h-10 md:h-12 w-auto" />
                                     </div>
                                     <div className="hidden sm:block">
-                                        <h1 className="text-xl md:text-3xl font-extrabold tracking-tight leading-tight">Find a Friend</h1>
-                                        <p className="text-blue-200 text-xs md:text-base font-light">ING College · Connect &amp; Collaborate</p>
+                                        <h1 className="text-lg md:text-2xl font-bold tracking-tight leading-tight">Find a Friend</h1>
+                                        <p className="text-blue-200 text-xs font-normal">ING College · Connect &amp; Collaborate</p>
                                     </div>
                                 </a>
 
                                 <div className="hidden md:flex flex-wrap gap-3">
                                     {!isLoggedIn ? (
                                         <>
-                                            <a href="student-login.html" onMouseDown={addRipple} className="ripple-btn btn-gold px-6 py-2.5 rounded-full font-bold shadow-lg transition-all duration-300 flex items-center gap-2 text-forest-teal">
-                                                <i className="fas fa-user-graduate"></i> Student Login
+                                            <a href="student-login.html" onMouseDown={addRipple} className="ripple-btn btn-gold px-5 py-2 rounded-full font-semibold text-xs md:text-sm shadow-xs transition-all duration-300 flex items-center gap-2 text-forest-teal">
+                                                <i className="fas fa-user-graduate text-xs"></i> Student Login
                                             </a>
-                                            <a href="admin-login.html" onMouseDown={addRipple} className="ripple-btn bg-white/20 backdrop-blur-sm border border-white/30 px-6 py-2.5 rounded-full font-semibold hover:bg-white/30 transition flex items-center gap-2 text-white">
-                                                <i className="fas fa-user-shield"></i> Admin Login
+                                            <a href="admin-login.html" onMouseDown={addRipple} className="ripple-btn bg-white/15 backdrop-blur-sm border border-white/25 px-5 py-2 rounded-full font-medium text-xs md:text-sm hover:bg-white/25 transition flex items-center gap-2 text-white">
+                                                <i className="fas fa-user-shield text-xs"></i> Admin Login
                                             </a>
                                         </>
                                     ) : (
-                                        <div className="glass-effect px-5 py-2.5 rounded-full flex items-center gap-4">
+                                        <div className="glass-effect px-4 py-2 rounded-full flex items-center gap-3 text-xs md:text-sm">
                                             <span className="text-white font-medium">👋 {user?.name}</span>
-                                            <a href="student-dashboard.html" className="text-white border border-white/40 px-4 py-1 rounded-full text-sm hover:bg-white/10 transition">Dashboard</a>
-                                            <button onClick={() => setConfirmOpen(true)} className="text-white/70 text-sm hover:text-white transition">Logout</button>
+                                            <a href="student-dashboard.html" className="text-white border border-white/30 px-3 py-1 rounded-full text-xs hover:bg-white/10 transition">Dashboard</a>
+                                            <button onClick={() => setConfirmOpen(true)} className="text-white/70 hover:text-white transition">Logout</button>
                                         </div>
                                     )}
                                 </div>
 
-                                <button className="md:hidden text-white text-2xl" onClick={() => setMobileMenuOpen(o => !o)} aria-label="Toggle menu">
+                                <button className="md:hidden text-white text-xl" onClick={() => setMobileMenuOpen(o => !o)} aria-label="Toggle menu">
                                     <i className={`fas ${mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
                                 </button>
                             </div>
 
                             <div className={`mobile-menu md:hidden relative z-10 ${mobileMenuOpen ? 'open' : ''}`}>
-                                <div className="pt-4 flex flex-col gap-2">
+                                <div className="pt-3 flex flex-col gap-2">
                                     {!isLoggedIn ? (
                                         <>
-                                            <a href="student-login.html" className="btn-gold px-5 py-2.5 rounded-full font-bold text-center text-forest-teal">Student Login</a>
-                                            <a href="admin-login.html" className="bg-white/15 border border-white/30 px-5 py-2.5 rounded-full font-semibold text-center text-white">Admin Login</a>
+                                            <a href="student-login.html" className="btn-gold px-5 py-2 rounded-full font-semibold text-center text-xs text-forest-teal">Student Login</a>
+                                            <a href="admin-login.html" className="bg-white/15 border border-white/25 px-5 py-2 rounded-full font-medium text-center text-xs text-white">Admin Login</a>
                                         </>
                                     ) : (
-                                        <div className="glass-effect px-4 py-3 rounded-2xl flex items-center justify-between">
+                                        <div className="glass-effect px-4 py-2.5 rounded-2xl flex items-center justify-between text-xs">
                                             <span className="text-white font-medium">👋 {user?.name}</span>
-                                            <div className="flex items-center gap-3">
-                                                <a href="student-dashboard.html" className="text-white border border-white/40 px-3 py-1 rounded-full text-sm">Dashboard</a>
-                                                <button onClick={() => setConfirmOpen(true)} className="text-white/70 text-sm">Logout</button>
+                                            <div className="flex items-center gap-2">
+                                                <a href="student-dashboard.html" className="text-white border border-white/30 px-3 py-1 rounded-full">Dashboard</a>
+                                                <button onClick={() => setConfirmOpen(true)} className="text-white/70">Logout</button>
                                             </div>
                                         </div>
                                     )}
@@ -611,38 +605,38 @@
                     </header>
 
                     {/* ---------------- HERO SECTION ---------------- */}
-                    <div className="relative bg-forest-teal pt-12 pb-20 md:py-24">
+                    <div className="relative bg-forest-teal pt-10 pb-16 md:py-20">
                         <div className="hero-blobs">
                             <div className="blob blob-1"></div>
                             <div className="blob blob-2"></div>
                             <div className="blob blob-3"></div>
                         </div>
-                        <div className="hero-pattern absolute inset-0 opacity-50"></div>
+                        <div className="hero-pattern absolute inset-0 opacity-40"></div>
                         
                         <div className="max-w-6xl mx-auto px-4 relative text-center">
                             <Reveal>
-                                <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs md:text-sm px-4 py-1.5 rounded-full mb-6 shadow-sm">
-                                    <span className="live-pulse w-2.5 h-2.5 rounded-full bg-electric-gold"></span>
+                                <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-xs px-3.5 py-1 rounded-full mb-5 font-normal">
+                                    <span className="live-pulse w-2 h-2 rounded-full bg-electric-gold"></span>
                                     Live campus companion — built by students, for students
                                 </span>
                             </Reveal>
                             <Reveal delay={80}>
-                                <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4">
+                                <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight mb-3">
                                     Never get lost on campus.<br className="hidden md:block" /> Never miss what's happening.
                                 </h2>
                             </Reveal>
                             <Reveal delay={160}>
-                                <p className="text-blue-100/90 text-base md:text-lg max-w-2xl mx-auto mb-10 font-normal">
-                                    Search any classroom, lab or office across all 13 floors, see live activities happening right now, and connect with your fellow students — all in one place.
+                                <p className="text-blue-100/90 text-sm md:text-base max-w-2xl mx-auto mb-8 font-normal leading-relaxed">
+                                    Search any classroom, lab or office across all 13 floors, see live activities happening right now, and connect with fellow students.
                                 </p>
                             </Reveal>
 
-                            {/* SEARCH BAR CONTAINER WITH EXPLICIT Z-INDEX STACKING */}
+                            {/* SEARCH BAR CONTAINER */}
                             <Reveal delay={220} style={{ position: 'relative', zIndex: 60 }}>
                                 <div className="max-w-2xl mx-auto relative">
                                     <div className="relative z-50">
-                                        <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400">
-                                            <i className="fas fa-search text-xl"></i>
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                            <i className="fas fa-search text-base"></i>
                                         </span>
                                         <input
                                             ref={searchRef}
@@ -655,7 +649,7 @@
                                             }}
                                             onKeyDown={handleSearchKeyDown}
                                             onFocus={() => { if(searchQuery) setShowResults(true); }}
-                                            className="search-input w-full pl-14 pr-12 py-4.5 rounded-2xl bg-white border-2 border-white/40 focus:border-electric-gold text-gray-800 text-base md:text-lg shadow-[0_15px_35px_-5px_rgba(0,0,0,0.3)] transition-all"
+                                            className="search-input w-full pl-12 pr-10 py-3.5 rounded-2xl bg-white border border-white/40 focus:border-electric-gold text-gray-800 text-sm md:text-base shadow-[0_12px_30px_-5px_rgba(0,0,0,0.25)] transition-all"
                                         />
                                         {searchQuery && (
                                             <button
@@ -664,46 +658,45 @@
                                                     setSearchResults([]);
                                                     setShowResults(false);
                                                 }}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 transition"
+                                                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 w-7 h-7 rounded-full flex items-center justify-center hover:bg-gray-100 transition"
                                             >
-                                                <i className="fas fa-times"></i>
+                                                <i className="fas fa-times text-xs"></i>
                                             </button>
                                         )}
                                     </div>
 
-                                    {/* SEARCH RESULTS DROPDOWN - OPAQUE HIGH Z-INDEX FLOATING OVERLAY */}
+                                    {/* SEARCH RESULTS DROPDOWN */}
                                     {showResults && searchQuery && (
-                                        <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.35)] border border-gray-100 max-h-96 overflow-y-auto z-100 text-left opacity-100 min-w-full">
+                                        <div className="absolute top-full left-0 right-0 mt-2.5 bg-white rounded-2xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.3)] border border-gray-100 max-h-80 overflow-y-auto z-100 text-left opacity-100 min-w-full">
                                             {searchResults.length === 0 ? (
-                                                <div className="p-8 text-center text-gray-500">
-                                                    <i className="fas fa-search text-3xl block text-gray-300 mb-2"></i>
-                                                    <p className="font-medium text-gray-700">No facilities found for "{searchQuery}"</p>
-                                                    <p className="text-xs text-gray-400 mt-1">Try searching "Cafeteria", "Library", "TR 01", or "Futsal"</p>
+                                                <div className="p-6 text-center text-gray-500">
+                                                    <i className="fas fa-search text-2xl block text-gray-300 mb-1.5"></i>
+                                                    <p className="font-medium text-xs text-gray-700">No facilities found for "{searchQuery}"</p>
                                                 </div>
                                             ) : (
                                                 <div className="p-2 space-y-1">
-                                                    <div className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400 border-b border-gray-100">
+                                                    <div className="px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-gray-400 border-b border-gray-100">
                                                         Found {searchResults.length} Match{searchResults.length > 1 ? 'es' : ''}
                                                     </div>
                                                     {searchResults.map((result, index) => (
                                                         <div
                                                             key={index}
-                                                            className={`search-result-card p-3 rounded-xl border border-transparent flex items-center gap-3.5 ${index === activeIndex ? 'kbd-active' : ''}`}
+                                                            className={`search-result-card p-2.5 rounded-xl border border-transparent flex items-center gap-3 ${index === activeIndex ? 'kbd-active' : ''}`}
                                                             onClick={() => handleResultClick(result)}
                                                             onMouseEnter={() => setActiveIndex(index)}
                                                         >
-                                                            <div className="w-10 h-10 rounded-xl bg-forest-teal/10 flex items-center justify-center text-forest-teal font-bold shrink-0">
+                                                            <div className="w-8 h-8 rounded-lg bg-forest-teal/10 flex items-center justify-center text-forest-teal text-xs font-semibold shrink-0">
                                                                 <i className={`fas ${result.icon || 'fa-building'}`}></i>
                                                             </div>
                                                             <div className="flex-1 text-left min-w-0">
-                                                                <div className="font-bold text-gray-800 text-sm md:text-base truncate">{result.name}</div>
-                                                                <div className="text-xs md:text-sm text-gray-500 flex items-center gap-2 mt-0.5">
-                                                                    <span className="font-semibold text-forest-teal bg-teal-50 px-2 py-0.5 rounded">{result.floor} Floor</span>
+                                                                <div className="font-semibold text-gray-800 text-xs md:text-sm truncate">{result.name}</div>
+                                                                <div className="text-xs text-gray-500 flex items-center gap-1.5 mt-0.5 font-normal">
+                                                                    <span className="font-medium text-forest-teal bg-teal-50 px-1.5 py-0.5 rounded text-[10px]">{result.floor} Floor</span>
                                                                     <span>•</span>
                                                                     <span>{result.type}</span>
                                                                 </div>
                                                             </div>
-                                                            <i className="fas fa-arrow-right text-gray-300 text-sm"></i>
+                                                            <i className="fas fa-arrow-right text-gray-300 text-xs"></i>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -713,24 +706,19 @@
 
                                     {/* RECENT SEARCHES */}
                                     {recentSearches.length > 0 && !searchQuery && (
-                                        <div className="mt-4 text-left">
-                                            <div className="flex items-center justify-between mb-2 px-1">
-                                                <span className="text-xs font-medium uppercase tracking-wider text-blue-200">Recent Searches</span>
-                                                <button onClick={clearRecentSearches} className="text-xs text-blue-300 hover:text-white transition">
-                                                    Clear All
-                                                </button>
+                                        <div className="mt-3 text-left">
+                                            <div className="flex items-center justify-between mb-1.5 px-1">
+                                                <span className="text-[11px] font-medium uppercase tracking-wider text-blue-200">Recent Searches</span>
+                                                <button onClick={clearRecentSearches} className="text-[11px] text-blue-300 hover:text-white transition">Clear All</button>
                                             </div>
-                                            <div className="flex flex-wrap gap-2">
+                                            <div className="flex flex-wrap gap-1.5">
                                                 {recentSearches.map((search, index) => (
                                                     <button
                                                         key={index}
-                                                        onClick={() => {
-                                                            setSearchQuery(search);
-                                                            handleSearch(search);
-                                                        }}
-                                                        className="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-xs md:text-sm text-white transition flex items-center gap-1.5"
+                                                        onClick={() => { setSearchQuery(search); handleSearch(search); }}
+                                                        className="px-3 py-1 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full text-xs text-white transition flex items-center gap-1"
                                                     >
-                                                        <i className="fas fa-history text-electric-gold text-xs"></i> {search}
+                                                        <i className="fas fa-history text-electric-gold text-[10px]"></i> {search}
                                                     </button>
                                                 ))}
                                             </div>
@@ -739,13 +727,13 @@
 
                                     {/* POPULAR SEARCH SUGGESTIONS */}
                                     {recentSearches.length === 0 && !searchQuery && (
-                                        <div className="mt-4 flex flex-wrap justify-center items-center gap-2">
-                                            <span className="text-xs text-blue-200 font-medium mr-1">Popular:</span>
+                                        <div className="mt-3 flex flex-wrap justify-center items-center gap-1.5">
+                                            <span className="text-xs text-blue-200 font-normal mr-1">Popular:</span>
                                             {popularSearches.map((s, i) => (
                                                 <button
                                                     key={i}
                                                     onClick={() => { setSearchQuery(s); handleSearch(s); }}
-                                                    className="px-3 py-1 bg-white/10 hover:bg-white/20 border border-white/15 rounded-full text-xs text-blue-100 transition"
+                                                    className="px-2.5 py-0.5 bg-white/10 hover:bg-white/20 border border-white/15 rounded-full text-xs text-blue-100 transition font-normal"
                                                 >
                                                     {s}
                                                 </button>
@@ -757,61 +745,61 @@
 
                             {/* LIVE STAT COUNTERS */}
                             <Reveal delay={280} style={{ position: 'relative', zIndex: 10 }}>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto mt-12 md:mt-16">
-                                    <div className="stat-card py-4 px-3">
-                                        <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalFloors} /></div>
-                                        <div className="text-xs md:text-sm text-blue-100/90 font-medium mt-1">Floors Mapped</div>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto mt-10 md:mt-14">
+                                    <div className="stat-card py-3 px-3">
+                                        <div className="text-xl md:text-2xl font-bold text-electric-gold"><CountUp end={totalFloors} /></div>
+                                        <div className="text-xs text-blue-100/90 font-normal mt-0.5">Floors Mapped</div>
                                     </div>
-                                    <div className="stat-card py-4 px-3">
-                                        <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalFacilities} /></div>
-                                        <div className="text-xs md:text-sm text-blue-100/90 font-medium mt-1">Total Facilities</div>
+                                    <div className="stat-card py-3 px-3">
+                                        <div className="text-xl md:text-2xl font-bold text-electric-gold"><CountUp end={totalFacilities} /></div>
+                                        <div className="text-xs text-blue-100/90 font-normal mt-0.5">Total Facilities</div>
                                     </div>
-                                    <div className="stat-card py-4 px-3">
-                                        <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalClassrooms} /></div>
-                                        <div className="text-xs md:text-sm text-blue-100/90 font-medium mt-1">Classrooms</div>
+                                    <div className="stat-card py-3 px-3">
+                                        <div className="text-xl md:text-2xl font-bold text-electric-gold"><CountUp end={totalClassrooms} /></div>
+                                        <div className="text-xs text-blue-100/90 font-normal mt-0.5">Classrooms</div>
                                     </div>
-                                    <div className="stat-card py-4 px-3">
-                                        <div className="text-2xl md:text-3xl font-extrabold text-electric-gold"><CountUp end={totalLabs} /></div>
-                                        <div className="text-xs md:text-sm text-blue-100/90 font-medium mt-1">Labs &amp; Offices</div>
+                                    <div className="stat-card py-3 px-3">
+                                        <div className="text-xl md:text-2xl font-bold text-electric-gold"><CountUp end={totalLabs} /></div>
+                                        <div className="text-xs text-blue-100/90 font-normal mt-0.5">Labs &amp; Offices</div>
                                     </div>
                                 </div>
                             </Reveal>
                         </div>
                     </div>
 
-                    <div className="max-w-6xl mx-auto px-4 py-12">
+                    <div className="max-w-6xl mx-auto px-4 py-10">
                         {/* ---------------- ACTIVITIES SECTION ---------------- */}
-                        <Reveal className="mb-12">
-                            <div className="flex items-center justify-between mb-6">
+                        <Reveal className="mb-10">
+                            <div className="flex items-center justify-between mb-5">
                                 <div>
-                                    <h2 className="text-2xl md:text-3xl font-extrabold text-forest-teal flex items-center gap-2.5">
+                                    <h2 className="text-xl md:text-2xl font-bold text-forest-teal flex items-center gap-2">
                                         <i className="fas fa-calendar-check text-electric-gold"></i>
                                         Happening on Campus Right Now
                                     </h2>
-                                    <p className="text-sm text-gray-500 mt-1">Live activities posted by students &amp; staff</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">Live activities posted by students &amp; staff</p>
                                 </div>
                                 {isLoggedIn && (
-                                    <a href="student-dashboard.html" className="hidden sm:inline-flex items-center gap-1.5 text-forest-teal font-bold hover:underline text-sm bg-white px-4 py-2 rounded-full border border-gray-200 shadow-xs hover:border-forest-teal transition">
+                                    <a href="student-dashboard.html" className="hidden sm:inline-flex items-center gap-1 text-forest-teal font-medium hover:underline text-xs bg-white px-3.5 py-1.5 rounded-full border border-gray-200 shadow-xs hover:border-forest-teal transition">
                                         View All Activities →
                                     </a>
                                 )}
                             </div>
 
                             {!isLoggedIn ? (
-                                <div className="bg-white rounded-2xl p-10 md:p-12 text-center border border-gray-100 shadow-sm max-w-2xl mx-auto">
-                                    <div className="w-16 h-16 bg-forest-teal/10 rounded-full flex items-center justify-center text-forest-teal text-3xl mx-auto mb-4">
+                                <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-xs max-w-xl mx-auto">
+                                    <div className="w-12 h-12 bg-forest-teal/10 rounded-full flex items-center justify-center text-forest-teal text-xl mx-auto mb-3">
                                         <i className="fas fa-lock text-electric-gold"></i>
                                     </div>
-                                    <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">Log in to see what's going on in campus</h3>
-                                    <p className="text-gray-500 text-sm md:text-base max-w-md mx-auto mb-6">
+                                    <h3 className="text-lg font-semibold text-gray-800 mb-1">Log in to see what's going on in campus</h3>
+                                    <p className="text-gray-500 text-xs max-w-md mx-auto mb-5 leading-relaxed">
                                         Sign in with your ING student or admin account to discover live events, sports matches, workshops, and connect with peers.
                                     </p>
-                                    <div className="flex flex-wrap justify-center gap-3">
-                                        <a href="student-login.html" className="btn-gold px-6 py-2.5 rounded-full font-bold text-sm text-forest-teal shadow-md hover:scale-105 transition">
-                                            <i className="fas fa-user-graduate mr-2"></i> Student Login
+                                    <div className="flex flex-wrap justify-center gap-2.5">
+                                        <a href="student-login.html" className="btn-gold px-5 py-2 rounded-full font-semibold text-xs text-forest-teal shadow-xs hover:scale-105 transition">
+                                            <i className="fas fa-user-graduate mr-1.5 text-xs"></i> Student Login
                                         </a>
-                                        <a href="admin-login.html" className="bg-forest-teal text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-forest-teal-dark hover:scale-105 transition">
-                                            <i className="fas fa-user-shield mr-2"></i> Admin Login
+                                        <a href="admin-login.html" className="bg-forest-teal text-white px-5 py-2 rounded-full font-semibold text-xs shadow-xs hover:bg-forest-teal-dark hover:scale-105 transition">
+                                            <i className="fas fa-user-shield mr-1.5 text-xs"></i> Admin Login
                                         </a>
                                     </div>
                                 </div>
@@ -828,40 +816,40 @@
                                     ))}
                                 </div>
                             ) : activities.length === 0 ? (
-                                <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-xs max-w-2xl mx-auto">
-                                    <i className="fas fa-calendar-plus text-4xl text-gray-300 mb-3"></i>
-                                    <p className="text-gray-700 font-bold text-lg">No activities posted yet</p>
-                                    <p className="text-xs text-gray-500 mt-1 mb-4">Be the first to create a campus activity!</p>
-                                    <a href="student-dashboard.html" className="inline-block bg-forest-teal text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-forest-teal-dark transition">
+                                <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 shadow-xs max-w-xl mx-auto">
+                                    <i className="fas fa-calendar-plus text-3xl text-gray-300 mb-2 block"></i>
+                                    <p className="text-gray-700 font-semibold text-base">No activities posted yet</p>
+                                    <p className="text-xs text-gray-500 mt-0.5 mb-4">Be the first to create a campus activity!</p>
+                                    <a href="student-dashboard.html" className="inline-block bg-forest-teal text-white px-5 py-2 rounded-full font-semibold text-xs hover:bg-forest-teal-dark transition">
                                         Create Activity in Dashboard →
                                     </a>
                                 </div>
                             ) : (
-                                <div className="carousel-container flex gap-5 pb-4 overflow-x-auto">
+                                <div className="carousel-container flex gap-4 pb-3 overflow-x-auto">
                                     {activities.slice(0, 10).map((item) => {
                                         const eventDate = parseEventDateTime(item.date, item.startTime);
                                         const now = new Date();
                                         const status = eventDate < now ? 'Past' :
                                                       (item.date && new Date(item.date).toDateString() === new Date().toDateString()) ? 'Today' : 'Upcoming';
                                         return (
-                                            <div key={item.id || Math.random()} className="carousel-item bg-white rounded-2xl p-5 shadow-sm border border-gray-100 card-hover w-72 flex flex-col justify-between">
+                                            <div key={item.id || Math.random()} className="carousel-item bg-white rounded-2xl p-4 shadow-xs border border-gray-100 card-hover w-72 flex flex-col justify-between">
                                                 <div>
-                                                    <div className="flex items-center justify-between mb-3">
-                                                        <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${status === 'Past' ? 'bg-gray-200 text-gray-600' : status === 'Today' ? 'status-today font-extrabold' : 'status-upcoming'}`}>
+                                                    <div className="flex items-center justify-between mb-2.5">
+                                                        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${status === 'Past' ? 'bg-gray-200 text-gray-600' : status === 'Today' ? 'status-today font-bold' : 'status-upcoming'}`}>
                                                             {status}
                                                         </span>
-                                                        <span className="text-xs text-gray-400 font-medium">{item.date || 'Campus Event'}</span>
+                                                        <span className="text-xs text-gray-400 font-normal">{item.date || 'Campus Event'}</span>
                                                     </div>
-                                                    <h3 className="font-bold text-gray-800 text-lg line-clamp-1">{item.title}</h3>
-                                                    <p className="text-xs md:text-sm text-gray-500 mt-1.5 line-clamp-2 leading-relaxed">{item.description || 'Join fellow ING students for this campus activity.'}</p>
+                                                    <h3 className="font-semibold text-gray-800 text-base line-clamp-1">{item.title}</h3>
+                                                    <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed font-normal">{item.description || 'Join fellow ING students for this campus activity.'}</p>
                                                 </div>
-                                                <div className="mt-4 pt-3 border-t border-gray-100">
-                                                    <div className="space-y-1.5 text-xs md:text-sm text-gray-600 mb-4">
-                                                        <div className="flex items-center gap-2"><i className="fas fa-clock text-electric-gold w-4 text-center"></i><span>{item.startTime || 'TBA'} - {item.endTime || 'TBA'}</span></div>
-                                                        <div className="flex items-center gap-2"><i className="fas fa-location-dot text-electric-gold w-4 text-center"></i><span className="truncate">{item.location || 'ING Campus'}</span></div>
-                                                        <div className="flex items-center gap-2"><i className="fas fa-user text-electric-gold w-4 text-center"></i><span className="truncate">by {item.posterName || 'Student'}</span></div>
+                                                <div className="mt-3 pt-2.5 border-t border-gray-100">
+                                                    <div className="space-y-1 text-xs text-gray-600 mb-3 font-normal">
+                                                        <div className="flex items-center gap-1.5"><i className="fas fa-clock text-electric-gold w-3.5 text-center text-[10px]"></i><span>{item.startTime || 'TBA'} - {item.endTime || 'TBA'}</span></div>
+                                                        <div className="flex items-center gap-1.5"><i className="fas fa-location-dot text-electric-gold w-3.5 text-center text-[10px]"></i><span className="truncate">{item.location || 'ING Campus'}</span></div>
+                                                        <div className="flex items-center gap-1.5"><i className="fas fa-user text-electric-gold w-3.5 text-center text-[10px]"></i><span className="truncate">by {item.posterName || 'Student'}</span></div>
                                                     </div>
-                                                    <a href="student-dashboard.html" className="block w-full bg-forest-teal text-white py-2 rounded-xl font-bold transition-all duration-200 text-xs md:text-sm text-center hover:bg-[#0a4a42]">
+                                                    <a href="student-dashboard.html" className="block w-full bg-forest-teal text-white py-1.5 rounded-xl font-medium transition-all duration-200 text-xs text-center hover:bg-[#0a4a42]">
                                                         View Activity
                                                     </a>
                                                 </div>
@@ -873,30 +861,30 @@
                         </Reveal>
 
                         {/* ---------------- QUICK ACCESS SECTION ---------------- */}
-                        <Reveal delay={100} className="mb-8">
-                            <h2 className="text-2xl font-extrabold text-forest-teal mb-5 flex items-center gap-2">
+                        <Reveal delay={100} className="mb-6">
+                            <h2 className="text-xl font-bold text-forest-teal mb-4 flex items-center gap-2">
                                 <i className="fas fa-bolt text-electric-gold"></i> Quick Navigation
                             </h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <a href="floornavigation.html" className="bg-white rounded-2xl p-6 text-center shadow-xs border border-gray-100 card-hover group">
-                                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition">🏛️</div>
-                                    <span className="text-sm font-bold text-gray-800 block">Floor Navigation</span>
-                                    <span className="text-xs text-gray-400 mt-1 block">Interactive 13-Floor Map</span>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                                <a href="floornavigation.html" className="bg-white rounded-2xl p-5 text-center shadow-xs border border-gray-100 card-hover group">
+                                    <div className="text-3xl mb-2 transform group-hover:scale-110 transition">🏛️</div>
+                                    <span className="text-xs md:text-sm font-semibold text-gray-800 block">Floor Navigation</span>
+                                    <span className="text-[11px] text-gray-400 mt-0.5 block font-normal">Interactive 13-Floor Map</span>
                                 </a>
-                                <a href="student-login.html" className="bg-white rounded-2xl p-6 text-center shadow-xs border border-gray-100 card-hover group">
-                                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition">🎓</div>
-                                    <span className="text-sm font-bold text-gray-800 block">Student Portal</span>
-                                    <span className="text-xs text-gray-400 mt-1 block">Log in to view events</span>
+                                <a href="student-login.html" className="bg-white rounded-2xl p-5 text-center shadow-xs border border-gray-100 card-hover group">
+                                    <div className="text-3xl mb-2 transform group-hover:scale-110 transition">🎓</div>
+                                    <span className="text-xs md:text-sm font-semibold text-gray-800 block">Student Portal</span>
+                                    <span className="text-[11px] text-gray-400 mt-0.5 block font-normal">Log in to view events</span>
                                 </a>
-                                <a href="admin-login.html" className="bg-white rounded-2xl p-6 text-center shadow-xs border border-gray-100 card-hover group">
-                                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition">👔</div>
-                                    <span className="text-sm font-bold text-gray-800 block">Admin Portal</span>
-                                    <span className="text-xs text-gray-400 mt-1 block">Manage Campus Data</span>
+                                <a href="admin-login.html" className="bg-white rounded-2xl p-5 text-center shadow-xs border border-gray-100 card-hover group">
+                                    <div className="text-3xl mb-2 transform group-hover:scale-110 transition">👔</div>
+                                    <span className="text-xs md:text-sm font-semibold text-gray-800 block">Admin Portal</span>
+                                    <span className="text-[11px] text-gray-400 mt-0.5 block font-normal">Manage Campus Data</span>
                                 </a>
-                                <a href="student-dashboard.html" className="bg-white rounded-2xl p-6 text-center shadow-xs border border-gray-100 card-hover group">
-                                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition">📊</div>
-                                    <span className="text-sm font-bold text-gray-800 block">Dashboard</span>
-                                    <span className="text-xs text-gray-400 mt-1 block">Activities &amp; Messages</span>
+                                <a href="student-dashboard.html" className="bg-white rounded-2xl p-5 text-center shadow-xs border border-gray-100 card-hover group">
+                                    <div className="text-3xl mb-2 transform group-hover:scale-110 transition">📊</div>
+                                    <span className="text-xs md:text-sm font-semibold text-gray-800 block">Dashboard</span>
+                                    <span className="text-[11px] text-gray-400 mt-0.5 block font-normal">Activities &amp; Messages</span>
                                 </a>
                             </div>
                         </Reveal>
@@ -907,27 +895,27 @@
                         onClick={() => window.location.href = 'student-dashboard.html'}
                         title="Find a Friend"
                     >
-                        <span className="flex items-center justify-center text-2xl">👥</span>
+                        <span className="flex items-center justify-center text-xl">👥</span>
                     </button>
 
                     {showBackToTop && (
                         <button className="back-to-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} title="Back to top">
-                            <i className="fas fa-arrow-up"></i>
+                            <i className="fas fa-arrow-up text-xs"></i>
                         </button>
                     )}
 
-                    <div className="footer__cta mt-12">
+                    <div className="footer__cta mt-10">
                         <div className="art__animation">
                             <img src="https://ing.edu.np/images/art-animation.png" alt="" className="art__animation-img" />
                         </div>
                         <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
-                            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-3">ING College of Innovation &amp; Leadership</h2>
-                            <p className="text-blue-100 text-sm md:text-base mb-6">New Baneshwor, Kathmandu | +977 9715000120 | info@ing.edu.np</p>
-                            <div className="flex flex-wrap justify-center gap-4">
-                                <a href="student-login.html" onMouseDown={addRipple} className="ripple-btn btn-gold px-7 py-2.5 rounded-full font-bold transition-all duration-300 text-forest-teal text-sm">Student Login</a>
-                                <a href="admin-login.html" onMouseDown={addRipple} className="ripple-btn bg-white/20 backdrop-blur-sm border border-white/30 px-7 py-2.5 rounded-full font-semibold hover:bg-white/30 transition text-white text-sm">Admin Login</a>
+                            <h2 className="text-xl md:text-2xl font-bold text-white mb-2">ING College of Innovation &amp; Leadership</h2>
+                            <p className="text-blue-100 text-xs md:text-sm mb-5 font-normal">New Baneshwor, Kathmandu | +977 9715000120 | info@ing.edu.np</p>
+                            <div className="flex flex-wrap justify-center gap-3">
+                                <a href="student-login.html" onMouseDown={addRipple} className="ripple-btn btn-gold px-6 py-2 rounded-full font-semibold transition-all duration-300 text-forest-teal text-xs">Student Login</a>
+                                <a href="admin-login.html" onMouseDown={addRipple} className="ripple-btn bg-white/15 backdrop-blur-sm border border-white/25 px-6 py-2 rounded-full font-normal hover:bg-white/25 transition text-white text-xs">Admin Login</a>
                             </div>
-                            <div className="mt-8 text-xs text-blue-200">
+                            <div className="mt-6 text-[11px] text-blue-200/80 font-normal">
                                 © 2026 ING College of Innovation and Leadership. All Rights Reserved.
                             </div>
                         </div>
