@@ -393,15 +393,25 @@
                     if (authUser) {
                         const savedUser = localStorage.getItem('ing_user');
                         if (savedUser) {
-                            setUser(JSON.parse(savedUser));
-                            setIsLoggedIn(true);
+                            try {
+                                setUser(JSON.parse(savedUser));
+                                setIsLoggedIn(true);
+                            } catch (e) {
+                                localStorage.removeItem('ing_user');
+                                localStorage.removeItem('ing_user_type');
+                                setUser(null);
+                                setIsLoggedIn(false);
+                            }
                         }
                     } else {
-                        const savedUser = localStorage.getItem('ing_user');
-                        if (!savedUser) {
-                            setUser(null);
-                            setIsLoggedIn(false);
-                        }
+                        // Firebase says there's no active session — always clear local
+                        // state too, even if a stale ing_user is still sitting in
+                        // localStorage, so the UI never shows someone as logged in
+                        // when their session has actually expired.
+                        localStorage.removeItem('ing_user');
+                        localStorage.removeItem('ing_user_type');
+                        setUser(null);
+                        setIsLoggedIn(false);
                     }
                 });
 

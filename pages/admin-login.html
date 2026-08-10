@@ -113,26 +113,38 @@
                     return firebase.database().ref('users/' + cred.user.uid).once('value')
                         .then(snapshot => {
                             const dbData = snapshot.val() || {};
+
+                            // Verify this account is actually flagged as admin in the database.
+                            // Without this check, any valid Firebase account (including a
+                            // student's own login) would be granted admin access here.
+                            if (dbData.role !== 'admin') {
+                                firebase.auth().signOut();
+                                errorEl.textContent = 'Access denied: this account is not an admin account.';
+                                errorEl.classList.remove('hidden');
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = 'Login →';
+                                return;
+                            }
+
                             const adminUser = {
                                 id: cred.user.uid,
                                 name: dbData.name || cred.user.displayName || 'Admin',
                                 email: cred.user.email || email,
-                                role: 'admin',
-                                ...dbData
+                                ...dbData,
+                                role: 'admin'
                             };
-                            adminUser.role = 'admin';
-                            
+
                             localStorage.setItem('ing_user', JSON.stringify(adminUser));
                             localStorage.setItem('ing_user_type', 'admin');
                             window.location.href = 'admin-dashboard.html';
                         });
                 })
-                .catch((err) => {
-                    console.error('Admin login error:', err);
-                    errorEl.textContent = err.message || 'Invalid admin email or password. Please try again.';
-                    errorEl.classList.remove('hidden');
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Login →';
+               .catch((err) => {
+                   console.error('Admin login error:', err);
+                   errorEl.textContent = 'Invalid email or password. Please try again.';
+                   errorEl.classList.remove('hidden');
+                   submitBtn.disabled = false;
+                   submitBtn.innerHTML = 'Login →';
                 });
         });
     </script>

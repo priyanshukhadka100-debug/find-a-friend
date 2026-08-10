@@ -112,15 +112,27 @@
                     return firebase.database().ref('users/' + cred.user.uid).once('value')
                         .then(snapshot => {
                             const dbData = snapshot.val() || {};
+
+                            // Verify this account is actually a student account in the database,
+                            // so an admin account logging in here doesn't silently get treated
+                            // as a student (or vice versa).
+                            if (dbData.role !== 'student') {
+                                firebase.auth().signOut();
+                                errorEl.textContent = 'Access denied: this account is not a student account.';
+                                errorEl.classList.remove('hidden');
+                                submitBtn.disabled = false;
+                                submitBtn.innerHTML = 'Login →';
+                                return;
+                            }
+
                             const studentUser = {
                                 id: cred.user.uid,
                                 name: dbData.name || cred.user.displayName || email.split('@')[0],
                                 email: cred.user.email || email,
-                                role: 'student',
                                 studentId: dbData.studentId || ('STU' + String(Date.now()).slice(-6)),
-                                ...dbData
+                                ...dbData,
+                                role: 'student'
                             };
-                            studentUser.role = 'student';
 
                             localStorage.setItem('ing_user', JSON.stringify(studentUser));
                             localStorage.setItem('ing_user_type', 'student');
@@ -129,7 +141,7 @@
                 })
                 .catch((err) => {
                     console.error('Student login error:', err);
-                    errorEl.textContent = err.message || 'Invalid email or password. Please check your credentials and try again.';
+                    errorEl.textContent = 'Invalid email or password. Please try again.';
                     errorEl.classList.remove('hidden');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = 'Login →';
